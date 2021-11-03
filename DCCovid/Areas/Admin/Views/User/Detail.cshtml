@@ -1,0 +1,127 @@
+﻿@model DCCovid.Models.User
+
+<div class="modal fade" id="details">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Chi tiet</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <h4>User</h4>
+                    <hr />
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Email)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Email)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.PassWord)
+                        </dt>
+
+                        <dd>
+                            @Html.PasswordFor(model => model.PassWord)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Name)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Address)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Address)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Phone)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Phone)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Status)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Status)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.CreateDate)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.CreateDate)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.CreateBy)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.CreateBy)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ModifiedDate)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.ModifiedDate)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ModifiedBy)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.ModifiedBy)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Code)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Code)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Vacxin)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Vacxin)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.User_Group.Name)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.User_Group.Name)
+                        </dd>
+
+                    </dl>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
