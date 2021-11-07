@@ -13,10 +13,10 @@ namespace DCCovid.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class DCCovidDbContext : DbContext
+    public partial class DCCovidDbcontext : DbContext
     {
-        public DCCovidDbContext()
-            : base("name=DCCovidDbContext")
+        public DCCovidDbcontext()
+            : base("name=DCCovidDbcontext")
         {
         }
     
@@ -25,7 +25,13 @@ namespace DCCovid.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<CategoryUser> CategoryUsers { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<ProductCategory> ProductCategories { get; set; }
+        public virtual DbSet<Sex> Sexes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<User_Group> User_Group { get; set; }
+
+        public System.Data.Entity.DbSet<DCCovid.ViewModel.RegisterModel> RegisterModels { get; set; }
     }
 }

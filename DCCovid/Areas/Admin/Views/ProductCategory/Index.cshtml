@@ -1,0 +1,122 @@
+﻿@model DCCovid.Models.ProductCategory
+
+@{
+    ViewBag.Title = "Index";
+    var listCate = (List<DCCovid.Models.ProductCategory>)ViewBag.ListCate;
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Danh mục</h1>
+    <p>
+
+        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createUser">Thêm danh mục</a>
+    </p>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Danh mục</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+               
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.SeoTitle)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ParentID)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Status)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CreateBy)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CreateDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ModifiedBy)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ModifiedDate)
+                            </th>
+                            <th></th>
+                        </tr>
+                   
+                    <tbody>
+                        @foreach (var item in listCate.Where(d => d.ParentID == null))
+                        {
+                            var child = listCate.Where(d => d.ParentID == item.ID);
+                            <tr id="row_@item.ID">
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SeoTitle)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ParentID)
+                                </td>
+                                <td>
+                                    @if (item.Status == true)
+                                    {<span> Đang hoạt động</span>}
+
+                                    else
+                                    {<span> Không hoạt động</span>}
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreateBy)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreateDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ModifiedBy)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ModifiedDate)
+                                </td>
+                                <td></td>
+                                @foreach (var childItem in child)
+                                {
+                            <tr id="row_@childItem.ID">
+                                <td>@childItem.Name</td>
+                                <td>@childItem.SeoTitle</td>
+                                <td>@childItem.ParentID</td>
+                                <td>
+                                    @if (childItem.Status == true)
+                                    {<span> Đang hoạt động</span>}
+
+                                    else
+                                    {<span> Không hoạt động</span>}
+                                </td>
+                                <td>@childItem.CreateBy</td>
+                                <td>@childItem.CreateDate</td>
+                                <td>@childItem.ModifiedBy</td>
+                                <td>@childItem.ModifiedDate</td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                                </td>
+                            </tr>
+                            }
+
+                                </tr>
+                            }
+                    </tbody>
+
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

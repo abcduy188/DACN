@@ -10,7 +10,7 @@ namespace DCCovid.Areas.Admin.Controllers
 {
     public class UserController : BaseController
     {
-        private DCCovidDbContext db = new DCCovidDbContext();
+        private DCCovidDbcontext db = new DCCovidDbcontext();
         // GET: Admin/User
         public ActionResult Index()
         {
@@ -52,14 +52,14 @@ namespace DCCovid.Areas.Admin.Controllers
                 if (db.Users.Count(d => d.Email == user.Email) > 0)
                 {
                     SetAlert("Email đã có người sử dụng", "error");
-                    return View();
+                    return RedirectToAction("Index");
                 }
                 else
                 {
                     db.Users.Add(user);
                     db.SaveChanges();
                     SetAlert("Thêm tài khoản thành công", "success");
-                    return View();
+                    return RedirectToAction("Index");
                 }
 
             }
@@ -78,8 +78,9 @@ namespace DCCovid.Areas.Admin.Controllers
 
                 if (db.Users.Count(d => d.Email == entity.Email) > 0 && user.Email != entity.Email)
                 {
+                    ModelState.AddModelError("", "Email Da co nguoi su dung");
                     SetAlert("Email đã có người sử dụng", "error");
-                    return RedirectToAction("Edit", "User");
+                    return RedirectToAction("Index");
                 }
                 else
                 {
@@ -104,7 +105,7 @@ namespace DCCovid.Areas.Admin.Controllers
                 }
 
             }
-            return View("Index");
+            return  RedirectToAction("Index");
         }
         [HttpGet]
         public ActionResult Delete(long id)
@@ -128,21 +129,7 @@ namespace DCCovid.Areas.Admin.Controllers
             SetAlert("Thay doi thanh cong!!", "error");
             return RedirectToAction("Index");
         }
-        //[HttpPost]
-        //public ActionResult Delete(User entity)
-        //{
-        //    User user = db.Users.Find(entity.ID);
-        //    if (user.Email != "admin@admin.com")
-        //    {
-        //        db.Users.Remove(user);
-        //        db.SaveChanges();
-        //    }
-        //    else
-        //    {
-        //        SetAlert("Không thể xóa admin", "error");
-        //    }
-        //    return RedirectToAction("Index");
-        //}
+      
         public void ChangeInfo(User entity)
         {
             User user = db.Users.Find(entity.ID);

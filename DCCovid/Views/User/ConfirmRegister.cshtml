@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewBag.Title = "ConfirmRegister";
+    Layout = "~/Views/Shared/Register.cshtml";
+}
+<div class="wrapper">
+
+    <div class="title">
+        @if (TempData["Active"] != null)
+        {
+            <div id="tempdata" class="title ">
+              
+                    Vui lòng kích hoạt tài khoản, Mã kích hoạt đã được gửi vào email của bạn
+               
+            </div>
+        }
+    </div>
+    <div class="form">
+
+        <form action="/User/ConfirmRegister" method="post">
+
+            @{
+                var sess = (DCCovid.Common.UserLogin)Session["Confirm"];
+                if (sess != null)
+                {
+
+
+                    <div class="inputfield">
+                        Vui lòng nhập mã kích hoạt trong mail để kích hoạt tài khoản!!
+
+                        <label><b>Code <p style="color:red; float:right">*</p></b></label>
+                        <input type="text" name="Code" id="Code" class="input" required />
+
+                    </div>
+
+
+                    <div class="inputfield">
+                        <input type="submit" value="Confirm" class="btn">
+                    </div>
+                    <div class="inputfield">
+
+
+                        <a href="@Url.Action("ResendMail","User",new {@strURL= Request.Url.ToString() })" style="color:black;font-weight:bold">Gửi lại mã</a>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="inputfield">
+
+                        <label><b>Email:<p style="color:red; float:right">*</p></b></label>
+                        <input type="text" name="UserName" id="UserName" class="input" required />
+
+                    </div>
+                    <div class="inputfield">
+
+                        <label><b>Code <p style="color:red; float:right">*</p></b></label>
+                        <input type="text" name="Code" id="Code" class="input" required />
+
+                    </div>
+                    <div class="inputfield">
+                        <input type="submit" value="Confirm" class="btn">
+                    </div>
+                }
+            }
+
+        </form>
+    </div>
+
+
+</div>

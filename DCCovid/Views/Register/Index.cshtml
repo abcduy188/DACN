@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/Register.cshtml";
+}
+
+<div class="wrapper">
+    <div class="title">
+        Đăng ký
+    </div>
+    <div class="form">
+        <form>
+
+
+            <div class="inputfield">
+                <label>Họ & Tên</label>
+                <input type="text" class="input" required>
+            </div>
+            <div class="inputfield">
+                <label>Mật Khẩu</label>
+                <input type="password" class="input">
+            </div>
+            <div class="inputfield">
+                <label>Xác nhận mật khẩu</label>
+                <input type="password" class="input">
+            </div>
+            <div class="inputfield">
+                <label>Email</label>
+                <input type="text" class="input">
+            </div>
+            <div class="inputfield">
+                <label>Số điện thoại</label>
+                <input type="text" class="input">
+            </div>
+            <div class="inputfield">
+                <label>Giới Tính</label>
+                <div class="custom_select">
+                    <select>
+                        <option value="">Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+            </div>
+            <div class="inputfield">
+                <label>Sở thích</label>
+                <div class="custom_select">
+                    <select>
+                        <option value="">Select</option>
+                        <option value="male">Mua sắm</option>
+                        <option value="news">Tin Tức</option>
+                        <option value="colage">Kiến thức</option>
+                        <option value="connect">Kết bạn</option>
+                    </select>
+                </div>
+            </div>
+            <div class="inputfield">
+                <label>Địa Chỉ</label>
+                <textarea class="textarea"></textarea>
+            </div>
+            <div class="inputfield terms">
+                <label class="check">
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+                <p>Agreed to terms and conditions</p>
+            </div>
+            <div class="inputfield">
+                <input type="submit" value="Register" class="btn">
+            </div>
+        </form>
+    </div>
+</div>

@@ -13,7 +13,7 @@ namespace DCCovid.Areas.Admin.Controllers
     {
        
         // GET: Admin/Login
-        private DCCovidDbContext db = new DCCovidDbContext();
+        private DCCovidDbcontext db = new DCCovidDbcontext();
         public ActionResult Index()
         {
             return View();

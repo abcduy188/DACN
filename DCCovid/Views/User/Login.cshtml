@@ -1,0 +1,60 @@
+﻿@model DCCovid.ViewModel.LoginModel
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/Register.cshtml";
+}
+<div class="wrapper">
+    <div class="title">
+        Đăng nhập
+    </div>
+    <div class="form">
+        <div>
+            @if (TempData["Success"] != null)
+            {
+                <div id="tempdata" class="alert alert-success ">
+                    <strong>
+                        Cập nhật mật khẩu thânh công!! Vui lòng đăng nhập
+                    </strong>
+                </div>
+            }
+        </div>
+
+        @using (Html.BeginForm("Login", "User", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="inputfield">
+                <label><b>Tên đăng nhập</b></label>
+                @Html.TextBoxFor(model => model.Email, new { @class = "input", required = "required" })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+            <div class="inputfield">
+                <label><b>Mật khẩu</b></label>
+                @Html.PasswordFor(model => model.PassWord, new { @class = "input", required = "required" })
+                @Html.ValidationMessageFor(model => model.PassWord, "", new { @class = "text-danger" })
+            </div>
+            <div class="inputfield">
+                <input type="submit" value="Login" class="btn">
+            </div>
+        }
+        <div class="inputfield">
+            Hoặc đăng nhập bằng
+        </div>
+        <div class="inputfield">
+
+            <div class="btn-fb">
+                <button type="submit" name="add-to-cart" value="38363" class="btn"><a href="https://www.facebook.com/" style="color:white">FaceBook</a></button>
+            </div>
+
+
+        </div>
+        <div class="inputfield">
+            <a style="padding-right:20px;text-decoration:none" href="/dang-ki">Đăng Ký</a>
+            <a>|</a>
+            <a style="padding-left:20px; text-decoration:none" href="/User/forgotpassword">Quên mật khẩu</a>
+        </div>
+    </div>
+</div>

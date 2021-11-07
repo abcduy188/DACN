@@ -13,6 +13,13 @@ namespace DCCovid
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            routes.MapRoute(
+            name: "ResetPass",
+            url: "reset-pass/{code}",
+            defaults: new { controller = "User", action = "ChangePass", id = UrlParameter.Optional },
+           namespaces: new[] { "DCCovid.Controllers" }
+        );
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

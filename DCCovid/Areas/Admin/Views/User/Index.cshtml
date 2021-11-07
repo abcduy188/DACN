@@ -6,84 +6,8 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 <div id="PlaceHolderHere"></div>
-<p>
-
-    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createUser">Them User</a>
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Email)
-        </th>
-
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Address)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Phone)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Status)
-        </th>
-
-        <th>
-            @Html.DisplayNameFor(model => model.Vacxin)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.User_Group.Name)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in listUser)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-                <a id="status" class="status" data-target="#basicstatus"
-                   data-toggle="modal"
-                   data-path="@Url.Action("Status", "User", new { @id = @item.ID })">Thay doi</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Vacxin)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User_Group.Name)
-            </td>
-            <td>
-                <button type="button" class="btn btn-primary" data-toggle="ajax-modal1" data-target="#addEmployee"
-                        data-url="@Url.Action($"Edit/{item.ID}")">
-                    chinh sua
-                </button>
-                <button type="button" class="btn btn-primary" data-toggle="ajax-modal1" data-target="#details"
-                        data-url="@Url.Action($"detail/{item.ID}")">
-                    chi tiet
-                </button>
-                <a id="deleteUser" class="deleteUser" data-target="#basic"
-                   data-toggle="modal"
-                   data-path="@Url.Action("Delete", "User", new { @id = @item.ID })">Delete</a>
-            <td>
-        </tr>
-    }
 
 
-</table>
 
 <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
@@ -211,47 +135,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.CreateDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.CreateDate, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.CreateDate, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.CreateBy, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.CreateBy, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.CreateBy, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ModifiedDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ModifiedDate, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ModifiedDate, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ModifiedBy, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ModifiedBy, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ModifiedBy, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
                         <div class="form-group">
                             @Html.LabelFor(model => model.Vacxin, htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="col-md-10">
@@ -288,3 +171,100 @@
         });
     </script>
 }
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">User</h1>
+    <p>
+
+        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createUser">Them User</a>
+    </p>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Email)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Address)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Phone)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Status)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.Vacxin)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.User_Group.Name)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+              
+                    <tbody>
+                        @foreach (var item in listUser)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Email)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Address)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Phone)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                    <a id="status" class="status" data-target="#basicstatus"
+                                       data-toggle="modal"
+                                       data-path="@Url.Action("Status", "User", new { @id = @item.ID })">Thay doi</a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Vacxin)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.User_Group.Name)
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-primary" data-toggle="ajax-modal1" data-target="#addEmployee"
+                                            data-url="@Url.Action($"Edit/{item.ID}")">
+                                        Edit
+                                    </button>
+                                    <button type="button" class="btn btn-primary" data-toggle="ajax-modal1" data-target="#details"
+                                            data-url="@Url.Action($"detail/{item.ID}")">
+                                        Detail
+                                    </button>
+     
+                                    <a id="deleteUser" class="deleteUser" data-target="#basic"
+                                       data-toggle="modal"
+                                       data-path="@Url.Action("Delete", "User", new { @id = @item.ID })">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

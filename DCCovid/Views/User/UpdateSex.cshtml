@@ -1,0 +1,36 @@
+﻿@model DCCovid.Models.User
+@{
+    ViewBag.Title = "UpdateSex";
+    Layout = "~/Views/Shared/Register.cshtml";
+}
+
+<div class="wrapper">
+    <div class="title">
+        Cập nhật
+    </div>
+    <div class="form">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="inputfield">
+                @Html.LabelFor(model => model.SexID,"Giới Tính" ,htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.DropDownList("SexID", null, new { @class = "input" })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+
+            </div>
+            <div class="inputfield">
+                @Html.LabelFor(model => model.CategoryID, "Sở Thích", htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.DropDownList("CategoryID", null, new { @class = "input" })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+
+            </div>
+            <div class="inputfield">
+                <input type="submit" value="Cập nhật" class="btn">
+            </div>
+        }
+    </div>
+</div>
