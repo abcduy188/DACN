@@ -18,7 +18,6 @@ namespace DCCovid.Models
         public Sex()
         {
             this.Users = new HashSet<User>();
-           
         }
     
         public int ID { get; set; }

@@ -31,7 +31,5 @@ namespace DCCovid.Models
         public virtual DbSet<Sex> Sexes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<User_Group> User_Group { get; set; }
-
-        public System.Data.Entity.DbSet<DCCovid.ViewModel.RegisterModel> RegisterModels { get; set; }
     }
 }

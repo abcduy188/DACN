@@ -25,13 +25,7 @@ namespace DCCovid.Areas.Admin.Controllers
             return View();
         }
 
-        //[HttpGet]
-        //public ActionResult Edit(long id)
-        //{
-        //    var user = db.Users.Find(id);
-        //    ViewBag.GroupID = new SelectList(db.User_Group.ToList(), "ID", "Name", user.GroupID);
-        //    return View(user);
-        //}
+       
         public ActionResult Edit(long id )
         {
             var user = db.Users.Find(id);

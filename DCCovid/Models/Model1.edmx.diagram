@@ -4,17 +4,17 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="659448a1a9d8490d8785f68ff52e6e4d" Name="Diagram1">
+      <Diagram DiagramId="99b74f00a01641d69045302133777c71" Name="Diagram1">
         <EntityTypeShape EntityType="DCDCovidModel.CategoryUser" Width="1.5" PointX="0.75" PointY="3.875" IsExpanded="true" />
         <EntityTypeShape EntityType="DCDCovidModel.Product" Width="1.5" PointX="8" PointY="2.375" IsExpanded="true" />
         <EntityTypeShape EntityType="DCDCovidModel.ProductCategory" Width="1.5" PointX="5.75" PointY="3.25" IsExpanded="true" />
         <EntityTypeShape EntityType="DCDCovidModel.Sex" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DCDCovidModel.User" Width="1.5" PointX="3" PointY="2.375" IsExpanded="true" />
         <EntityTypeShape EntityType="DCDCovidModel.User_Group" Width="1.5" PointX="0.75" PointY="7.125" IsExpanded="true" />
-        <AssociationConnector Association="DCDCovidModel.FK_User_CategoryUser" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.FK_Product_ProductCategory" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.FK_User_Sex" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.FK_User_User_Group" ManuallyRouted="false" />
+        <AssociationConnector Association="DCDCovidModel.cate_user" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

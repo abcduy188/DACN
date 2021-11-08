@@ -72,10 +72,9 @@ namespace DCCovid.Controllers
 
                         if (result.Status == true)
                         {
-                            if(result.GroupID == "MEM")
-                            Session.Add("MEM", userSession);
-                            if(result.GroupID =="SHIP")
-                            Session.Add("SHIP", userSession);
+                           
+                            Session.Add("MEMBER", userSession);
+                           
                             if (Session["url"] != null)
                             {
                                 return Redirect(Session["url"].ToString());
@@ -164,7 +163,7 @@ namespace DCCovid.Controllers
         public ActionResult UpdateSex()
         {
             ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name");
-            ViewBag.CategoryId = new SelectList(db.CategoryUsers.ToList(), "ID", "Name");
+            ViewBag.cate = db.CategoryUsers.ToList();
             return View();
         }
         [HttpPost]
@@ -172,20 +171,19 @@ namespace DCCovid.Controllers
         {
             var sess = Session["MEMBER"] as UserLogin;
             ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name");
-            ViewBag.CategoryID = new SelectList(db.CategoryUsers.ToList(), "ID", "Name");
+            
             if (ModelState.IsValid)
             {
               
-            
                 if (sess != null)
                 {
                   
                     var users = db.Users.Find(sess.UserID);
                     users.SexID = user.SexID;
-                    users.CategoryID = user.CategoryID;
+                  
                     db.SaveChanges();
                     TempData["Success"] = "Cập nhật thành công";
-                    return RedirectToAction("/");
+                    return Redirect("/Contact");
                 }
                 else
                 {
@@ -200,6 +198,26 @@ namespace DCCovid.Controllers
 
 
             return View();
+        }
+        public ActionResult Like(long id)
+        {
+            var sess = Session["MEMBER"] as UserLogin;
+
+            CategoryUser post = db.CategoryUsers.Find(id);
+            User user = db.Users.Find(sess.UserID);
+            post.Users.Add(user);
+            db.SaveChanges();
+            return Redirect("/User/UpdateSex");
+        }
+        public ActionResult DisLike(long id)
+        {
+            var sess = Session["MEMBER"] as UserLogin;
+
+            CategoryUser post = db.CategoryUsers.Find(id);
+            User user = db.Users.Find(sess.UserID);
+            post.Users.Remove(user);
+            db.SaveChanges();
+            return Redirect("/User/UpdateSex");
         }
         [HttpPost]
         public ActionResult ForgotPassWord(User model)
@@ -303,6 +321,8 @@ namespace DCCovid.Controllers
             db.SaveChanges();
             var userSession = new UserLogin();
             userSession.Email = user.Email;
+            userSession.UserID = user.ID;
+            userSession.Name = user.Name;
             Session.Add("Confirm", userSession);
             return user;
         }

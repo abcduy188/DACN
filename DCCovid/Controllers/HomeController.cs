@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DCCovid.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,6 +9,7 @@ namespace DCCovid.Controllers
 {
     public class HomeController : Controller
     {
+        private DCCovidDbcontext db = new DCCovidDbcontext();
         public ActionResult Index()
         {
             return View();
@@ -22,9 +24,8 @@ namespace DCCovid.Controllers
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            var listcate = db.ProductCategories.ToList();
+            return View(listcate);
         }
     }
 }

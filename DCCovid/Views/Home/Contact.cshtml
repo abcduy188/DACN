@@ -1,17 +1,53 @@
-﻿@{
+﻿@model IEnumerable<DCCovid.Models.ProductCategory>
+
+@{
     ViewBag.Title = "Contact";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
+    DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
+<h2>Contact</h2>
+@Html.ActionLink("Login", "Login", "User")
+@Html.ActionLink("UpdateSex", "UpdateSex", "User")
+@if (sess != null)
+{
+    var user = db.Users.Find(sess.UserID);
+    foreach (var i in user.CategoryUsers)
+    {
+        if (i.ID == 2)
+        {
+            <b>
+                User Tin tuc moi xem duoc
+            </b>
+        }
+        else if (i.ID == 6)
+        {
+            <b>
+                User mua sam moi xem duoc
+            </b>
+        }
+        else if (i.ID == 4)
+        {
+            <b>
+                User ket ban moi xem duoc
+            </b> }
+        else if (i.ID == 1)
+        {
+            <b>
+                User xem duoc tat ca
+            </b> }
+        else if (i.ID == 3)
+        {
+            <b>
+                User kien thuc moi xem duoc
+            </b> }
+        else
+        {
+            <b>
+                Ban chua chon so thich nao
+            </b>
+        }
 
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+    }
+}

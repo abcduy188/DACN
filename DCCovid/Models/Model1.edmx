@@ -5,6 +5,14 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="DCDCovidModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="cate_user">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="CateID" />
+          </Key>
+          <Property Name="UserID" Type="bigint" Nullable="false" />
+          <Property Name="CateID" Type="bigint" Nullable="false" />
+        </EntityType>
         <EntityType Name="CategoryUser">
           <Key>
             <PropertyRef Name="ID" />
@@ -84,6 +92,30 @@
           <Property Name="ID" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
         </EntityType>
+        <Association Name="FK_cate_user_CategoryUser">
+          <End Role="CategoryUser" Type="Self.CategoryUser" Multiplicity="1" />
+          <End Role="cate_user" Type="Self.cate_user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CategoryUser">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="cate_user">
+              <PropertyRef Name="CateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_cate_user_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="cate_user" Type="Self.cate_user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="cate_user">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Product_ProductCategory">
           <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="0..1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
@@ -92,18 +124,6 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="Product">
-              <PropertyRef Name="CategoryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_User_CategoryUser">
-          <End Role="CategoryUser" Type="Self.CategoryUser" Multiplicity="0..1" />
-          <End Role="User" Type="Self.User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CategoryUser">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="User">
               <PropertyRef Name="CategoryID" />
             </Dependent>
           </ReferentialConstraint>
@@ -133,19 +153,24 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="DCDCovidModelStoreContainer">
+          <EntitySet Name="cate_user" EntityType="Self.cate_user" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryUser" EntityType="Self.CategoryUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductCategory" EntityType="Self.ProductCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Sex" EntityType="Self.Sex" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Group" EntityType="Self.User_Group" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_cate_user_CategoryUser" Association="Self.FK_cate_user_CategoryUser">
+            <End Role="CategoryUser" EntitySet="CategoryUser" />
+            <End Role="cate_user" EntitySet="cate_user" />
+          </AssociationSet>
+          <AssociationSet Name="FK_cate_user_User" Association="Self.FK_cate_user_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="cate_user" EntitySet="cate_user" />
+          </AssociationSet>
           <AssociationSet Name="FK_Product_ProductCategory" Association="Self.FK_Product_ProductCategory">
             <End Role="ProductCategory" EntitySet="ProductCategory" />
             <End Role="Product" EntitySet="Product" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_CategoryUser" Association="Self.FK_User_CategoryUser">
-            <End Role="CategoryUser" EntitySet="CategoryUser" />
-            <End Role="User" EntitySet="User" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Sex" Association="Self.FK_User_Sex">
             <End Role="Sex" EntitySet="Sex" />
@@ -167,7 +192,7 @@
           </Key>
           <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Users" Relationship="Self.FK_User_CategoryUser" FromRole="CategoryUser" ToRole="User" />
+          <NavigationProperty Name="Users" Relationship="Self.cate_user" FromRole="CategoryUser" ToRole="User" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -236,9 +261,9 @@
           <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Vacxin" Type="Int32" />
           <Property Name="CategoryID" Type="Int64" />
-          <NavigationProperty Name="CategoryUser" Relationship="Self.FK_User_CategoryUser" FromRole="User" ToRole="CategoryUser" />
           <NavigationProperty Name="Sex" Relationship="Self.FK_User_Sex" FromRole="User" ToRole="Sex" />
           <NavigationProperty Name="User_Group" Relationship="Self.FK_User_User_Group" FromRole="User" ToRole="User_Group" />
+          <NavigationProperty Name="CategoryUsers" Relationship="Self.cate_user" FromRole="User" ToRole="CategoryUser" />
         </EntityType>
         <EntityType Name="User_Group">
           <Key>
@@ -248,18 +273,6 @@
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Users" Relationship="Self.FK_User_User_Group" FromRole="User_Group" ToRole="User" />
         </EntityType>
-        <Association Name="FK_User_CategoryUser">
-          <End Role="CategoryUser" Type="Self.CategoryUser" Multiplicity="0..1" />
-          <End Role="User" Type="Self.User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CategoryUser">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="User">
-              <PropertyRef Name="CategoryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Product_ProductCategory">
           <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="0..1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
@@ -296,6 +309,10 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="cate_user">
+          <End Role="CategoryUser" Type="Self.CategoryUser" Multiplicity="*" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+        </Association>
         <EntityContainer Name="DCCovidDbcontext" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="CategoryUsers" EntityType="Self.CategoryUser" />
           <EntitySet Name="Products" EntityType="Self.Product" />
@@ -303,10 +320,6 @@
           <EntitySet Name="Sexes" EntityType="Self.Sex" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="User_Group" EntityType="Self.User_Group" />
-          <AssociationSet Name="FK_User_CategoryUser" Association="Self.FK_User_CategoryUser">
-            <End Role="CategoryUser" EntitySet="CategoryUsers" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
           <AssociationSet Name="FK_Product_ProductCategory" Association="Self.FK_Product_ProductCategory">
             <End Role="ProductCategory" EntitySet="ProductCategories" />
             <End Role="Product" EntitySet="Products" />
@@ -317,6 +330,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_User_User_Group" Association="Self.FK_User_User_Group">
             <End Role="User_Group" EntitySet="User_Group" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="cate_user" Association="Self.cate_user">
+            <End Role="CategoryUser" EntitySet="CategoryUsers" />
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
         </EntityContainer>
@@ -411,6 +428,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <AssociationSetMapping Name="cate_user" TypeName="DCDCovidModel.cate_user" StoreEntitySet="cate_user">
+            <EndProperty Name="CategoryUser">
+              <ScalarProperty Name="ID" ColumnName="CateID" />
+            </EndProperty>
+            <EndProperty Name="User">
+              <ScalarProperty Name="ID" ColumnName="UserID" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
