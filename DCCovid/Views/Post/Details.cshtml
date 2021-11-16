@@ -1,0 +1,219 @@
+﻿@model DCCovid.Models.PostCMT
+
+@{
+    ViewBag.Title = "Details";
+    var post = (DCCovid.Models.PostCMT)ViewBag.post;
+    var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
+    var sesspost = Session["POSt"] as DCCovid.Common.PostSes;
+    var cmt = (List<DCCovid.Models.PostCMT>)ViewBag.Cmt;
+    var img = (List<DCCovid.Models.Image>)ViewBag.ListImg;
+}
+}
+@section scripts
+{
+    <script>
+        var path_to_delete;
+
+        $(".deleteCMT").click(function (e) {
+            path_to_delete = $(this).data('path');
+        });
+        $('#btnContinueDeleteCMT').click(function () {
+            window.location = path_to_delete;
+        });
+        var loadFile = function (event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('output0');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        };
+
+    </script>
+
+
+}
+<h2>Details</h2>
+
+<div>
+    <h4>Post</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt> Người đăng </dt>
+        <dd> @post.CreateBy</dd>
+        <dt> Ngày đăng</dt>
+        <dd>
+            @*@{
+                    DateTime date1 = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy"));
+                    DateTime date2 = DateTime.Parse(post.CreateDay.Value.ToString("dd/MM/yyyy"));
+                    int result = DateTime.Compare(date1, date2);
+                    if (result > 0)
+                    {
+                        @post.CreateDay.Value.ToString("HH:mm dd/MM")
+                    }
+                    else
+                    {
+                        @post.CreateDay.Value.ToString("HH:mm")
+                    }
+                }*@
+            @post.CreateDay.Value.ToString("HH:mm dd/MM")
+        </dd>
+        <dd> @post.CreateBy</dd>
+        <dt> Lượt thích </dt>
+        <dd>
+            @{
+                DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
+                var count = 0;
+                count = post.Users.Count();
+                post.LikeCount = count;
+                <span>@post.LikeCount </span>
+                if (sess != null)
+                {
+                    var user = db.Users.Find(sess.UserID);
+                    if (user != null)
+                    {
+                        if (post.Users.Count(d => d.ID == sess.UserID) != 0)
+                        {
+                            @Html.ActionLink("||| Dislike", "DisLike", new { @id = post.ID, @strURL = Request.Url.ToString() })
+                        }
+                        else
+                        {
+                            @Html.ActionLink("||| Like", "Like", new { @id = post.ID, @strURL = Request.Url.ToString() })
+                        }
+                    }
+
+
+                }
+
+
+            }
+        </dd>
+
+
+    </dl>
+</div>
+<table class="table">
+    <tr>
+        <th>
+            Người đăng
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Text)
+        </th>
+
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in cmt)
+    {
+        if (cmt != null)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Name)
+                </td>
+                <td>
+                    @if (img != null)
+                    {
+                        foreach (var image in img.Where(d => d.TypeID == item.ID))
+                        { //từ list hình ảnh ở viewbag, dùng foreach lấy ra  những hình ảnh có typeID = id của product
+
+                            <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
+                        }
+                    }
+                    @Html.DisplayFor(modelItem => item.Text)
+                </td>
+                <td>
+
+                    @{
+
+                        if (sess != null)
+                        {
+                            if (item.User.ID == sess.UserID)
+                            {
+                                <a id="deleteCMT" class="deleteCMT" data-target="#basic"
+                                   data-toggle="modal"
+                                   data-path="@Url.Action("Delete", "Post", new { @id = @item.ID })">Xóa</a>
+                            }
+                            else
+                            {
+                                <span></span>
+                            }
+                        }
+                        else
+                        {
+                            <span></span>
+                        }
+
+                    }
+
+                </td>
+
+            </tr>
+        }
+        else
+        {
+
+        }
+
+    }
+
+</table>
+<div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Delete Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                Xóa CMT nay?
+
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
+                <button id="btnContinueDeleteCMT" type="button" class="btn btn-primary">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (sess != null)
+{
+    using (Html.BeginForm("Create", "Post", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>Comment</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(m => m.PostID, new { Value = sesspost.PostID.ToString() })
+            <div class="form-group">
+
+                @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+                    <img src="" style="height:100px" id="output0" />
+                    <input type="file" name="fileUpload" multiple onchange="loadFile(event)" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Binh luan" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <span>Bạn phải đăng nhập trước khi Bình luận</span>
+    <a href="@Url.Action("Login","User",new {@strURL= Request.Url.ToString() })">Click vào đây để đăng nhập</a>
+}
+
+

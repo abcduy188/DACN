@@ -4,7 +4,15 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DCDCovidModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DCDCovidModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="cate_post">
+          <Key>
+            <PropertyRef Name="PostID" />
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="PostID" Type="bigint" Nullable="false" />
+          <Property Name="CategoryID" Type="bigint" Nullable="false" />
+        </EntityType>
         <EntityType Name="cate_user">
           <Key>
             <PropertyRef Name="UserID" />
@@ -13,12 +21,93 @@
           <Property Name="UserID" Type="bigint" Nullable="false" />
           <Property Name="CateID" Type="bigint" Nullable="false" />
         </EntityType>
-        <EntityType Name="CategoryUser">
+        <EntityType Name="Category">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="250" />
+          <Property Name="SeoTitle" Type="varchar" MaxLength="250" />
+          <Property Name="ParentID" Type="bigint" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="CreateBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="Type" Type="varchar" MaxLength="50" />
+          <Property Name="IsDelete" Type="bit" />
+        </EntityType>
+        <EntityType Name="CategoryUserPost">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="Image">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FileName" Type="varchar" MaxLength="500" />
+          <Property Name="Type" Type="varchar" MaxLength="50" />
+          <Property Name="TypeID" Type="bigint" />
+        </EntityType>
+        <EntityType Name="Like">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="PostID" />
+          </Key>
+          <Property Name="UserID" Type="bigint" Nullable="false" />
+          <Property Name="PostID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoomID" Type="bigint" />
+          <Property Name="UserID" Type="bigint" />
+          <Property Name="Text" Type="text" />
+          <Property Name="TypeID" Type="int" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="IsDelete" Type="bit" />
+        </EntityType>
+        <EntityType Name="News">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="250" />
+          <Property Name="SeoTitle" Type="varchar" MaxLength="250" />
+          <Property Name="Description" Type="ntext" />
+          <Property Name="Image" Type="nvarchar" MaxLength="250" />
+          <Property Name="CategoryID" Type="bigint" />
+          <Property Name="Detail" Type="ntext" />
+          <Property Name="LinkVideo" Type="ntext" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="Tags" Type="nvarchar" MaxLength="500" />
+          <Property Name="ViewCount" Type="int" />
+          <Property Name="CreateBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDelete" Type="bit" />
+        </EntityType>
+        <EntityType Name="PostCMT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="Text" Type="text" />
+          <Property Name="Image" Type="varchar" MaxLength="250" />
+          <Property Name="CreateBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="LikeCount" Type="int" />
+          <Property Name="UserID" Type="bigint" />
+          <Property Name="IsDelete" Type="bit" Nullable="false" />
+          <Property Name="CreateDay" Type="datetime" />
+          <Property Name="PostID" Type="bigint" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -42,20 +131,15 @@
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="TopHot" Type="datetime" />
           <Property Name="ViewCount" Type="int" Nullable="false" />
+          <Property Name="IsDelete" Type="bit" />
         </EntityType>
-        <EntityType Name="ProductCategory">
+        <EntityType Name="Room">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="250" />
-          <Property Name="SeoTitle" Type="varchar" MaxLength="250" />
-          <Property Name="ParentID" Type="bigint" />
-          <Property Name="Status" Type="bit" Nullable="false" />
-          <Property Name="CreateBy" Type="nvarchar" MaxLength="50" />
-          <Property Name="CreateDate" Type="datetime" />
-          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" />
-          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsDelete" Type="bit" />
         </EntityType>
         <EntityType Name="Sex">
           <Key>
@@ -72,11 +156,13 @@
           <Property Name="Email" Type="varchar" MaxLength="250" />
           <Property Name="PassWord" Type="varchar" MaxLength="34" />
           <Property Name="Name" Type="nvarchar" MaxLength="250" />
+          <Property Name="ImageUser" Type="varchar" MaxLength="250" />
           <Property Name="GroupID" Type="varchar" MaxLength="20" />
           <Property Name="Address" Type="nvarchar" MaxLength="250" />
           <Property Name="Phone" Type="varchar" MaxLength="15" />
           <Property Name="Status" Type="bit" Nullable="false" />
           <Property Name="SexID" Type="int" />
+          <Property Name="BirthDay" Type="date" />
           <Property Name="CreateDate" Type="datetime" />
           <Property Name="CreateBy" Type="varchar" MaxLength="50" />
           <Property Name="ModifiedDate" Type="datetime" />
@@ -84,6 +170,7 @@
           <Property Name="Code" Type="varchar" MaxLength="50" />
           <Property Name="Vacxin" Type="int" />
           <Property Name="CategoryID" Type="bigint" />
+          <Property Name="Isdelete" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="User_Group">
           <Key>
@@ -92,11 +179,43 @@
           <Property Name="ID" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="user_room">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="RoomID" />
+          </Key>
+          <Property Name="UserID" Type="bigint" Nullable="false" />
+          <Property Name="RoomID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_cate_post_CategoryUserPost1">
+          <End Role="CategoryUserPost" Type="Self.CategoryUserPost" Multiplicity="1" />
+          <End Role="cate_post" Type="Self.cate_post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CategoryUserPost">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="cate_post">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_cate_post_PostCMT">
+          <End Role="PostCMT" Type="Self.PostCMT" Multiplicity="1" />
+          <End Role="cate_post" Type="Self.cate_post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PostCMT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="cate_post">
+              <PropertyRef Name="PostID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_cate_user_CategoryUser">
-          <End Role="CategoryUser" Type="Self.CategoryUser" Multiplicity="1" />
+          <End Role="CategoryUserPost" Type="Self.CategoryUserPost" Multiplicity="1" />
           <End Role="cate_user" Type="Self.cate_user" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="CategoryUser">
+            <Principal Role="CategoryUserPost">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="cate_user">
@@ -116,15 +235,111 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Like_PostCMT">
+          <End Role="PostCMT" Type="Self.PostCMT" Multiplicity="1" />
+          <End Role="Like" Type="Self.Like" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PostCMT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Like">
+              <PropertyRef Name="PostID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Like_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Like" Type="Self.Like" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Like">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Message_Room">
+          <End Role="Room" Type="Self.Room" Multiplicity="0..1" />
+          <End Role="Message" Type="Self.Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Room">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Message_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Message" Type="Self.Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_News_ProductCategory">
+          <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
+          <End Role="News" Type="Self.News" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="News">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PostCMT_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="PostCMT" Type="Self.PostCMT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PostCMT">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Product_ProductCategory">
-          <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="0..1" />
+          <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="ProductCategory">
+            <Principal Role="Category">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="Product">
               <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_user_room_Room">
+          <End Role="Room" Type="Self.Room" Multiplicity="1" />
+          <End Role="user_room" Type="Self.user_room" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Room">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="user_room">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_user_room_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="user_room" Type="Self.user_room" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="user_room">
+              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -153,24 +368,72 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="DCDCovidModelStoreContainer">
+          <EntitySet Name="cate_post" EntityType="Self.cate_post" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cate_user" EntityType="Self.cate_user" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CategoryUser" EntityType="Self.CategoryUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CategoryUserPost" EntityType="Self.CategoryUserPost" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Image" EntityType="Self.Image" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Like" EntityType="Self.Like" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Message" EntityType="Self.Message" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="News" EntityType="Self.News" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PostCMT" EntityType="Self.PostCMT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ProductCategory" EntityType="Self.ProductCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Room" EntityType="Self.Room" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Sex" EntityType="Self.Sex" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Group" EntityType="Self.User_Group" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="user_room" EntityType="Self.user_room" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_cate_post_CategoryUserPost1" Association="Self.FK_cate_post_CategoryUserPost1">
+            <End Role="CategoryUserPost" EntitySet="CategoryUserPost" />
+            <End Role="cate_post" EntitySet="cate_post" />
+          </AssociationSet>
+          <AssociationSet Name="FK_cate_post_PostCMT" Association="Self.FK_cate_post_PostCMT">
+            <End Role="PostCMT" EntitySet="PostCMT" />
+            <End Role="cate_post" EntitySet="cate_post" />
+          </AssociationSet>
           <AssociationSet Name="FK_cate_user_CategoryUser" Association="Self.FK_cate_user_CategoryUser">
-            <End Role="CategoryUser" EntitySet="CategoryUser" />
+            <End Role="CategoryUserPost" EntitySet="CategoryUserPost" />
             <End Role="cate_user" EntitySet="cate_user" />
           </AssociationSet>
           <AssociationSet Name="FK_cate_user_User" Association="Self.FK_cate_user_User">
             <End Role="User" EntitySet="User" />
             <End Role="cate_user" EntitySet="cate_user" />
           </AssociationSet>
+          <AssociationSet Name="FK_Like_PostCMT" Association="Self.FK_Like_PostCMT">
+            <End Role="PostCMT" EntitySet="PostCMT" />
+            <End Role="Like" EntitySet="Like" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Like_User" Association="Self.FK_Like_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Like" EntitySet="Like" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Message_Room" Association="Self.FK_Message_Room">
+            <End Role="Room" EntitySet="Room" />
+            <End Role="Message" EntitySet="Message" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Message_User" Association="Self.FK_Message_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Message" EntitySet="Message" />
+          </AssociationSet>
+          <AssociationSet Name="FK_News_ProductCategory" Association="Self.FK_News_ProductCategory">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="News" EntitySet="News" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PostCMT_User" Association="Self.FK_PostCMT_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="PostCMT" EntitySet="PostCMT" />
+          </AssociationSet>
           <AssociationSet Name="FK_Product_ProductCategory" Association="Self.FK_Product_ProductCategory">
-            <End Role="ProductCategory" EntitySet="ProductCategory" />
+            <End Role="Category" EntitySet="Category" />
             <End Role="Product" EntitySet="Product" />
+          </AssociationSet>
+          <AssociationSet Name="FK_user_room_Room" Association="Self.FK_user_room_Room">
+            <End Role="Room" EntitySet="Room" />
+            <End Role="user_room" EntitySet="user_room" />
+          </AssociationSet>
+          <AssociationSet Name="FK_user_room_User" Association="Self.FK_user_room_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="user_room" EntitySet="user_room" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Sex" Association="Self.FK_User_Sex">
             <End Role="Sex" EntitySet="Sex" />
@@ -181,18 +444,99 @@
             <End Role="User" EntitySet="User" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DCDCovidModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="CategoryUser">
+        <EntityType Name="Category">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Users" Relationship="Self.cate_user" FromRole="CategoryUser" ToRole="User" />
+          <Property Name="SeoTitle" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="ParentID" Type="Int64" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="CreateBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <NavigationProperty Name="News" Relationship="Self.FK_News_ProductCategory" FromRole="Category" ToRole="News" />
+          <NavigationProperty Name="Products" Relationship="Self.FK_Product_ProductCategory" FromRole="Category" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="CategoryUserPost">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PostCMTs" Relationship="Self.cate_post" FromRole="CategoryUserPost" ToRole="PostCMT" />
+          <NavigationProperty Name="Users" Relationship="Self.cate_user" FromRole="CategoryUserPost" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Image">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FileName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TypeID" Type="Int64" />
+        </EntityType>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoomID" Type="Int64" />
+          <Property Name="UserID" Type="Int64" />
+          <Property Name="Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="TypeID" Type="Int32" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <NavigationProperty Name="Room" Relationship="Self.FK_Message_Room" FromRole="Message" ToRole="Room" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Message_User" FromRole="Message" ToRole="User" />
+        </EntityType>
+        <EntityType Name="News">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="SeoTitle" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Image" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryID" Type="Int64" />
+          <Property Name="Detail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LinkVideo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="Tags" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ViewCount" Type="Int32" />
+          <Property Name="CreateBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_News_ProductCategory" FromRole="News" ToRole="Category" />
+          <Property Name="IsDelete" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="PostCMT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Image" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="CreateBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LikeCount" Type="Int32" />
+          <Property Name="UserID" Type="Int64" />
+          <Property Name="IsDelete" Type="Boolean" Nullable="false" />
+          <Property Name="CreateDay" Type="DateTime" Precision="3" />
+          <Property Name="PostID" Type="Int64" />
+          <NavigationProperty Name="CategoryUserPosts" Relationship="Self.cate_post" FromRole="PostCMT" ToRole="CategoryUserPost" />
+          <NavigationProperty Name="Users" Relationship="Self.Like" FromRole="PostCMT" ToRole="User" />
+          <NavigationProperty Name="User" Relationship="DCDCovidModel.FK_PostCMT_User" FromRole="PostCMT" ToRole="User" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -216,22 +560,18 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="TopHot" Type="DateTime" Precision="3" />
           <Property Name="ViewCount" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="ProductCategory" Relationship="Self.FK_Product_ProductCategory" FromRole="Product" ToRole="ProductCategory" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_Product_ProductCategory" FromRole="Product" ToRole="Category" />
+          <Property Name="IsDelete" Type="Boolean" />
         </EntityType>
-        <EntityType Name="ProductCategory">
+        <EntityType Name="Room">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="SeoTitle" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
-          <Property Name="ParentID" Type="Int64" />
-          <Property Name="Status" Type="Boolean" Nullable="false" />
-          <Property Name="CreateBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Products" Relationship="Self.FK_Product_ProductCategory" FromRole="ProductCategory" ToRole="Product" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <NavigationProperty Name="Messages" Relationship="Self.FK_Message_Room" FromRole="Room" ToRole="Message" />
+          <NavigationProperty Name="Users" Relationship="Self.user_room" FromRole="Room" ToRole="User" />
         </EntityType>
         <EntityType Name="Sex">
           <Key>
@@ -249,11 +589,13 @@
           <Property Name="Email" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
           <Property Name="PassWord" Type="String" MaxLength="34" FixedLength="false" Unicode="false" />
           <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ImageUser" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
           <Property Name="GroupID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Address" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="Boolean" Nullable="false" />
           <Property Name="SexID" Type="Int32" />
+          <Property Name="BirthDay" Type="DateTime" Precision="0" />
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
           <Property Name="CreateBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
@@ -261,9 +603,14 @@
           <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Vacxin" Type="Int32" />
           <Property Name="CategoryID" Type="Int64" />
+          <NavigationProperty Name="Messages" Relationship="Self.FK_Message_User" FromRole="User" ToRole="Message" />
           <NavigationProperty Name="Sex" Relationship="Self.FK_User_Sex" FromRole="User" ToRole="Sex" />
           <NavigationProperty Name="User_Group" Relationship="Self.FK_User_User_Group" FromRole="User" ToRole="User_Group" />
-          <NavigationProperty Name="CategoryUsers" Relationship="Self.cate_user" FromRole="User" ToRole="CategoryUser" />
+          <NavigationProperty Name="CategoryUserPosts" Relationship="Self.cate_user" FromRole="User" ToRole="CategoryUserPost" />
+          <NavigationProperty Name="PostCMTs" Relationship="Self.Like" FromRole="User" ToRole="PostCMT" />
+          <NavigationProperty Name="Rooms" Relationship="Self.user_room" FromRole="User" ToRole="Room" />
+          <Property Name="Isdelete" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="PostCMTs1" Relationship="DCDCovidModel.FK_PostCMT_User" FromRole="User" ToRole="PostCMT" />
         </EntityType>
         <EntityType Name="User_Group">
           <Key>
@@ -273,15 +620,51 @@
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Users" Relationship="Self.FK_User_User_Group" FromRole="User_Group" ToRole="User" />
         </EntityType>
+        <Association Name="FK_News_ProductCategory">
+          <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
+          <End Role="News" Type="Self.News" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="News">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Product_ProductCategory">
-          <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="0..1" />
+          <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="ProductCategory">
+            <Principal Role="Category">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="Product">
               <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Message_Room">
+          <End Role="Room" Type="Self.Room" Multiplicity="0..1" />
+          <End Role="Message" Type="Self.Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Room">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Message_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Message" Type="Self.Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -309,20 +692,49 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="cate_post">
+          <End Role="CategoryUserPost" Type="Self.CategoryUserPost" Multiplicity="*" />
+          <End Role="PostCMT" Type="Self.PostCMT" Multiplicity="*" />
+        </Association>
         <Association Name="cate_user">
-          <End Role="CategoryUser" Type="Self.CategoryUser" Multiplicity="*" />
+          <End Role="CategoryUserPost" Type="Self.CategoryUserPost" Multiplicity="*" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+        </Association>
+        <Association Name="Like">
+          <End Role="PostCMT" Type="Self.PostCMT" Multiplicity="*" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+        </Association>
+        <Association Name="user_room">
+          <End Role="Room" Type="Self.Room" Multiplicity="*" />
           <End Role="User" Type="Self.User" Multiplicity="*" />
         </Association>
         <EntityContainer Name="DCCovidDbcontext" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="CategoryUsers" EntityType="Self.CategoryUser" />
+          <EntitySet Name="Categories" EntityType="Self.Category" />
+          <EntitySet Name="CategoryUserPosts" EntityType="Self.CategoryUserPost" />
+          <EntitySet Name="Images" EntityType="Self.Image" />
+          <EntitySet Name="Messages" EntityType="Self.Message" />
+          <EntitySet Name="News" EntityType="Self.News" />
+          <EntitySet Name="PostCMTs" EntityType="Self.PostCMT" />
           <EntitySet Name="Products" EntityType="Self.Product" />
-          <EntitySet Name="ProductCategories" EntityType="Self.ProductCategory" />
+          <EntitySet Name="Rooms" EntityType="Self.Room" />
           <EntitySet Name="Sexes" EntityType="Self.Sex" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="User_Group" EntityType="Self.User_Group" />
+          <AssociationSet Name="FK_News_ProductCategory" Association="Self.FK_News_ProductCategory">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="News" EntitySet="News" />
+          </AssociationSet>
           <AssociationSet Name="FK_Product_ProductCategory" Association="Self.FK_Product_ProductCategory">
-            <End Role="ProductCategory" EntitySet="ProductCategories" />
+            <End Role="Category" EntitySet="Categories" />
             <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Message_Room" Association="Self.FK_Message_Room">
+            <End Role="Room" EntitySet="Rooms" />
+            <End Role="Message" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Message_User" Association="Self.FK_Message_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Message" EntitySet="Messages" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Sex" Association="Self.FK_User_Sex">
             <End Role="Sex" EntitySet="Sexes" />
@@ -332,28 +744,135 @@
             <End Role="User_Group" EntitySet="User_Group" />
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
+          <AssociationSet Name="cate_post" Association="Self.cate_post">
+            <End Role="CategoryUserPost" EntitySet="CategoryUserPosts" />
+            <End Role="PostCMT" EntitySet="PostCMTs" />
+          </AssociationSet>
           <AssociationSet Name="cate_user" Association="Self.cate_user">
-            <End Role="CategoryUser" EntitySet="CategoryUsers" />
+            <End Role="CategoryUserPost" EntitySet="CategoryUserPosts" />
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
+          <AssociationSet Name="Like" Association="Self.Like">
+            <End Role="PostCMT" EntitySet="PostCMTs" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="user_room" Association="Self.user_room">
+            <End Role="Room" EntitySet="Rooms" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PostCMT_User" Association="DCDCovidModel.FK_PostCMT_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="PostCMT" EntitySet="PostCMTs" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="FK_PostCMT_User">
+          <End Type="DCDCovidModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="DCDCovidModel.PostCMT" Role="PostCMT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PostCMT">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="DCDCovidModelStoreContainer" CdmEntityContainer="DCCovidDbcontext">
-          <EntitySetMapping Name="CategoryUsers">
-            <EntityTypeMapping TypeName="DCDCovidModel.CategoryUser">
-              <MappingFragment StoreEntitySet="CategoryUser">
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="DCDCovidModel.Category">
+              <MappingFragment StoreEntitySet="Category">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="SeoTitle" ColumnName="SeoTitle" />
+                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CategoryUserPosts">
+            <EntityTypeMapping TypeName="DCDCovidModel.CategoryUserPost">
+              <MappingFragment StoreEntitySet="CategoryUserPost">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Images">
+            <EntityTypeMapping TypeName="DCDCovidModel.Image">
+              <MappingFragment StoreEntitySet="Image">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Messages">
+            <EntityTypeMapping TypeName="DCDCovidModel.Message">
+              <MappingFragment StoreEntitySet="Message">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="News">
+            <EntityTypeMapping TypeName="DCDCovidModel.News">
+              <MappingFragment StoreEntitySet="News">
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="SeoTitle" ColumnName="SeoTitle" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="Detail" ColumnName="Detail" />
+                <ScalarProperty Name="LinkVideo" ColumnName="LinkVideo" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Tags" ColumnName="Tags" />
+                <ScalarProperty Name="ViewCount" ColumnName="ViewCount" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PostCMTs">
+            <EntityTypeMapping TypeName="DCDCovidModel.PostCMT">
+              <MappingFragment StoreEntitySet="PostCMT">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="LikeCount" ColumnName="LikeCount" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreateDay" ColumnName="CreateDay" />
+                <ScalarProperty Name="PostID" ColumnName="PostID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Products">
             <EntityTypeMapping TypeName="DCDCovidModel.Product">
               <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="SeoTitle" ColumnName="SeoTitle" />
@@ -375,18 +894,12 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ProductCategories">
-            <EntityTypeMapping TypeName="DCDCovidModel.ProductCategory">
-              <MappingFragment StoreEntitySet="ProductCategory">
+          <EntitySetMapping Name="Rooms">
+            <EntityTypeMapping TypeName="DCDCovidModel.Room">
+              <MappingFragment StoreEntitySet="Room">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="SeoTitle" ColumnName="SeoTitle" />
-                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -401,15 +914,18 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="DCDCovidModel.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="Isdelete" ColumnName="Isdelete" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="PassWord" ColumnName="PassWord" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ImageUser" ColumnName="ImageUser" />
                 <ScalarProperty Name="GroupID" ColumnName="GroupID" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="SexID" ColumnName="SexID" />
+                <ScalarProperty Name="BirthDay" ColumnName="BirthDay" />
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
@@ -428,9 +944,33 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <AssociationSetMapping Name="cate_post" TypeName="DCDCovidModel.cate_post" StoreEntitySet="cate_post">
+            <EndProperty Name="CategoryUserPost">
+              <ScalarProperty Name="ID" ColumnName="CategoryID" />
+            </EndProperty>
+            <EndProperty Name="PostCMT">
+              <ScalarProperty Name="ID" ColumnName="PostID" />
+            </EndProperty>
+          </AssociationSetMapping>
           <AssociationSetMapping Name="cate_user" TypeName="DCDCovidModel.cate_user" StoreEntitySet="cate_user">
-            <EndProperty Name="CategoryUser">
+            <EndProperty Name="CategoryUserPost">
               <ScalarProperty Name="ID" ColumnName="CateID" />
+            </EndProperty>
+            <EndProperty Name="User">
+              <ScalarProperty Name="ID" ColumnName="UserID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="Like" TypeName="DCDCovidModel.Like" StoreEntitySet="Like">
+            <EndProperty Name="PostCMT">
+              <ScalarProperty Name="ID" ColumnName="PostID" />
+            </EndProperty>
+            <EndProperty Name="User">
+              <ScalarProperty Name="ID" ColumnName="UserID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="user_room" TypeName="DCDCovidModel.user_room" StoreEntitySet="user_room">
+            <EndProperty Name="Room">
+              <ScalarProperty Name="ID" ColumnName="RoomID" />
             </EndProperty>
             <EndProperty Name="User">
               <ScalarProperty Name="ID" ColumnName="UserID" />

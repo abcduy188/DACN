@@ -13,6 +13,21 @@ namespace DCCovid.Controllers
     {
         // GET: User
         private DCCovidDbcontext db = new DCCovidDbcontext();
+        public ActionResult Index()
+        {
+            var sess = Session["MEMBER"] as UserLogin;
+           
+            if(sess !=null)
+            {
+                User user = db.Users.Find(sess.UserID);
+                return View(db.Users.ToList().Where(d => d.Isdelete == false && d.ID != sess.UserID));
+            }
+            else
+            {
+                return Redirect("/home/Error");
+            }
+           
+        }
         public ActionResult Login(string strURL)
         {
             Session.Add("url", strURL);
@@ -21,7 +36,7 @@ namespace DCCovid.Controllers
         public ActionResult Register()
         {
             ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name");
-            ViewBag.CategoryID = new SelectList(db.CategoryUsers.ToList(), "ID", "Name");
+            ViewBag.CategoryID = new SelectList(db.CategoryUserPosts.ToList(), "ID", "Name");
             return View();
         }
         public ActionResult ConfirmRegister()
@@ -163,7 +178,7 @@ namespace DCCovid.Controllers
         public ActionResult UpdateSex()
         {
             ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name");
-            ViewBag.cate = db.CategoryUsers.ToList();
+            ViewBag.cate = db.CategoryUserPosts.ToList();
             return View();
         }
         [HttpPost]
@@ -203,7 +218,7 @@ namespace DCCovid.Controllers
         {
             var sess = Session["MEMBER"] as UserLogin;
 
-            CategoryUser post = db.CategoryUsers.Find(id);
+            CategoryUserPost post = db.CategoryUserPosts.Find(id);
             User user = db.Users.Find(sess.UserID);
             post.Users.Add(user);
             db.SaveChanges();
@@ -213,7 +228,7 @@ namespace DCCovid.Controllers
         {
             var sess = Session["MEMBER"] as UserLogin;
 
-            CategoryUser post = db.CategoryUsers.Find(id);
+            CategoryUserPost post = db.CategoryUserPosts.Find(id);
             User user = db.Users.Find(sess.UserID);
             post.Users.Remove(user);
             db.SaveChanges();

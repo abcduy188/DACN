@@ -24,7 +24,7 @@ namespace DCCovid.Controllers
 
         public ActionResult Contact()
         {
-            var listcate = db.ProductCategories.ToList();
+            var listcate = db.Categories.ToList();
             return View(listcate);
         }
     }

@@ -32,7 +32,8 @@ namespace DCCovid.Models
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public Nullable<System.DateTime> TopHot { get; set; }
         public int ViewCount { get; set; }
+        public Nullable<bool> IsDelete { get; set; }
     
-        public virtual ProductCategory ProductCategory { get; set; }
+        public virtual Category Category { get; set; }
     }
 }

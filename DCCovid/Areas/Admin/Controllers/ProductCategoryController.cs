@@ -15,24 +15,24 @@ namespace DCCovid.Areas.Admin.Controllers
         private DCCovidDbcontext db = new DCCovidDbcontext();
         public ActionResult Index()
         {
-            ViewBag.ListCate = db.ProductCategories.OrderBy(d => d.ID).ToList();
+            ViewBag.ListCate = db.Categories.OrderBy(d => d.ID).ToList();
             return View();
         }
         public ActionResult Create()
         {
-            ViewBag.ParentID = new SelectList(db.ProductCategories.Where(d => d.ParentID == null).ToList(), "ID", "Name");
+            ViewBag.ParentID = new SelectList(db.Categories.Where(d => d.ParentID == null).ToList(), "ID", "Name");
             return View();
         }
         [HttpPost]
-        public ActionResult Create(ProductCategory productCategory)
+        public ActionResult Create(Category productCategory)
         {
-            ViewBag.ParentID = new SelectList(db.ProductCategories.Where(d => d.ParentID == null).ToList(), "ID", "Name");
+            ViewBag.ParentID = new SelectList(db.Categories.Where(d => d.ParentID == null).ToList(), "ID", "Name");
             if (ModelState.IsValid)
             {
                 var session = (UserLogin)Session["DUY"];
                 productCategory.CreateBy = session.Name;
                 productCategory.CreateDate = DateTime.Now;
-                db.ProductCategories.Add(productCategory);
+                db.Categories.Add(productCategory);
                 db.SaveChanges();
                 SetAlert("Thêm danh muc thanh cong", "success");
                 return RedirectToAction("Index", "ProductCategory");
@@ -43,16 +43,16 @@ namespace DCCovid.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Edit(long id)
         {
-            ProductCategory model = db.ProductCategories.Find(id);
-            ViewBag.ParentID = new SelectList(db.ProductCategories.Where(d => d.ParentID == null).ToList(), "ID", "Name", model.ParentID);
+            Category model = db.Categories.Find(id);
+            ViewBag.ParentID = new SelectList(db.Categories.Where(d => d.ParentID == null).ToList(), "ID", "Name", model.ParentID);
             return View(model);
         }
         [HttpPost]
-        public ActionResult Edit(ProductCategory entity)
+        public ActionResult Edit(Category entity)
         {
-            ProductCategory productCategory = db.ProductCategories.Find(entity.ID);
+            Category productCategory = db.Categories.Find(entity.ID);
 
-            ViewBag.ParentID = new SelectList(db.ProductCategories.Where(d => d.ParentID == null).ToList(), "ID", "Name", entity.ParentID);
+            ViewBag.ParentID = new SelectList(db.Categories.Where(d => d.ParentID == null).ToList(), "ID", "Name", entity.ParentID);
             if (ModelState.IsValid)
             {
                 var session = (UserLogin)Session["DUY"];
@@ -69,32 +69,13 @@ namespace DCCovid.Areas.Admin.Controllers
             return View("Index");
         }
         // GET: Admin/ProductCategory/Delete/5
-        public ActionResult Delete(long? id)
+        [HttpGet]
+        public ActionResult Delete(long id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            ProductCategory productCategory = db.ProductCategories.Find(id);
-            if (productCategory == null)
-            {
-                return HttpNotFound();
-            }
-            return View(productCategory);
-        }
-
-        // POST: Admin/ProductCategory/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(long id)
-        {
-            ProductCategory productCategory = db.ProductCategories.Find(id);
-            foreach (var item in productCategory.Products.ToList())
-            {
-                db.Products.Remove(item);
-            }
-            db.ProductCategories.Remove(productCategory);
+            var user = db.Categories.Find(id);
+            user.IsDelete = true;
             db.SaveChanges();
+            SetAlert("Xoa thanh cong", "error");
             return RedirectToAction("Index");
         }
     }

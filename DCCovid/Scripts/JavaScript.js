@@ -8,6 +8,6 @@
             PlaceHolderElement.html(data);
             PlaceHolderElement.find('.modal').modal('show');
         })
-    })
+    });
 
 })

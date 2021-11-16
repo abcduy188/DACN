@@ -1,0 +1,46 @@
+﻿@model IEnumerable<DCCovid.Models.Room>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@{
+    var sess = Session["MEM"] as DCCovid.Common.UserLogin;
+    DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
+
+    if (sess != null)
+    {
+        var user = db.Users.Find(sess.UserID);
+        var listroom = user.Rooms.ToList();
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in listroom)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Vao room", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+            }
+        </table>
+    }
+}
+
+
+

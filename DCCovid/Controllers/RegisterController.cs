@@ -21,7 +21,7 @@ namespace DCCovid.Controllers
         public ActionResult Register()
         {
           
-            ViewBag.Cate = new SelectList(db.CategoryUsers.ToList(), "ID", "Name");
+            ViewBag.Cate = new SelectList(db.CategoryUserPosts.ToList(), "ID", "Name");
             return View();
         }
         [HttpPost]

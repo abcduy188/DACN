@@ -17,18 +17,24 @@ namespace DCCovid.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.CategoryUsers = new HashSet<CategoryUser>();
+            this.Messages = new HashSet<Message>();
+            this.CategoryUserPosts = new HashSet<CategoryUserPost>();
+            this.PostCMTs = new HashSet<PostCMT>();
+            this.Rooms = new HashSet<Room>();
+            this.PostCMTs1 = new HashSet<PostCMT>();
         }
     
         public long ID { get; set; }
         public string Email { get; set; }
         public string PassWord { get; set; }
         public string Name { get; set; }
+        public string ImageUser { get; set; }
         public string GroupID { get; set; }
         public string Address { get; set; }
         public string Phone { get; set; }
         public bool Status { get; set; }
         public Nullable<int> SexID { get; set; }
+        public Nullable<System.DateTime> BirthDay { get; set; }
         public Nullable<System.DateTime> CreateDate { get; set; }
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
@@ -36,10 +42,19 @@ namespace DCCovid.Models
         public string Code { get; set; }
         public Nullable<int> Vacxin { get; set; }
         public Nullable<long> CategoryID { get; set; }
+        public bool Isdelete { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Message> Messages { get; set; }
         public virtual Sex Sex { get; set; }
         public virtual User_Group User_Group { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CategoryUser> CategoryUsers { get; set; }
+        public virtual ICollection<CategoryUserPost> CategoryUserPosts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PostCMT> PostCMTs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Room> Rooms { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PostCMT> PostCMTs1 { get; set; }
     }
 }

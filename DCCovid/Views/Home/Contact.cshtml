@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DCCovid.Models.ProductCategory>
+﻿@model IEnumerable<DCCovid.Models.Category>
 
 @{
     ViewBag.Title = "Contact";
@@ -13,7 +13,7 @@
 @if (sess != null)
 {
     var user = db.Users.Find(sess.UserID);
-    foreach (var i in user.CategoryUsers)
+    foreach (var i in user.CategoryUserPosts)
     {
         if (i.ID == 2)
         {

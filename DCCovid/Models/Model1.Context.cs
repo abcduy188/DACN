@@ -25,9 +25,14 @@ namespace DCCovid.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<CategoryUser> CategoryUsers { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<CategoryUserPost> CategoryUserPosts { get; set; }
+        public virtual DbSet<Image> Images { get; set; }
+        public virtual DbSet<Message> Messages { get; set; }
+        public virtual DbSet<News> News { get; set; }
+        public virtual DbSet<PostCMT> PostCMTs { get; set; }
         public virtual DbSet<Product> Products { get; set; }
-        public virtual DbSet<ProductCategory> ProductCategories { get; set; }
+        public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<Sex> Sexes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<User_Group> User_Group { get; set; }

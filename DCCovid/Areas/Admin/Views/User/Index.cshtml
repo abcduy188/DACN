@@ -246,11 +246,11 @@
                                     @Html.DisplayFor(modelItem => item.User_Group.Name)
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-primary" data-toggle="ajax-modal1" data-target="#addEmployee"
+                                    <button type="button" class="deleteUser" data-toggle="ajax-modal1" data-target="#addEmployee"
                                             data-url="@Url.Action($"Edit/{item.ID}")">
                                         Edit
                                     </button>
-                                    <button type="button" class="btn btn-primary" data-toggle="ajax-modal1" data-target="#details"
+                                    <button type="button" class="deleteUser" data-toggle="ajax-modal1" data-target="#details"
                                             data-url="@Url.Action($"detail/{item.ID}")">
                                         Detail
                                     </button>
