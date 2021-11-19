@@ -20,6 +20,7 @@ namespace DCCovid.Controllers
             if(sess !=null)
             {
                 User user = db.Users.Find(sess.UserID);
+                ViewBag.ListPost = db.PostCMTs.ToList();
                 return View(db.Users.ToList().Where(d => d.Isdelete == false && d.ID != sess.UserID));
             }
             else
@@ -27,6 +28,14 @@ namespace DCCovid.Controllers
                 return Redirect("/home/Error");
             }
            
+        }
+        public ActionResult GetData()
+        {
+            var sess = Session["MEMBER"] as UserLogin;
+            db.Configuration.ProxyCreationEnabled = false;
+            List<User> results = db.Users.Where(d => d.Isdelete == false && d.ID != sess.UserID).ToList();
+
+            return Json(new { Data = results, TotalItems = results.Count }, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Login(string strURL)
         {
@@ -332,6 +341,8 @@ namespace DCCovid.Controllers
             user.SexID = 1;
             user.CreateDate = DateTime.Now;
             user.Code = Random();
+            user.Iscouple = 0;
+            user.Isdelete = false;
             db.Users.Add(user);
             db.SaveChanges();
             var userSession = new UserLogin();

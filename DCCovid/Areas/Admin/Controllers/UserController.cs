@@ -19,6 +19,12 @@ namespace DCCovid.Areas.Admin.Controllers
             ViewBag.GroupID = new SelectList(db.User_Group.ToList(), "ID", "Name");
             return View();
         }
+        public ActionResult GetData()
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            var results = db.Users.ToList();
+            return Json(new { Data = results, TotalItems = results.Count }, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult Create()
         {
             ViewBag.GroupID = new SelectList(db.User_Group.ToList(), "ID", "Name");
@@ -50,6 +56,8 @@ namespace DCCovid.Areas.Admin.Controllers
                 }
                 else
                 {
+                    user.Iscouple = 0;
+                    user.Isdelete = false;
                     db.Users.Add(user);
                     db.SaveChanges();
                     SetAlert("Thêm tài khoản thành công", "success");

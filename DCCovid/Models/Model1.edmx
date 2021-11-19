@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DCDCovidModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="DCDCovidModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="cate_post">
           <Key>
             <PropertyRef Name="PostID" />
@@ -171,6 +171,7 @@
           <Property Name="Vacxin" Type="int" />
           <Property Name="CategoryID" Type="bigint" />
           <Property Name="Isdelete" Type="bit" Nullable="false" />
+          <Property Name="Iscouple" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="User_Group">
           <Key>
@@ -444,7 +445,8 @@
             <End Role="User" EntitySet="User" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DCDCovidModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -517,8 +519,8 @@
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Category" Relationship="Self.FK_News_ProductCategory" FromRole="News" ToRole="Category" />
           <Property Name="IsDelete" Type="Boolean" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_News_ProductCategory" FromRole="News" ToRole="Category" />
         </EntityType>
         <EntityType Name="PostCMT">
           <Key>
@@ -534,9 +536,9 @@
           <Property Name="IsDelete" Type="Boolean" Nullable="false" />
           <Property Name="CreateDay" Type="DateTime" Precision="3" />
           <Property Name="PostID" Type="Int64" />
+          <NavigationProperty Name="User" Relationship="Self.FK_PostCMT_User" FromRole="PostCMT" ToRole="User" />
           <NavigationProperty Name="CategoryUserPosts" Relationship="Self.cate_post" FromRole="PostCMT" ToRole="CategoryUserPost" />
           <NavigationProperty Name="Users" Relationship="Self.Like" FromRole="PostCMT" ToRole="User" />
-          <NavigationProperty Name="User" Relationship="DCDCovidModel.FK_PostCMT_User" FromRole="PostCMT" ToRole="User" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -560,8 +562,8 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="TopHot" Type="DateTime" Precision="3" />
           <Property Name="ViewCount" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Category" Relationship="Self.FK_Product_ProductCategory" FromRole="Product" ToRole="Category" />
           <Property Name="IsDelete" Type="Boolean" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_Product_ProductCategory" FromRole="Product" ToRole="Category" />
         </EntityType>
         <EntityType Name="Room">
           <Key>
@@ -603,14 +605,15 @@
           <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Vacxin" Type="Int32" />
           <Property Name="CategoryID" Type="Int64" />
+          <Property Name="Isdelete" Type="Boolean" Nullable="false" />
+          <Property Name="Iscouple" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Messages" Relationship="Self.FK_Message_User" FromRole="User" ToRole="Message" />
+          <NavigationProperty Name="PostCMTs" Relationship="Self.FK_PostCMT_User" FromRole="User" ToRole="PostCMT" />
           <NavigationProperty Name="Sex" Relationship="Self.FK_User_Sex" FromRole="User" ToRole="Sex" />
           <NavigationProperty Name="User_Group" Relationship="Self.FK_User_User_Group" FromRole="User" ToRole="User_Group" />
           <NavigationProperty Name="CategoryUserPosts" Relationship="Self.cate_user" FromRole="User" ToRole="CategoryUserPost" />
-          <NavigationProperty Name="PostCMTs" Relationship="Self.Like" FromRole="User" ToRole="PostCMT" />
+          <NavigationProperty Name="PostCMTs1" Relationship="Self.Like" FromRole="User" ToRole="PostCMT" />
           <NavigationProperty Name="Rooms" Relationship="Self.user_room" FromRole="User" ToRole="Room" />
-          <Property Name="Isdelete" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="PostCMTs1" Relationship="DCDCovidModel.FK_PostCMT_User" FromRole="User" ToRole="PostCMT" />
         </EntityType>
         <EntityType Name="User_Group">
           <Key>
@@ -664,6 +667,18 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="Message">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PostCMT_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="PostCMT" Type="Self.PostCMT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PostCMT">
               <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
@@ -736,6 +751,10 @@
             <End Role="User" EntitySet="Users" />
             <End Role="Message" EntitySet="Messages" />
           </AssociationSet>
+          <AssociationSet Name="FK_PostCMT_User" Association="Self.FK_PostCMT_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="PostCMT" EntitySet="PostCMTs" />
+          </AssociationSet>
           <AssociationSet Name="FK_User_Sex" Association="Self.FK_User_Sex">
             <End Role="Sex" EntitySet="Sexes" />
             <End Role="User" EntitySet="Users" />
@@ -760,23 +779,7 @@
             <End Role="Room" EntitySet="Rooms" />
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
-          <AssociationSet Name="FK_PostCMT_User" Association="DCDCovidModel.FK_PostCMT_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="PostCMT" EntitySet="PostCMTs" />
-          </AssociationSet>
         </EntityContainer>
-        <Association Name="FK_PostCMT_User">
-          <End Type="DCDCovidModel.User" Role="User" Multiplicity="0..1" />
-          <End Type="DCDCovidModel.PostCMT" Role="PostCMT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="PostCMT">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -834,7 +837,6 @@
           <EntitySetMapping Name="News">
             <EntityTypeMapping TypeName="DCDCovidModel.News">
               <MappingFragment StoreEntitySet="News">
-                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="SeoTitle" ColumnName="SeoTitle" />
@@ -850,6 +852,7 @@
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -872,7 +875,6 @@
           <EntitySetMapping Name="Products">
             <EntityTypeMapping TypeName="DCDCovidModel.Product">
               <MappingFragment StoreEntitySet="Product">
-                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="SeoTitle" ColumnName="SeoTitle" />
@@ -891,6 +893,7 @@
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="TopHot" ColumnName="TopHot" />
                 <ScalarProperty Name="ViewCount" ColumnName="ViewCount" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -914,7 +917,6 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="DCDCovidModel.User">
               <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="Isdelete" ColumnName="Isdelete" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="PassWord" ColumnName="PassWord" />
@@ -933,6 +935,8 @@
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Vacxin" ColumnName="Vacxin" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="Isdelete" ColumnName="Isdelete" />
+                <ScalarProperty Name="Iscouple" ColumnName="Iscouple" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

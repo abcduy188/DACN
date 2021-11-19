@@ -2,35 +2,122 @@
 
 @{
     ViewBag.Title = "Index";
+    var listpost = (List<DCCovid.Models.PostCMT>)ViewBag.ListPost;
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
+    DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
+}
+@section js{
+    <script>
+
+        $(document).ready(function () {
+            LoadData();
+
+        });
+        function LoadData() {
+                $.ajax({
+                    url: '/user/getdata',
+                    type: 'GET',
+                    success: function (res) {
+                        if (res.TotalItems > 0) {
+                            var items = res.Data;
+                            var html = "";
+                            for (let i = 0; i < res.TotalItems; i++) {
+                                html += "<tr>";
+                                html += "<td>" + items[i].Name + "</td>";
+                                html += "<td><form action='/Room/Create/" + items[i].ID + "', method='post'><input type = 'submit' value ='Nhắn tin' class='btn'></form></td>";
+
+                            }
+                            $('#showdata').html(html);
+                        }
+                    }
+                });
+        }
+        function Delete(id) {
+            if (confirm('Bật chế độ tìm bạn nhắn tin?')) {
+
+                $.ajax({
+
+                    type: "POST",
+                    url: '@Url.Action("FindFr", "Message")/' + id,
+                    success: function (data) {
+
+                        if (data.success) {
+                            LoadData();
+                            window.location.reload();
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+
+                        }
+                    }
+
+                });
+            }
+        }
+         function Cancel() {
+            if (confirm('Hủy nhắn tin với người này?')) {
+
+                $.ajax({
+
+                    type: "POST",
+                    url: '@Url.Action("CancelChat", "Room")/',
+                    success: function (data) {
+
+                        if (data.success) {
+                            LoadData();
+                            window.location.reload();
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+
+                        }
+                    }
+
+                });
+            }
+        }
+    </script>
 }
 
-<h2>Index</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
+<h2>Tìm bạn nhắn tin</h2>
+@{
+    var user = db.Users.Find(sess.UserID);
+    if (user.Iscouple == 0)
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <form action="/Room/Create/@item.ID" , method="post">
-                    <input type="submit" value="Nhắn tin" class="btn">
-                </form>
-
-            </td>
-        </tr>
+        <h4>Chưa kích hoạt <a class="btn btn-danger btn-sm" style="margin-left: 5px" onclick="Delete(@user.ID)"><i class="fa fa-trash"></i>Kích hoạt</a></h4>
     }
+    else if (user.Iscouple == 1)
+    {
 
+        <h4>Đã kích hoạt <a class="btn btn-success btn-sm" style="margin-left: 5px" onclick=Delete(@user.ID)><i class="fa fa-trash"></i>Bắt đầu tìm kiếm</a></h4>
+        <p>
+            <a href="/Room/Create">Tạo phòng</a>
+        </p>
+    }
+    else
+    {
+        <h4>Đang có người nhắn tin<a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
+        <p>
+            <form action="/Room/Create" method="post">
+                <input type="submit" value="vào phòng" />
+            </form>
+        </p>
+    }
+}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="showdata">
+    </tbody>
 </table>

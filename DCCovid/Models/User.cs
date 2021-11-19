@@ -18,10 +18,10 @@ namespace DCCovid.Models
         public User()
         {
             this.Messages = new HashSet<Message>();
-            this.CategoryUserPosts = new HashSet<CategoryUserPost>();
             this.PostCMTs = new HashSet<PostCMT>();
-            this.Rooms = new HashSet<Room>();
+            this.CategoryUserPosts = new HashSet<CategoryUserPost>();
             this.PostCMTs1 = new HashSet<PostCMT>();
+            this.Rooms = new HashSet<Room>();
         }
     
         public long ID { get; set; }
@@ -43,18 +43,19 @@ namespace DCCovid.Models
         public Nullable<int> Vacxin { get; set; }
         public Nullable<long> CategoryID { get; set; }
         public bool Isdelete { get; set; }
+        public int Iscouple { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Message> Messages { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PostCMT> PostCMTs { get; set; }
         public virtual Sex Sex { get; set; }
         public virtual User_Group User_Group { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CategoryUserPost> CategoryUserPosts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PostCMT> PostCMTs { get; set; }
+        public virtual ICollection<PostCMT> PostCMTs1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Room> Rooms { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PostCMT> PostCMTs1 { get; set; }
     }
 }

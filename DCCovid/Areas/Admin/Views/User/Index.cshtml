@@ -158,6 +158,37 @@
 @section js
 {
     <script>
+
+        $(document).ready(function () {
+            LoadData();
+
+        });
+        function LoadData() {
+                $.ajax({
+                    url: '/admin/user/getdata',
+                    type: 'GET',
+                    success: function (res) {
+                        if (res.TotalItems > 0) {
+                            var items = res.Data;
+                            var html = "";
+                            for (let i = 0; i < res.TotalItems; i++) {
+                                html += "<tr>";
+                                html += "<td>" + items[i].Email + "</td>";
+                                html += "<td>" + items[i].Name +"</td>";
+                                html += "<td>" + items[i].Address+"</td>";
+                                html += "<td>" + items[i].Phone + "</td>";
+                                html += "<td>" + items[i].Status + "</td>";
+                                html += "<td>" + items[i].Vacxin + "</td>";
+                                html += "<td>" + items[i].User_Group.Name + "</td>";
+                                html += "<td><a class='btn btn-default btn-sm' onclick=PopupForm('@Url.Action("StoreOrEdit","Post")/" + items[i].ID + "')><i class='fa fa-pencil'></i>Edit</a> <a class='btn btn-danger btn-sm' style='margin-left:5px' onclick=Delete(" + items[i].ID + ")><i class='fa fa-trash'></i>Delete</a></td>";
+                                html += "</tr>";
+                            }
+                            $('#showdata').html(html);
+                        }
+                    }
+                });
+            }
+
         var path_to_delete;
 
         $(".status").click(function (e) {
@@ -186,7 +217,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered"  width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>
@@ -215,7 +246,7 @@
                             <th></th>
                         </tr>
                     </thead>
-              
+              @*<tbody id="showdata"></tbody>*@
                     <tbody>
                         @foreach (var item in listUser)
                         {

@@ -17,51 +17,109 @@ namespace DCCovid.Controllers
         {
             return View(db.Rooms.ToList());
         }
+        public ActionResult CancelChat()
+        {
+          
+            var sess = Session["MEMBER"] as UserLogin;
+            User user = db.Users.Find(sess.UserID);
+            var listroom = user.Rooms.ToList();
+            var roomd = new Room();
+            foreach (var item in listroom)
+            {
 
+                if (item.Name.StartsWith("Find@@@") == true)
+                {
+                    roomd = db.Rooms.Find(item.ID);
+
+                }
+            }
+            foreach(var i in roomd.Messages.ToList())
+            {
+                db.Messages.Remove(i);
+                db.SaveChanges();
+            }
+            foreach(var u in roomd.Users.ToList())
+            {
+                u.Iscouple = 0;
+                db.SaveChanges();
+            }
+            db.Rooms.Remove(roomd);
+            user.Iscouple = 0;
+            db.SaveChanges();
+            return Json(new { success = true, message = "Changed Successfully", JsonRequestBehavior.AllowGet });
+
+        }
+        public ActionResult Create()
+        {
+            return View();
+        }
 
         [HttpPost]
         public ActionResult Create(Room room, long? id)
         {
             if (ModelState.IsValid)
             {
+                var sessroom = new RoomLogin();
                 var sess = Session["MEMBER"] as UserLogin;
                 User user = db.Users.Find(sess.UserID);
                 User user2 = db.Users.Find(id);
-                room.Name = (user.Name + user2.Name).ToString();
-                string namechange = (user2.Name + user.Name).ToString();
-                if (db.Rooms.Count(d => d.Name == room.Name) > 0 || db.Rooms.Count(d => d.Name == namechange) > 0)
+                if (user2 == null)
                 {
-                    var sessroom = new RoomLogin();
-                    Room room1 = db.Rooms.SingleOrDefault(d => d.Name == namechange);
-                    if (room1 == null)
+                    var listroom = user.Rooms.ToList();
+                    var roomd = new Room();
+                    foreach (var item in listroom)
                     {
-                        room1 = db.Rooms.SingleOrDefault(d => d.Name == room.Name);
+
+                        if (item.Name.StartsWith("Find@@@") == true)
+                        {
+                            roomd = db.Rooms.Find(item.ID);
+                        }
                     }
-                    sessroom.RoomID = room1.ID;
-                    sessroom.Name = room1.Name;
+
+                    sessroom.RoomID = roomd.ID;
+                    sessroom.Name = roomd.Name;
                     Session.Add("Room", sessroom);
                     return Redirect("/Message/Index");
                 }
                 else
                 {
-                    db.Rooms.Add(room);
-                    db.SaveChanges();
-                    var sessroom = new RoomLogin();
-                    Room room1 = db.Rooms.Find(room.ID);
-                    sessroom.RoomID = room.ID;
-                    sessroom.Name = room.Name;
-                    Session.Add("Room", sessroom);
+                    room.Name = (user.Name + user2.Name).ToString();
+                    string namechange = (user2.Name + user.Name).ToString();
+                    if (db.Rooms.Count(d => d.Name == room.Name) > 0 || db.Rooms.Count(d => d.Name == namechange) > 0)
+                    {
 
-                    room.Users.Add(user);
-                    room.Users.Add(user2);
-                    db.SaveChanges();
-                    return Redirect("/Message/Index");
+                        Room room1 = db.Rooms.SingleOrDefault(d => d.Name == namechange);
+                        if (room1 == null)
+                        {
+                            room1 = db.Rooms.SingleOrDefault(d => d.Name == room.Name);
+                        }
+                        sessroom.RoomID = room1.ID;
+                        sessroom.Name = room1.Name;
+                        Session.Add("Room", sessroom);
+                        return Redirect("/Message/Index");
+                    }
+                    else
+                    {
+                        db.Rooms.Add(room);
+                        db.SaveChanges();
+
+                        Room room1 = db.Rooms.Find(room.ID);
+                        sessroom.RoomID = room.ID;
+                        sessroom.Name = room.Name;
+                        Session.Add("Room", sessroom);
+
+                        room.Users.Add(user);
+                        room.Users.Add(user2);
+                        db.SaveChanges();
+                        return Redirect("/Message/Index");
+                    }
+
                 }
 
             }
-
             return View(room);
         }
+
 
 
         public ActionResult Delete(long? id)

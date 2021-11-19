@@ -1,13 +1,57 @@
-﻿@model IEnumerable<DCCovid.Models.PostCMT>
-@using System.Globalization;
+﻿@*@model IEnumerable<DCCovid.Models.PostCMT>*@
+@model DCCovid.Models.PostCMT
 @{
     ViewBag.Title = "Index";
     var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
     var img = (List<DCCovid.Models.Image>)ViewBag.ListImg;
+    DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
 }
+
 @section scripts
 {
     <script>
+        $(document).ready(function () {
+            LoadData();
+
+        });
+        function LoadData() {
+            $.ajax({
+                url: '/post/getdata',
+                type: 'GET',
+                success: function (res) {
+                    if (res.TotalItems > 0) {
+                        var items = res.Data;
+                        var img = res.listimg;
+                        var html = "";
+                        var count = 0;
+                        for (let i = 0; i < res.TotalItems; i++) {
+                            html += "<tr>";
+                            html += "<td>" + items[i].Title + "</td>";
+                            html += "<td>";
+                            if (res.TotalImg > 0) {
+                                for (let j = 0; j < res.TotalImg; j++) {
+                                    if (img[j].TypeID == items[i].ID) {
+                                        html += "<img src='/Assets/Thumbnails/" + img[j].FileName + "' style='height:100px' />";
+                                    }
+                                }
+                            }
+                            html += "</td>";
+                            html += "<td>";
+                            html += " <span>" + items[i].LikeCount + "Like ||| </span>"
+
+                            html += "</td>";
+                            html += "<td>";
+                            html += "<a href ='/post/details/" + items[i].ID + "'>Binh luan</a><a class='btn btn-default btn-sm' onclick=PopupForm('@Url.Action("Create","Post")/" + items[i].ID + "')><i class='fa fa-pencil'></i>Edit</a>";
+                            html += "</td>";
+
+
+                        }
+                        $('#showdata').html(html);
+                    }
+                }
+            });
+        }
+      
         var path_to_delete;
 
         $(".deletePost").click(function (e) {
@@ -18,134 +62,119 @@
         });
     </script>
 }
-<h2>Index</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
 <table class="table">
-    <tr>
-        <th>
-            Người tạo
-        </th>
-        <th>
-            Ngày tạo
-        </th>
-        <th>
-            
-        </th>
-        <th>
-            
-        </th>
-        <th>
+    <thead>
+        <tr>
+            <th>
+                Người tạo
+            </th>
+            <th>
+                Ngày tạo
+            </th>
+            <th>
 
-        </th>
-        <th></th>
-    </tr>
+            </th>
+            <th>
 
-    @foreach (var item in Model)
-    {
-<tr>
-    <td>
-        @item.CreateBy
-    </td>
-    <td>
-        @{
+            </th>
+            <th>
 
-            //DateTime date1 = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy"));
-            //DateTime date2 = DateTime.ParseExact(item.CreateDay.Value.ToString("dd/MM/yyyy"));
-            //DateTime pDate = DateTime.ParseExact(item.CreateDay.Value.ToString(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
-            //var dateOnly = pDate.ToString("dd/MM/yyyy");
+            </th>
+            <th></th>
+        </tr>
+    </thead>
 
-            @*int result = DateTime.Compare(date1, date2);
-            if (result > 0)
+    <tbody id="showdata"></tbody>
+    @*@foreach (var item in Model)
             {
+        <tr>
+            <td>
+                @item.CreateBy
+            </td>
+            <td>
                 @item.CreateDay.Value.ToString("HH:mm dd/MM")
-            }
-            else
-            {
-                @item.CreateDay.Value.ToString("HH:mm")
-            }*@
-        }
-        @item.CreateDay.Value.ToString("HH:mm dd/MM")
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Text)
-    </td>
-    <td>
-        @if (img != null)
-        {
-            foreach (var image in img.Where(d=>d.TypeID == item.ID))
-            { //từ list hình ảnh ở viewbag, dùng foreach lấy ra  những hình ảnh có typeID = id của product
-
-                <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
-            }
-        }
-
-    </td>
-
-    <td>
-
-        @{
-            DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
-            var count = 0;
-            count = item.Users.Count();
-            item.LikeCount = count;
-            <span>@item.LikeCount Like |||</span>
-            if (sess != null)
-            {
-                var user = db.Users.Find(sess.UserID);
-                if (user != null)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text)
+            </td>
+            <td>
+                @if (img != null)
                 {
-                    if (item.Users.Count(d => d.ID == sess.UserID) != 0)
+                    foreach (var image in img.Where(d=>d.TypeID == item.ID))
+                    { //từ list hình ảnh ở viewbag, dùng foreach lấy ra  những hình ảnh có typeID = id của product
+
+                        <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
+                    }
+                }
+
+            </td>
+
+            <td>
+
+                @{
+                    DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
+                    var count = 0;
+                    count = item.Users.Count();
+                    item.LikeCount = count;
+                    <span>@item.LikeCount Like |||</span>
+                    if (sess != null)
                     {
-                        @Html.ActionLink("Dislike", "DisLike", new { id = item.ID })
+                        var user = db.Users.Find(sess.UserID);
+                        if (user != null)
+                        {
+                            if (item.Users.Count(d => d.ID == sess.UserID) != 0)
+                            {
+                                @Html.ActionLink("Dislike", "DisLike", new { id = item.ID })
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Like", "Like", new { id = item.ID })
+                            }
+                        }
+
+
+                    }
+                    item.LikeCount = count;
+
+                }
+
+            </td>
+            <td>
+                @Html.ActionLink("Binh Luan", "Details", new { id = item.ID })
+                @{
+
+                    if (sess != null)
+                    {
+                        if (item.CreateBy == sess.Name)
+                        {
+                            <a id="deletePost" class="deletePost" data-target="#basic"
+                               data-toggle="modal"
+                               data-path="@Url.Action("Delete", "Post", new { @id = @item.ID })">Xóa</a>
+                        }
+                        else
+                        {
+                            <span>
+
+                            </span>
+                        }
                     }
                     else
                     {
-                        @Html.ActionLink("Like", "Like", new { id = item.ID })
+                        <span>
+
+                        </span>
                     }
+
+
                 }
 
-
-            }
-            item.LikeCount = count;
-
-        }
-
-    </td>
-    <td>
-        @Html.ActionLink("Binh Luan", "Details", new { id = item.ID })
-        @{
-
-            if (sess != null)
-            {
-                if (item.CreateBy == sess.Name)
-                {
-                    <a id="deletePost" class="deletePost" data-target="#basic"
-                       data-toggle="modal"
-                       data-path="@Url.Action("Delete", "Post", new { @id = @item.ID })">Xóa</a>
-                }
-                else
-                {
-                    <span>
-
-                    </span>
-                }
-            }
-            else
-            {
-                <span>
-
-                </span>
-            }
-
-
-        }
-
-    </td>
-</tr>
-    }
+            </td>
+        </tr>
+            }*@
 
 </table>
 <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">

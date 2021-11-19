@@ -18,11 +18,19 @@ namespace DCCovid.Controllers
             ViewBag.ListImg = listimg;
             return View(db.PostCMTs.ToList().Where(d => d.IsDelete == false && d.PostID == null));
         }
-
+       
+        public ActionResult GetData()
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            var results = db.PostCMTs.ToList();
+            var img = db.Images.Where(d => d.Type == "POST").ToList();
+            
+            return Json(new { Data = results, TotalItems = results.Count, listimg = img, TotalImg = img.Count }, JsonRequestBehavior.AllowGet);
+        }
         // GET: Posts/Details/5
         public ActionResult Details(long id)
         {
-            var sesspost = new PostSes();
+                var sesspost = new PostSes();
             sesspost.PostID = id;
             Session.Add("Post", sesspost);
 
@@ -39,7 +47,7 @@ namespace DCCovid.Controllers
         }
 
         // GET: Posts/Create
-        public ActionResult Create()
+        public ActionResult Create(long? id)
         {
             return View();
         }
@@ -93,6 +101,7 @@ namespace DCCovid.Controllers
 
             post.UserID = sess.UserID;
             post.Users.Add(user);
+            post.LikeCount = post.Users.Count();
             db.SaveChanges();
 
             if (Session["url"] != null)
@@ -114,6 +123,7 @@ namespace DCCovid.Controllers
 
             post.UserID = sess.UserID;
             post.Users.Remove(user);
+            post.LikeCount = post.Users.Count();
             db.SaveChanges();
             if (Session["url"] != null)
             {
@@ -133,7 +143,7 @@ namespace DCCovid.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
+       
         protected override void Dispose(bool disposing)
         {
             if (disposing)

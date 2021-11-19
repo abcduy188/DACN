@@ -9,5 +9,6 @@
             PlaceHolderElement.find('.modal').modal('show');
         })
     });
-
+    
 })
+
