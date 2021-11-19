@@ -4,6 +4,7 @@
     ViewBag.Title = "Index";
     var listmess = (List<DCCovid.Models.Message>)ViewBag.Mess;
     var img = (List<DCCovid.Models.Image>)ViewBag.ListImg;
+    DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
 }
 @section scripts
 {
@@ -26,8 +27,26 @@
         };
     </script>
 }
-@{ var room = Session["Room"] as DCCovid.Common.RoomLogin;}
-<h2>@room.Name</h2>
+@{ var room = Session["Room"] as DCCovid.Common.RoomLogin;
+    var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
+    var rooma = db.Rooms.Find(room.RoomID);
+    if (!rooma.Name.StartsWith("Find@@@"))
+    {
+        foreach (var i in rooma.Users.ToList())
+        {
+            if (i.ID != sess.UserID)
+            {
+                <h2>@i.Name</h2>
+            }
+
+        }
+    }
+    else
+    {
+        <h2>Bạn ẩn danh</h2>
+    }
+}
+
 
 <table class="table">
     <tr>
@@ -53,14 +72,14 @@
                     foreach (var image in img.Where(d => d.TypeID == item.ID))
                     { //từ list hình ảnh ở viewbag, dùng foreach lấy ra  những hình ảnh có typeID = id của product
 
-                        <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px"  />
+                        <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
                     }
                 }
                 @Html.DisplayFor(modelItem => item.Text)
             </td>
             <td>
                 @{
-                    var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
+
                     if (sess != null)
                     {
 

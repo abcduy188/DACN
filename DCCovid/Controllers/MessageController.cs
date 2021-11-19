@@ -9,6 +9,7 @@ using System.IO;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Collections;
 
 namespace DCCovid.Controllers
 {
@@ -26,16 +27,11 @@ namespace DCCovid.Controllers
             return View();
         }
 
-        // GET: Messages/Details/5
-
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Messages/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,RoomID,UserID,Text")] Message message)
@@ -45,7 +41,9 @@ namespace DCCovid.Controllers
             Room room = new Room();
             if (message.Text == "Bắt đầu !!!")
             {
-                User user2 = db.Users.SingleOrDefault(d => d.Iscouple == 1 && user.ID != d.ID && user.SexID != d.SexID);
+
+                var demo = GiveMeANumber();
+                User user2 = db.Users.Find(demo);
                 room.Name = ("Find@@@" + user.Name + user2.Name ).ToString();
                 string namechange = ("Find@@@" + user2.Name + user.Name).ToString();
                 if (db.Rooms.Count(d => d.Name == room.Name) > 0 || db.Rooms.Count(d => d.Name == namechange) > 0)
@@ -160,5 +158,20 @@ namespace DCCovid.Controllers
             return Json(new { success = true, message = "Deleted Successfully", JsonRequestBehavior.AllowGet });
 
         }
+        private long GiveMeANumber()
+        {
+            var sess = Session["MEMBER"] as UserLogin;
+            User user = db.Users.Find(sess.UserID);
+            ArrayList ar = new ArrayList();
+            foreach (var i in db.Users.Where(d=>d.ID!= sess.UserID && d.Isdelete == false && d.Iscouple == 1).ToList())
+            {
+                ar.Add(i.ID);
+            }    
+            
+            Random r = new Random();
+            int index = r.Next(0, ar.Count - 1);
+            return (long)ar[index];
+        }
+
     }
 }
