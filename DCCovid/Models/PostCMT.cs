@@ -31,6 +31,7 @@ namespace DCCovid.Models
         public Nullable<System.DateTime> CreateDay { get; set; }
         public Nullable<long> PostID { get; set; }
         public Nullable<long> CateID { get; set; }
+        public Nullable<int> Status { get; set; }
     
         public virtual CategoryUserPost CategoryUserPost { get; set; }
         public virtual User User { get; set; }

@@ -2,12 +2,13 @@
 
 @{
     ViewBag.Title = "Create";
+    var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
 }
 
 @section scripts
 {
     <script>
-        
+
         var loadFile = function (event) {
             var reader = new FileReader();
             reader.onload = function () {
@@ -18,56 +19,63 @@
         };
     </script>
 }
-<h2>Create</h2>
-
-@using (Html.BeginForm("Create", "Post", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@if (sess != null)
 {
-    @Html.AntiForgeryToken()
 
-<div class="form-horizontal">
-    <h4>Post</h4>
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+
+    using (Html.BeginForm("Create", "Post", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>Post</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Hình ảnh </label>
+
+                <div class="col-md-10">
+                    <img src="" style="height:100px" id="output0" />
+                    <input type="file" name="fileUpload" multiple onchange="loadFile(event)" />
+                </div>
+
+            </div>
+            <div class="inputfield">
+                @Html.LabelFor(model => model.CateID, "Thể loại", htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.DropDownList("CateID", null, new { @class = "input" })
+                @Html.ValidationMessageFor(model => model.CateID, "", new { @class = "text-danger" })
+
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
         </div>
-    </div>
+    }
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
-        </div>
-    </div>
 
-    <div class="form-group">
-        <label>Hình ảnh </label>
-
-        <div class="col-md-10">
-            <img src="" style="height:100px" id="output0" />
-            <input type="file" name="fileUpload" multiple onchange="loadFile(event)" />
-        </div>
-
-    </div>
-    <div class="inputfield">
-        @Html.LabelFor(model => model.CateID, "Thể loại", htmlAttributes: new { @class = "control-label col-md-2" })
-
-        @Html.DropDownList("CateID", null, new { @class = "input" })
-        @Html.ValidationMessageFor(model => model.CateID, "", new { @class = "text-danger" })
-
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-default" />
-        </div>
-    </div>
-</div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+else
+{ 
+    <div class="container" style="margin-top:50px"></div>
+    <span>Bạn phải đăng nhập trước khi Bình luận</span>
+    <a href="@Url.Action("Login","User",new {@strURL= Request.Url.ToString() })">Click vào đây để đăng nhập</a>
+}

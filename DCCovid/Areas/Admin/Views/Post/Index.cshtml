@@ -1,0 +1,207 @@
+﻿
+@model List<DCCovid.Models.PostCMT>
+@{
+    ViewBag.Title = "Index";
+    var img = (List<DCCovid.Models.Image>)ViewBag.img;
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section js
+{
+    <script>
+        var path_to_delete;
+        var key = "";
+
+        $(".status").click(function (e) {
+            path_to_delete = $(this).data('path');
+        });
+        $('.deletepost').click(function (e) {
+            path_to_delete = $(this).data('path');
+        });
+        $('.statusPost').click(function (e) {
+            path_to_delete = $(this).data('path');
+        });
+        $('#btnContinue').click(function () {
+            window.location = path_to_delete;
+        });
+        $('#btnstatus1').click(function () {
+            key = "accept";
+            $.ajax({
+                type: 'POST',
+                data: { key: key },
+                url: path_to_delete,
+                success: function (data) {
+                    if (data.success) {
+                        window.location.reload();
+                        $.notify(data.message, {
+                            globalPosition: "top center",
+                            className: "success"
+                        })
+
+                    }
+                }
+            });
+        });
+        $('#btnstatus-1').click(function () {
+            key = "resufe";
+            $.ajax({
+                type: 'POST',
+                data: { key: key },
+                url: path_to_delete,
+                success: function (data) {
+
+                    if (data.success) {
+                        
+                        window.location.reload();
+                        $.notify(data.message, {
+                            globalPosition: "top center",
+                            className: "success"
+                        })
+
+                    }
+                }
+            });
+            
+        });
+    </script>
+}
+<div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Delete Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this item?
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
+                <button id="btnContinue" type="button" class="btn btn-primary">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="statuspost" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Duyệt bài</h4>
+            </div>
+            <div class="modal-body">
+                <button id="btnstatus1" type="button" class="btn btn-primary">Duyệt</button>
+                <button id="btnstatus-1" type="button" class="btn btn-primary">Không duyệt</button>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Bài viết của member</h1>
+    <p>
+
+        <a href="/admin/news/create">Them tin tuc</a>
+    </p>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+
+                            <th scope="col" style="width: 40%;">Tên tin tức</th>
+                            <th scope="col" style="width: 40%;">Ngày đăng</th>
+                            <th scope="col" style="width: 15%;">Hình ảnh</th>
+                            <th scope="col" style="width: 15%;">Danh mục</th>
+                            <th scope="col" style="width: 15%;">Ngày tạo</th>
+                            <th scope="col" style="width: 15%;">Trạng thái</th>
+                            <th scope="col" style="width: 15%;">Tác vụ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr id="row_@item.ID">
+                                <td style="width: 30%;">@item.Title</td>
+                                <td style="width: 30%;">@item.User.Name</td>
+                                <td style="width: 15%;">
+                                    @foreach (var image in img.Where(d => d.TypeID == item.ID))
+                                    { //từ list hình ảnh ở viewbag, dùng foreach lấy ra  những hình ảnh có typeID = id của product
+
+                                        <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
+                                    }
+                                </td>
+                                <td style="width: 15%;">@item.CategoryUserPost.Name</td>
+                                <td>@item.CreateDay</td>
+                                <td>
+                                    @{
+                                        if (item.Status == -1)
+                                        {
+                                            <span>Đã từ chối</span>
+                                        }
+                                        else if (item.Status == 0)
+                                        {
+                                            <span>Đang Chờ duyệt</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Đã duyệt</span>
+                                        }
+                                    }
+                                    <a id="statusPost" class="statusPost" data-target="#statuspost"
+                                       data-toggle="modal"
+                                       data-path="@Url.Action("Change", "Post", new { @id = @item.ID })">
+                                        Tác vụ
+                                    </a>
+                                </td>
+                                <td>
+                                    @{
+                                        if (item.IsDelete == true)
+                                        {
+                                            <span>Đã xóa</span>
+                                        }
+                                        else
+                                        {
+                                            <span>OK</span>
+                                        }
+                                    }
+
+                                </td>
+                                <td style="width: 10%;">
+                                    <a href="/Admin/post/Edit/@item.ID">Edit</a>  ||
+                                    <a id="deletepost" class="deletepost" data-target="#basic"
+                                       data-toggle="modal"
+                                       data-path="@Url.Action("Delete", "Post", new { @id = @item.ID })">
+
+
+                                        @{ if (item.IsDelete == true)
+                                            {
+                                                <span>Khôi phục</span>
+                                            }
+                                            else
+                                            {
+                                                <span>Xóa</span>
+                                            }
+                                        }
+                                    </a>
+
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -43,7 +43,7 @@ namespace DCCovid.Controllers
                 var user2 = new User();
                 foreach (var i in listroomofuser)
                 {
-                    if(i.Messages != null)
+                    if(i.Messages.Count > 0)
                     {
                         listuser2 = i.Users.Where(d => d.ID != user.ID).ToList();
                         user2 = db.Users.Find(listuser2.Last().ID);

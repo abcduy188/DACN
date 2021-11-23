@@ -17,17 +17,18 @@ namespace DCCovid.Controllers
             List<Image> listimg = db.Images.Where(d => d.Type == "POST").OrderBy(d => d.ID).ToList();
             ViewBag.ListImg = listimg;
             Load();
-            return View(db.PostCMTs.ToList().Where(d => d.IsDelete == false && d.PostID == null));
+            return View(db.PostCMTs.ToList().Where(d => d.IsDelete == false && d.PostID == null && d.Status == 1));
         }
+        #region json 
+        //public ActionResult GetData()
+        //{
+        //    db.Configuration.ProxyCreationEnabled = false;
+        //    var results = db.PostCMTs.ToList();
+        //    var img = db.Images.Where(d => d.Type == "POST").ToList();
 
-        public ActionResult GetData()
-        {
-            db.Configuration.ProxyCreationEnabled = false;
-            var results = db.PostCMTs.ToList();
-            var img = db.Images.Where(d => d.Type == "POST").ToList();
-
-            return Json(new { Data = results, TotalItems = results.Count, listimg = img, TotalImg = img.Count }, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(new { Data = results, TotalItems = results.Count, listimg = img, TotalImg = img.Count }, JsonRequestBehavior.AllowGet);
+        //}
+        #endregion
         // GET: Posts/Details/5
         public ActionResult Details(long id)
         {
@@ -67,6 +68,7 @@ namespace DCCovid.Controllers
                 post.UserID = sess.UserID;
                 post.LikeCount = 0;
                 post.CreateDay = DateTime.Now;
+                post.Status = 0;
                 db.PostCMTs.Add(post);
                 db.SaveChanges();
                 HttpFileCollectionBase files = Request.Files; 
@@ -85,7 +87,7 @@ namespace DCCovid.Controllers
                     }
 
                 }
-                SetAlert("Đã tạo bài viết", "success");
+                SetAlert("Bài viết của bạn đang chở QTV duyệt", "warning");
                 if (post.PostID != null)
                 {
                     string url = "/Post/Details/" + sesspost.PostID;
