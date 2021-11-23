@@ -3,20 +3,21 @@ using DCCovid.Models;
 using DCCovid.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace DCCovid.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         // GET: User
         private DCCovidDbcontext db = new DCCovidDbcontext();
         public ActionResult Index()
         {
             var sess = Session["MEMBER"] as UserLogin;
-           
+            Load();
             if(sess !=null)
             {
                 User user = db.Users.Find(sess.UserID);
@@ -28,6 +29,32 @@ namespace DCCovid.Controllers
                 return Redirect("/home/Error");
             }
            
+        }
+        public ActionResult Message()
+        {
+            var sess = Session["MEMBER"] as UserLogin;
+            Load();
+            if (sess != null)
+            {
+                User user = db.Users.Find(sess.UserID);
+                var listroomofuser = user.Rooms.ToList();
+                var listuser = new List<User>();
+                var listuser2 = new List<User>();
+                var user2 = new User();
+                foreach (var i in listroomofuser)
+                {
+                    if(i.Messages != null)
+                    {
+                        listuser2 = i.Users.Where(d => d.ID != user.ID).ToList();
+                        user2 = db.Users.Find(listuser2.Last().ID);
+                        listuser.Add(user2);
+                    }
+                }
+               
+                return View(listuser);
+            }
+            else
+            return View();
         }
         public ActionResult GetData()
         {
@@ -42,6 +69,7 @@ namespace DCCovid.Controllers
             Session.Add("url", strURL);
             return View();
         }
+        
         public ActionResult Register()
         {
             ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name");
@@ -98,7 +126,8 @@ namespace DCCovid.Controllers
                         {
                            
                             Session.Add("MEMBER", userSession);
-                           
+
+                            
                             if (Session["url"] != null)
                             {
                                 return Redirect(Session["url"].ToString());
@@ -223,24 +252,60 @@ namespace DCCovid.Controllers
 
             return View();
         }
-        public ActionResult Like(long id)
+        public ActionResult Like(long id, string strURL)
         {
             var sess = Session["MEMBER"] as UserLogin;
 
             CategoryUserPost post = db.CategoryUserPosts.Find(id);
+            var listcate = db.CategoryUserPosts.Where(d=>d.ID != post.ID).ToList();
             User user = db.Users.Find(sess.UserID);
-            post.Users.Add(user);
-            db.SaveChanges();
+            if(post.ID == 1)
+            {
+                foreach (var item in listcate)
+                {
+                    item.Users.Add(user);
+                    
+                }
+                post.Users.Add(user);
+                db.SaveChanges();
+            }
+            else
+            {
+                post.Users.Add(user);
+                db.SaveChanges();
+            }
+            if (strURL != null)
+            {
+                return Redirect(strURL);
+            }
             return Redirect("/User/UpdateSex");
         }
-        public ActionResult DisLike(long id)
+        public ActionResult DisLike(long id, string strURL)
         {
             var sess = Session["MEMBER"] as UserLogin;
 
             CategoryUserPost post = db.CategoryUserPosts.Find(id);
+            var listcate = db.CategoryUserPosts.Where(d => d.ID != post.ID).ToList();
             User user = db.Users.Find(sess.UserID);
-            post.Users.Remove(user);
-            db.SaveChanges();
+            if (post.ID == 1)
+            {
+                foreach (var item in listcate)
+                {
+                    item.Users.Remove(user);
+
+                }
+                post.Users.Remove(user);
+                db.SaveChanges();
+            }
+            else
+            {
+                post.Users.Remove(user);
+                db.SaveChanges();
+            }
+            if (strURL != null)
+            {
+                return Redirect(strURL);
+            }
             return Redirect("/User/UpdateSex");
         }
         [HttpPost]
@@ -339,6 +404,7 @@ namespace DCCovid.Controllers
             user.GroupID = "MEM";
             user.CategoryID = 1;
             user.SexID = 1;
+            user.BirthDay = model.BirthDay;
             user.CreateDate = DateTime.Now;
             user.Code = Random();
             user.Iscouple = 0;
@@ -374,22 +440,114 @@ namespace DCCovid.Controllers
 
             new Mail().SendMail(AddressEmail, "Lấy lại mật khẩu từ DCDGear", content);
         }
-        protected void SetAlert(string message, string type)
-        {   //temdata = viewbag
-            TempData["AlertMessage"] = message;
-            if (type == "success")
+      
+
+        public ActionResult getUser()
+        {
+             db.Configuration.ProxyCreationEnabled = false;
+            var sess = Session["MEMBER"] as UserLogin;
+            var user = db.Users.Find(sess.UserID);
+
+            return Json(new { data = user }, JsonRequestBehavior.AllowGet);
+        }    
+
+        public ActionResult Info(long? id)
+        {
+            Load();
+            if(id == null)
             {
-                TempData["AlertType"] = "alert-success";
+                SetAlert("Vui lòng đăng nhập trước khi vào trang này", "error");
+                return Redirect("/user/login");
             }
-            else if (type == "warning")
+            else
             {
-                TempData["AlertType"] = "alert-warning";
-            }
-            else if (type == "error")
-            {
-                TempData["AlertType"] = "alert-danger";
+                var user = db.Users.Find(id);
+                return View();
             }
         }
+        public ActionResult ChangeInfo(long id)
+        {
+            Load();
+            var user = db.Users.Find(id);
+            ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name",user.SexID);
+            ViewBag.cate = db.CategoryUserPosts.ToList();
+            return View(user);
+        }
+        [HttpPost]
+        public ActionResult ChangeInfo(User model)
+        {
+            var user = db.Users.Find(model.ID);
+            if (ModelState.IsValid)
+            {
+                ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name", user.SexID);
+               
+                user.Name = model.Name;
+                user.Address = model.Address;
+                user.Phone = model.Phone;
+                user.SexID = model.SexID;
+                if(model.BirthDay != null)
+                {
+                    user.BirthDay = model.BirthDay;
+                }
+                HttpFileCollectionBase files = Request.Files; //lấy file 
+                for (int i = 0; i < files.Count; i++) //đi qua lần lượt các file => lưu file
+                {
+                    HttpPostedFileBase fileUpload = files[i];
+                    var fileName = Path.GetFileName(fileUpload.FileName);
+                    if (fileName != "")
+                    {
+                        var path = Path.Combine(Server.MapPath("~/Assets/Thumbnails/"), fileName);
+                        fileUpload.SaveAs(path);
+                        user.ImageUser = fileName; // gọi hàm thêm ảnh, truyền vào id và tên ảnh
+                    }
+                }
+                db.SaveChanges();
+                SetAlert("Cập nhật thông tin thành công", "success");
 
+            }
+            else
+            {
+                SetAlert("Cập nhật thông tin thất bại", "error");
+                return View();
+            }
+            string red = "/user/info/" + user.ID;
+            return Redirect(red);
+        }
+        
+        [HttpPost]
+        public ActionResult ChangePassWord(CPWViewModel model)
+        {
+            var sess = Session["MEMBER"] as UserLogin;
+            var user = db.Users.Find(sess.UserID);
+           
+            if(user.PassWord != Encryptor.MD5Hash(model.OldPassWord))
+            {
+                SetAlert("Đổi mật khẩu Thất bại", "success");
+                return Json(new { success = false, message = "Passwordold not match", JsonRequestBehavior.AllowGet });
+            }
+            else
+            {
+                user.PassWord = Encryptor.MD5Hash(model.NewPassWord);
+                db.SaveChanges();
+            }
+            SetAlert("Đổi mật khẩu thành công", "success");
+            return Json(new { success = true, message = "Updated Successfully", JsonRequestBehavior.AllowGet });
+        }
+        public void InsertIMG(long id, string fileName)
+        {
+            var img = new Image();
+            img.FileName = fileName;
+            img.Type = "USER";
+            img.TypeID = id;
+            db.Images.Add(img);
+            db.SaveChanges();
+        }
+        public ActionResult Profile(long id)
+        {
+            var user = db.Users.Find(id);
+            ViewBag.listpost = db.PostCMTs.Where(d => d.IsDelete == false && d.PostID == null && d.UserID == id).ToList();
+            return View(user);
+
+        }
     }
 }

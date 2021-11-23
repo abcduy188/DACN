@@ -10,20 +10,24 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Collections;
+using PagedList;
 
 namespace DCCovid.Controllers
 {
-    public class MessageController : Controller
+    public class MessageController : BaseController
     {
         private DCCovidDbcontext db = new DCCovidDbcontext();
-        public ActionResult Index()
+        public ActionResult Index(int page = 1, int pageSize = 10)
         {
+          
             var sessroom = Session["Room"] as RoomLogin;
             var room = db.Rooms.Find(sessroom.RoomID);
-            var messages = db.Messages.Include(m => m.Room).Include(m => m.User).Where(m => m.RoomID == room.ID);
-            ViewBag.Mess = messages.ToList();
+            var messages = db.Messages.Include(m => m.Room).Include(m => m.User).Where(m => m.RoomID == room.ID).OrderByDescending(d=>d.ID);
+            ViewBag.Mess = messages.ToPagedList(page, pageSize);
             List<Image> listimg = db.Images.Where(d => d.Type == "MESS").OrderBy(d => d.ID).ToList();
             ViewBag.ListImg = listimg;
+
+            Load();
             return View();
         }
 
@@ -43,9 +47,13 @@ namespace DCCovid.Controllers
             {
 
                 var demo = GiveMeANumber();
+                if(demo == -1)
+                {
+                    return Redirect("/user");
+                }    
                 User user2 = db.Users.Find(demo);
-                room.Name = ("Find@@@" + user.Name + user2.Name ).ToString();
-                string namechange = ("Find@@@" + user2.Name + user.Name).ToString();
+                room.Name = ("Find@@@" + user.ID + user2.ID ).ToString();
+                string namechange = ("Find@@@" + user2.ID + user.ID).ToString();
                 if (db.Rooms.Count(d => d.Name == room.Name) > 0 || db.Rooms.Count(d => d.Name == namechange) > 0)
                 {
                     var sessroom = new RoomLogin();
@@ -57,6 +65,7 @@ namespace DCCovid.Controllers
                     sessroom.RoomID = room1.ID;
                     sessroom.Name = room1.Name;
                     Session.Add("Room", sessroom);
+
                     return Redirect("/Message/Index");
                 }
                 else
@@ -87,6 +96,7 @@ namespace DCCovid.Controllers
                 {
                     message.RoomID = room.ID;
                     message.UserID = user.ID;
+                    message.Status = true;
                     message.CreateDate = DateTime.Now;
                     db.Messages.Add(message);
                     db.SaveChanges();
@@ -167,10 +177,14 @@ namespace DCCovid.Controllers
             {
                 ar.Add(i.ID);
             }    
+            if(ar.Count!=0)
+            {
+                Random r = new Random();
+                int index = r.Next(0, ar.Count - 1);
+                return (long)ar[index];
+            }
+            return -1;
             
-            Random r = new Random();
-            int index = r.Next(0, ar.Count - 1);
-            return (long)ar[index];
         }
 
     }

@@ -1,0 +1,41 @@
+﻿@model DCCovid.Models.User
+
+@{
+    ViewBag.Title = "Profile";
+    var listpost = (List<DCCovid.Models.PostCMT>)ViewBag.listpost;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dd>
+            <img src="~/Assets/Thumbnails/@Model.ImageUser" style="height:400px" />
+
+        </dd>
+        <dt>Tên</dt>
+        <dd>@Model.Name</dd>
+        <dt>Ngày sinh</dt>
+        <dd>@Model.BirthDay.Value.ToString("dd/MM")</dd>
+    </dl>
+    <form action="/Room/Create/@Model.ID" , method="post">
+
+        <input type="submit" value="Nhắn tin" class="btn">
+    </form>
+    @foreach (var i in listpost)
+    {
+        <div>
+            <img src="~/Assets/Thumbnails/@i.User.ImageUser" style="height:100px" />
+            @i.User.Name
+        </div>
+        <div>
+            @i.Title
+        </div>
+        <div>
+            <img src="~/Assets/Thumbnails/@i.Image" style="height:500px" />
+        </div>
+        <div>
+            <a href="/post/details/@i.ID">Binh luan</a>
+        </div>
+    }
+</div>

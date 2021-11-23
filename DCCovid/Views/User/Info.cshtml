@@ -1,0 +1,121 @@
+﻿@model DCCovid.ViewModel.CPWViewModel
+
+@{
+    ViewBag.Title = "Info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section js{
+    <script>
+        var Popup;
+        $(document).ready(function () {
+            getUser();
+            
+        });
+        function getUser() {
+            $.ajax({
+                url: '/user/getUser',
+                type: 'GET',
+                success: function (res) {
+                    {
+                        var items = res.data;
+                        var sex = res.sex;
+                        html = "";
+
+                        html += "<h4>" + items.Name + "</h4><hr/><dl class='dl-horizontal' >"
+                        html += "<dd><img src=/Assets/Thumbnails/" + items.ImageUser + " style='width:300px; border-radius: 50%' /></dd>";
+
+                        html += "<dt>Email</dt>";
+                        html += "<dd>" + items.Email + "</dd>";
+                        html += "<dt>Ngay Sinh</dt>";
+
+
+                        var date = moment(items.BirthDay).format('MM/DD/YYYY');
+                        html += "<dd>" + date + "</dd>";
+                        html += "<dt>Địa chỉ</dt>";
+                        html += "<dd>" + items.Address + "</dd>";
+                        html += "<dt>SĐT</dt>";
+                        html += "<dd>" + items.Phone + "</dd>";
+                        html += "<dt> Giới tính</dt>";
+                        if (items.SexID == 3) {
+                            html += "<dd> Nữ</dd>";
+                        } else if (items.SexID == 2) {
+                            html += "<dd> Nam</dd>";
+                        } else {
+
+                            html += "<dd> Không xác định </dd>";
+                        }
+                        html += "<a href = '/user/changeinfo/" + items.ID + "'>Doi thong tin</a> ||||| ";
+                        html += "<a id='deleteUser' class='deleteUser' data-target='#modalchangepass' data-toggle='modal'>Đổi mật khẩu</a>";
+                        $('#showuser').html(html);
+                    }
+                }
+            });
+        }
+        function Okela() {
+           
+                var oldpass = $('#old').val();
+                var newpass = $('#new').val();
+                var renew = $('#renew').val();
+                var model = {
+                    OldPassWord: oldpass,
+                    NewPassWord: newpass,
+                    ConfirmPassWord: renew
+                };
+                $.ajax({
+                    url: '/user/changepassword',
+                    type: 'POST',
+                    data: model,
+                    success: function (resu) {
+                        if (resu.success) { 
+                            getUser();
+                            $('#modalchangepass').modal("hide");
+                        }
+                    }
+                })
+            
+        }
+       
+    </script>
+
+
+}
+<div class="container">
+    <div id="PlaceHolderHere"></div>
+    <h2>Thoong tin</h2>
+
+    <div id="showuser" style="align-content">
+
+    </div>
+
+    <div class="modal fade" id="modalchangepass" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">Đổi mật khẩu</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="fname">Mật khẩu cũ</label><br>
+                        <input type="password" id="old" name="fname" value="" required class="form-control"><br>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fname">Mật khẩu mới</label><br>
+                        <input type="password" id="new" name="fname" value="" required class="form-control"><br>
+                    </div>
+                    <div class="form-group">
+                        <label for="fname">nhập lại Mật khẩu mới</label><br>
+                        <input type="password" id="renew" name="fname" value="" required class="form-control"><br>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
+                    <button type="button" id="btnChange" onclick="Okela()" class="btn btn-primary">Đổi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

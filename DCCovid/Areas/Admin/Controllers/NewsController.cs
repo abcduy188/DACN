@@ -60,6 +60,7 @@ namespace DCCovid.Areas.Admin.Controllers
                     @new.CreateBy = session.Email;
                     @new.Image = fileName;
                     @new.CreateDate = DateTime.Now;
+                    @new.IsDelete = false;
                     db.News.Add(@new);
                     db.SaveChanges();
                     SetAlert("Thêm tin tức thành công", "success");
@@ -124,6 +125,7 @@ namespace DCCovid.Areas.Admin.Controllers
                     news.Status = @new.Status;
                     news.ModifiedDate = DateTime.Now;
                     news.ModifiedBy = session.Email;
+                   
                     db.SaveChanges();
                     SetAlert("Sửa tin tức thành công", "success");
                     return RedirectToAction("Index", "New");
@@ -166,7 +168,14 @@ namespace DCCovid.Areas.Admin.Controllers
         public ActionResult Delete(long id)
         {
             var user = db.News.Find(id);
-            db.News.Remove(user);
+            if(user.IsDelete == true)
+            {
+                user.IsDelete = false;
+            }
+            else
+            {
+                user.IsDelete = true;
+            }
             db.SaveChanges();
             SetAlert("Xoa thanh cong", "error");
             return RedirectToAction("Index");

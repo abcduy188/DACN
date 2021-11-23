@@ -27,6 +27,10 @@ namespace DCCovid.ViewModel
         [Required(ErrorMessage = "Thông tin bắt buộc!!")]
         public string Name { set; get; }
 
+        [Display(Name = "Ngày sinh")]
+        [DataType(DataType.Date)]
+        public DateTime? BirthDay { get; set; }
+
         [Display(Name = "Số điện thoại")]
         [StringLength(11, MinimumLength = 10, ErrorMessage = "Số điện thoại có độ dài 10 hoặc 11 số")]
         [Phone(ErrorMessage = "Số điện thoại có dạng số 0-9")]

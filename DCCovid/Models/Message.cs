@@ -21,6 +21,7 @@ namespace DCCovid.Models
         public Nullable<int> TypeID { get; set; }
         public Nullable<System.DateTime> CreateDate { get; set; }
         public Nullable<bool> IsDelete { get; set; }
+        public Nullable<bool> Status { get; set; }
     
         public virtual Room Room { get; set; }
         public virtual User User { get; set; }

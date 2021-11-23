@@ -56,6 +56,29 @@
                 });
             }
         }
+         function Create() {
+            if (confirm('Bật chế độ tìm bạn nhắn tin?')) {
+
+                $.ajax({
+
+                    type: "POST",
+                    url: '/room/create',
+                    success: function (data) {
+
+                        if (data.success) {
+                            LoadData();
+                            window.location.reload();
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+
+                        }
+                    }
+
+                });
+            }
+        }
          function Cancel() {
             if (confirm('Hủy nhắn tin với người này?')) {
 
@@ -81,43 +104,88 @@
         }
     </script>
 }
+<div class="container">
+    @*<h2>Tìm bạn nhắn tin</h2>
+    @{
+        var user = db.Users.Find(sess.UserID);
+        if (user.Iscouple == 0)
+        {
+            <h4>Chưa kích hoạt <a class="btn btn-danger btn-sm" style="margin-left: 5px" onclick="Delete(@user.ID)"><i class="fa fa-trash"></i>Kích hoạt</a></h4>
+        }
+        else if (user.Iscouple == 1)
+        {
 
-<h2>Tìm bạn nhắn tin</h2>
-@{
-    var user = db.Users.Find(sess.UserID);
-    if (user.Iscouple == 0)
-    {
-        <h4>Chưa kích hoạt <a class="btn btn-danger btn-sm" style="margin-left: 5px" onclick="Delete(@user.ID)"><i class="fa fa-trash"></i>Kích hoạt</a></h4>
-    }
-    else if (user.Iscouple == 1)
-    {
-
-        <h4>Đã kích hoạt <a class="btn btn-success btn-sm" style="margin-left: 5px" onclick=Delete(@user.ID)><i class="fa fa-trash"></i>Bắt đầu tìm kiếm</a></h4>
-        <p>
-            <a href="/Room/Create">Tạo phòng</a>
-        </p>
-    }
-    else
-    {
-        <h4>Đang có người nhắn tin<a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
-        <p>
-            <form action="/Room/Create" method="post">
-                <input type="submit" value="vào phòng" />
-            </form>
-        </p>
-    }
-}
+            <h4>  Đã kích hoạt <a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
+            <p>
+                Đợi chờ quá lâu? <a href="/Room/Create">Click vào đây để tìm người nhắn tin</a>
+            </p>
+        }
+        else
+        {
+            <h4>Đang có người nhắn tin<a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
+            <p>
+                <form action="/Room/Create" method="post">
+                    <input type="submit" value="vào phòng" />
+                </form>
+            </p>
+        }
+    }*@
 
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody id="showdata">
-    </tbody>
-</table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var listmess = item.Messages.OrderByDescending(d => d.ID).Take(1).ToList();
+                <tr>
+
+
+
+                    @{
+                        if (listmess.Count != 0)
+                        {
+                            var mess = listmess.Last();
+                            if (mess.Status == true && mess.UserID != sess.UserID)
+                            {
+                                var messses = new DCCovid.Common.MessSes();
+                                messses.MessID = mess.ID;
+                                Session.Add("messses", messses);
+                                <td><b><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></b></td>
+                                <td>
+                                    <form action="/Room/Create/@item.ID" , method="post">
+
+                                        <input type="submit" value="Nhắn tin" class="btn">
+                                    </form>
+                                </td>
+                            }
+                            else
+                            {
+                                <td><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></td>
+                                <td><form action="/Room/Create/@item.ID" , method="post"><input type="submit" value="Nhắn tin" class="btn"></form></td>
+                            }
+                        }
+                        else
+                        {
+                            <td><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></td>
+                            <td><form action="/Room/Create/@item.ID" , method="post"><input type="submit" value="Nhắn tin" class="btn"></form></td>
+                        }
+
+
+                    }
+
+
+
+                </tr>
+
+            }
+        </tbody>
+    </table>
+    </div>

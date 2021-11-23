@@ -33,19 +33,28 @@ namespace DCCovid.Controllers
 
                 }
             }
-            foreach(var i in roomd.Messages.ToList())
+            if(roomd.ID == 0)
             {
-                db.Messages.Remove(i);
+                user.Iscouple = 0;
                 db.SaveChanges();
             }
-            foreach(var u in roomd.Users.ToList())
+            else
             {
-                u.Iscouple = 0;
+                foreach (var i in roomd.Messages.ToList())
+                {
+                    db.Messages.Remove(i);
+                    db.SaveChanges();
+                }
+                foreach (var u in roomd.Users.ToList())
+                {
+                    u.Iscouple = 0;
+                    db.SaveChanges();
+                }
+                db.Rooms.Remove(roomd);
+                user.Iscouple = 0;
                 db.SaveChanges();
             }
-            db.Rooms.Remove(roomd);
-            user.Iscouple = 0;
-            db.SaveChanges();
+            Session.Remove("messses");
             return Json(new { success = true, message = "Changed Successfully", JsonRequestBehavior.AllowGet });
 
         }
@@ -59,6 +68,9 @@ namespace DCCovid.Controllers
         {
             if (ModelState.IsValid)
             {
+                var cou = new CountSes();
+                var count = Session["CountSes"] as CountSes;
+                int counttime = count.Count;
                 var sessroom = new RoomLogin();
                 var sess = Session["MEMBER"] as UserLogin;
                 User user = db.Users.Find(sess.UserID);
@@ -75,7 +87,10 @@ namespace DCCovid.Controllers
                             roomd = db.Rooms.Find(item.ID);
                         }
                     }
-
+                    if(roomd.ID ==null)
+                    {
+                        return Redirect("/user");
+                    }    
                     sessroom.RoomID = roomd.ID;
                     sessroom.Name = roomd.Name;
                     Session.Add("Room", sessroom);
@@ -83,8 +98,20 @@ namespace DCCovid.Controllers
                 }
                 else
                 {
-                    room.Name = (user.Name + user2.Name).ToString();
-                    string namechange = (user2.Name + user.Name).ToString();
+                    var messses = Session["messses"] as MessSes;
+                    if(messses!= null)
+                    {
+                        var mes = db.Messages.Find(messses.MessID);
+                        mes.Status = false;
+                        counttime--;
+                        cou.Count = counttime;
+                        Session.Add("CountSes", cou);
+                        db.SaveChanges();
+                    }    
+                   
+                    room.Name = (user.ID + user2.ID).ToString();
+
+                    string namechange = (user2.ID + user.ID).ToString();
                     if (db.Rooms.Count(d => d.Name == room.Name) > 0 || db.Rooms.Count(d => d.Name == namechange) > 0)
                     {
 

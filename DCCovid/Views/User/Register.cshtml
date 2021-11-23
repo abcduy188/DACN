@@ -18,36 +18,42 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="inputfield">
                 @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-              
-                    @Html.TextBoxFor(model => model.Email, new { @class = "input" })
-                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-               
+
+                @Html.TextBoxFor(model => model.Email, new { @class = "input" })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+
             </div>
             <div class="inputfield">
                 @Html.LabelFor(model => model.PassWord, htmlAttributes: new { @class = "control-label col-md-2" })
-                
-                    @Html.PasswordFor(model => model.PassWord, new { @class = "input" })
-                    @Html.ValidationMessageFor(model => model.PassWord, "", new { @class = "text-danger" })
-               
+
+                @Html.PasswordFor(model => model.PassWord, new { @class = "input" })
+                @Html.ValidationMessageFor(model => model.PassWord, "", new { @class = "text-danger" })
+
             </div>
 
             <div class="inputfield">
                 @Html.LabelFor(model => model.ConfirmPassWord, htmlAttributes: new { @class = "control-label col-md-2" })
-               
-                    @Html.PasswordFor(model => model.ConfirmPassWord, new { @class = "input" })
-                    @Html.ValidationMessageFor(model => model.ConfirmPassWord, "", new { @class = "text-danger" })
-               
+
+                @Html.PasswordFor(model => model.ConfirmPassWord, new { @class = "input" })
+                @Html.ValidationMessageFor(model => model.ConfirmPassWord, "", new { @class = "text-danger" })
+
             </div>
 
 
             <div class="inputfield">
                 @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-               
-                    @Html.TextBoxFor(model => model.Name, new { @class = "input" })
-                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-               
-            </div>
 
+                @Html.TextBoxFor(model => model.Name, new { @class = "input" })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+
+            </div>
+            <div class="inputfield">
+                @Html.LabelFor(model => model.BirthDay, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                @Html.EditorFor(model => model.BirthDay, new { @class = "input" })
+                @Html.ValidationMessageFor(model => model.BirthDay, "", new { @class = "text-danger" })
+
+            </div>
             <div class="inputfield">
                 @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
 
@@ -56,7 +62,7 @@
 
             </div>
 
-            
+
             <div class="inputfield terms">
                 <label class="check">
                     <input type="checkbox">

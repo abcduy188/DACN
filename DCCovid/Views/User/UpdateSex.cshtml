@@ -42,13 +42,13 @@
                         if (item.Users.Count(d => d.ID == sess.UserID) != 0)
                         {
                             <div class="inputfield">
-                                @item.Name  @Html.ActionLink("Bo thich", "DisLike", new { id = item.ID })
+                                @item.Name  @Html.ActionLink("Bỏ chọn", "DisLike", new { id = item.ID })
                             </div>
                         }
                         else
                         {
                             <div class="inputfield">
-                                @item.Name  @Html.ActionLink("Yeu thich", "Like", new { id = item.ID })
+                                @item.Name  @Html.ActionLink("Chọn", "Like", new { id = item.ID })
                             </div>
                         }
                     }

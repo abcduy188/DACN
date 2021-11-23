@@ -67,44 +67,69 @@
                     <tbody>
                         @foreach (var item in listUser)
                         {
-                            <tr id="row_@item.ID">
-                                <td style="width: 30%;">@item.Name</td>
-                                <td style="width: 15%;"><img src="@Url.Content("/Assets/Thumbnails/" + item.Image)" width="auto" height="100" /></td>
-                                <td style="width: 15%;">@item.Category.Name</td>
-                                <td>
-                                    @{
-                                        if (item.ModifiedDate == null)
+                        <tr id="row_@item.ID">
+                            <td style="width: 30%;">@item.Name</td>
+                            <td style="width: 15%;"><img src="@Url.Content("/Assets/Thumbnails/" + item.Image)" width="auto" height="100" /></td>
+                            <td style="width: 15%;">@item.Category.Name</td>
+                            <td>
+                                @{
+                                    if (item.ModifiedDate == null)
+                                    {
+                                        <span>@item.CreateDate (Ngày tạo)</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@item.ModifiedDate (Ngày chỉnh sửa)</span>
+                                    }
+                                }
+
+                            </td>
+                            <td>
+                                @{
+                                    if (item.Status == true)
+                                    {
+                                        <span>Đang hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Đang tạm khóa</span>
+                                    }
+                                }
+
+                            </td>
+                            <td>
+                                @{
+                                    if (item.IsDelete == true)
+                                    {
+                                        <span>Đã xóa</span>
+                                    }
+                                    else
+                                    {
+                                        <span>OK</span>
+                                    }
+                                }
+
+                            </td>
+                            <td style="width: 10%;">
+                                <a href="/Admin/news/Edit/@item.ID">Edit</a>  ||
+                                <a id="deleteNew" class="deleteNew" data-target="#basic"
+                                   data-toggle="modal"
+                                   data-path="@Url.Action("Delete", "News", new { @id = @item.ID })">
+
+
+                                    @{ if (item.IsDelete == true)
                                         {
-                                            <span>@item.CreateDate (Ngày tạo)</span>
+                                            <span>Khôi phục</span>
                                         }
                                         else
                                         {
-                                            <span>@item.ModifiedDate (Ngày chỉnh sửa)</span>
+                                            <span>Xóa</span>
                                         }
                                     }
+                                </a>
 
-                                </td>
-                                <td>
-                                    @{
-                                        if (item.Status == true)
-                                        {
-                                            <span>Đang hoạt động</span>
-                                        }
-                                        else
-                                        {
-                                            <span>Đang tạm khóa</span>
-                                        }
-                                    }
-
-                                </td>
-                                <td style="width: 10%;">
-                                    <a href="/Admin/new/Edit/@item.ID">Edit</a>  ||
-                                    <a id="deleteNew" class="deleteNew" data-target="#basic"
-                                       data-toggle="modal"
-                                       data-path="@Url.Action("Delete", "News", new { @id = @item.ID })">Delete</a>
-
-                                </td>
-                            </tr>
+                            </td>
+                        </tr>
                         }
 
                     </tbody>

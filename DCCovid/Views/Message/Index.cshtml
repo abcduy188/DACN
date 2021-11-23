@@ -1,8 +1,8 @@
 ﻿@model DCCovid.Models.Message
-
+@using PagedList.Mvc;
 @{
     ViewBag.Title = "Index";
-    var listmess = (List<DCCovid.Models.Message>)ViewBag.Mess;
+    var listmess = (PagedList.IPagedList<DCCovid.Models.Message>)ViewBag.Mess;
     var img = (List<DCCovid.Models.Image>)ViewBag.ListImg;
     DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
 }
@@ -47,107 +47,111 @@
     }
 }
 
-
-<table class="table">
-    <tr>
-        <th>
-            Người gửi
-        </th>
-        <th>
-            Nội dung
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in listmess)
-    {
+<div class="container">
+    <table class="table">
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Name)
-            </td>
-            <td>
+            <th>
+                Người gửi
+            </th>
+            <th>
+                Nội dung
+            </th>
+            <th></th>
+        </tr>
 
-                @if (img != null)
-                {
-                    foreach (var image in img.Where(d => d.TypeID == item.ID))
-                    { //từ list hình ảnh ở viewbag, dùng foreach lấy ra  những hình ảnh có typeID = id của product
+        @foreach (var item in listmess.OrderBy(d => d.ID))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Name)
+                </td>
+                <td>
 
-                        <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
-                    }
-                }
-                @Html.DisplayFor(modelItem => item.Text)
-            </td>
-            <td>
-                @{
-
-                    if (sess != null)
+                    @if (img != null)
                     {
-
-                        if (sess.Name == item.User.Name)
+                        foreach (var image in img.Where(d => d.TypeID == item.ID))
                         {
-                            <a id="deleteUser" class="deleteUser" data-target="#basic"
-                               data-toggle="modal"
-                               data-path="@Url.Action("Delete", "Message", new { @id = @item.ID })">Xóa</a>
+
+                            <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
+                        }
+                    }
+                    @Html.DisplayFor(modelItem => item.Text)
+                </td>
+                <td>
+                    @{
+
+                        if (sess != null)
+                        {
+
+                            if (sess.Name == item.User.Name)
+                            {
+                                <a id="deleteUser" class="deleteUser" data-target="#basic"
+                                   data-toggle="modal"
+                                   data-path="@Url.Action("Delete", "Message", new { @id = @item.ID })">Xóa</a>
+                            }
+                            else
+                            {
+                                <span></span>
+                            }
                         }
                         else
                         {
                             <span></span>
                         }
-                    }
-                    else
-                    {
-                        <span></span>
+
                     }
 
-                }
+                </td>
+            </tr>
+        }
 
-            </td>
-        </tr>
+    </table>
+    <div class="pagination" style="margin-left: 400px">
+        <p> Xem tin nhắn cũ hơn ... @Html.PagedListPager(listmess, page => Url.Action("Index", new { page }))</p>
+    </div>
+    @using (Html.BeginForm("Create", "Message", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+                    <img src="" style="height:100px" id="output0" />
+                    <input type="file" name="fileUpload" multiple onchange="loadFile(event)" />
+                </div>
+
+            </div>
+
+
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
     }
+    </div>
+    <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">Delete Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    Xóa tin nhắn này?
 
-</table>
-@using (Html.BeginForm("Create", "Message", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
-                <img src="" style="height:100px" id="output0" />
-                <input type="file" name="fileUpload" multiple onchange="loadFile(event)" />
-            </div>
-
-        </div>
-
-
-
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
+                    <button id="btnContinueDelete" type="button" class="btn btn-primary">Delete</button>
+                </div>
             </div>
         </div>
     </div>
-}
-<div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Delete Confirmation</h4>
-            </div>
-            <div class="modal-body">
-                Xóa tin nhắn này?
-
-            </div>
-            <div class="modal-footer">
-                <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
-                <button id="btnContinueDelete" type="button" class="btn btn-primary">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>

@@ -3,18 +3,20 @@
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<h2>Bấm "Bắt đầu !!!" để bắt đầu tìm kiếm người trò chuyện!!</h2>
 @using (Html.BeginForm("Create", "Message", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>Post</h4>
+        <h4>Bắt đầu nhắn tin</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
       
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class = "control-label col-md-2">Nội dung</label>
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })

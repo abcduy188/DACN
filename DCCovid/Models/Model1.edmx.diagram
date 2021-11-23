@@ -4,13 +4,13 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="b7f5447dd7b4422ab995782b6ea1fd64" Name="Diagram1">
+      <Diagram DiagramId="2999460f2a04436895a77b793e0e6bf1" Name="Diagram1">
         <EntityTypeShape EntityType="DCDCovidModel.Category" Width="1.5" PointX="7.75" PointY="11.625" IsExpanded="true" />
         <EntityTypeShape EntityType="DCDCovidModel.CategoryUserPost" Width="1.5" PointX="0.75" PointY="4.5" IsExpanded="true" />
         <EntityTypeShape EntityType="DCDCovidModel.Image" Width="1.5" PointX="9.75" PointY="1.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DCDCovidModel.Message" Width="1.5" PointX="7.5" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="DCDCovidModel.Message" Width="1.5" PointX="7.5" PointY="3.875" IsExpanded="true" />
         <EntityTypeShape EntityType="DCDCovidModel.News" Width="1.5" PointX="10" PointY="8.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="DCDCovidModel.PostCMT" Width="1.5" PointX="3" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DCDCovidModel.PostCMT" Width="1.5" PointX="3" PointY="3.5" IsExpanded="true" />
         <EntityTypeShape EntityType="DCDCovidModel.Product" Width="1.5" PointX="10" PointY="13.5" IsExpanded="true" />
         <EntityTypeShape EntityType="DCDCovidModel.Room" Width="1.5" PointX="3" PointY="8" IsExpanded="true" />
         <EntityTypeShape EntityType="DCDCovidModel.Sex" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
@@ -18,12 +18,12 @@
         <EntityTypeShape EntityType="DCDCovidModel.User_Group" Width="1.5" PointX="3" PointY="11.125" IsExpanded="true" />
         <AssociationConnector Association="DCDCovidModel.FK_News_ProductCategory" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.FK_Product_ProductCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="DCDCovidModel.FK_PostCMT_CategoryUserPost" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.FK_Message_Room" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.FK_Message_User" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.FK_PostCMT_User" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.FK_User_Sex" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.FK_User_User_Group" ManuallyRouted="false" />
-        <AssociationConnector Association="DCDCovidModel.cate_post" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.cate_user" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.Like" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.user_room" ManuallyRouted="false" />

@@ -7,6 +7,7 @@
     var sesspost = Session["POSt"] as DCCovid.Common.PostSes;
     var cmt = (List<DCCovid.Models.PostCMT>)ViewBag.Cmt;
     var img = (List<DCCovid.Models.Image>)ViewBag.ListImg;
+    var imgpost = (List<DCCovid.Models.Image>)ViewBag.ListImgPost;
 }
 
 @section scripts
@@ -43,22 +44,21 @@
         <dd> @post.CreateBy</dd>
         <dt> Ngày đăng</dt>
         <dd>
-            @*@{
-                    DateTime date1 = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy"));
-                    DateTime date2 = DateTime.Parse(post.CreateDay.Value.ToString("dd/MM/yyyy"));
-                    int result = DateTime.Compare(date1, date2);
-                    if (result > 0)
-                    {
-                        @post.CreateDay.Value.ToString("HH:mm dd/MM")
-                    }
-                    else
-                    {
-                        @post.CreateDay.Value.ToString("HH:mm")
-                    }
-                }*@
+            
             @post.CreateDay.Value.ToString("HH:mm dd/MM")
         </dd>
         <dd> @post.CreateBy</dd>
+        <dt>iMG</dt>
+        <dd>
+            @if (img != null)
+            {
+                foreach (var image in imgpost.Where(d => d.TypeID == post.ID))
+                {
+
+                    <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
+                }
+            }
+        </dd>
         <dt> Lượt thích </dt>
         <dd>
             @{
@@ -118,7 +118,7 @@
                     @if (img != null)
                     {
                         foreach (var image in img.Where(d => d.TypeID == item.ID))
-                        { //từ list hình ảnh ở viewbag, dùng foreach lấy ra  những hình ảnh có typeID = id của product
+                        {
 
                             <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
                         }

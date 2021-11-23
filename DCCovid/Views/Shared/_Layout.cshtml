@@ -6,9 +6,11 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     <link rel="shortcut icon" href="~/Content/img/favicon.png" type="image/png">
     <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href=" https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
-    <link href=" https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet" />
+
     <link rel="stylesheet" href="~/Content/app.css">
     <link rel="stylesheet" href="~/Content/grid.css">
     @Styles.Render("~/Content/css")
@@ -17,6 +19,65 @@
 <body class="loading">
 
     <div class="body-content">
+        <div class="nav-wrapper">
+            <div class="container">
+                <div class="nav">
+                    <a href="/" class="logo">
+                        C<i class="bx bxs-virus-block bx-tada"></i>VID TRACKER
+                    </a>
+                    <ul>
+                        @{Html.RenderAction("NewCategory", "News");}
+                    </ul>
+                    <a href="/post" class="logo">
+                        Sản phẩm
+                    </a>
+                    <a href="/post" class="logo">
+                        Bài viết
+                    </a>
+                    @{
+                        var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
+                        if (sess != null)
+                        {
+
+                            <a href="/user" class="logo">
+                                Bạn bè
+                            </a>
+                            <div id="counthere">
+
+                            </div>
+                            <a href="/user/info/@sess.UserID" class="logo">
+                                @sess.Name
+                            </a>
+                            <a href="/user/logout" class="logo">
+                                Logout
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="/user/login" class="logo">
+                                Login
+                            </a>
+                            <a href="/user/register" class="logo">
+                                Register
+                            </a>
+                        }
+                    }
+
+                    <div class="darkmode-switch" id="darkmode-switch">
+                        <span>
+                            <i class="bx bxs-moon"></i>
+                            <i class="bx bxs-sun"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (TempData["AlertMessage"] != null)
+        {
+            <div id="alertM" class="alert @TempData["AlertType"] hide">
+                @TempData["AlertMessage"]
+            </div>}
+
         @RenderBody()
         <hr />
         <footer>
@@ -29,12 +90,43 @@
             integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.js"></script>
+
     <script src="~/Scripts/app.js"></script>
     <script src="~/Scripts/fetchApi.js"></script>
     <script src="~/Scripts/covidApi.js"></script>
+
     <script src="~/Scripts/JavaScript.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        $(document).ready(function () {
+            //custom alert
+            $('#alertM').removeClass('hide');
+            $('#alertM').delay(1000).slideUp(500);
+            LoadCount();
+
+        });
+        function LoadCount() {
+            $.ajax({
+                url: '/home/Noti',
+                type: 'GET',
+                success: function (res) {
+                    var html = "";
+                    if (res.data > 0) {
+                        html += "<a href = '/user/message' class='logo' ><b>Tin nhắn</b> (" + res.data + ")</a>"
+
+                    }
+                    else {
+                        html += "<a href = '/user/message' class='logo' ><b>Tin nhắn </b></a>"
+                    }
+                    $('#counthere').html(html);
+                }
+            });
+        }
+    </script>
     @RenderSection("scripts", required: false)
     @RenderSection("js", required: false)
 </body>

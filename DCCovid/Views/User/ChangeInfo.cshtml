@@ -1,0 +1,129 @@
+﻿@model DCCovid.Models.User
+
+@{
+    ViewBag.Title = "ChangeInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
+    var listcate = (List<DCCovid.Models.CategoryUserPost>)ViewBag.cate;
+}
+@section scripts
+{
+    <script>
+
+
+        var loadFile = function (event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('output0');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        };
+    </script>
+}
+<div class="container">
+    <h2>ChangeInfo</h2>
+
+    @using (Html.BeginForm("ChangeInfo", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>User</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.ID)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <img src="~/Assets/Thumbnails/@Model.ImageUser" style="height: 100px; border-radius: 50%;" id="output0" />
+            <input type="file" name="fileUpload" multiple onchange="loadFile(event)" />
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.SexID, "SexID", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("SexID", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SexID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.BirthDay, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.BirthDay, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.BirthDay, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Vacxin, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Vacxin, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Vacxin, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+    <div class="col-md-10">
+        <h3>Sở thích</h3>
+        @foreach (var item in listcate)
+        {
+
+
+
+
+            if (sess != null)
+            {
+
+
+                if (item.Users.Count(d => d.ID == Model.ID) != 0)
+                {
+                    <div class="inputfield">
+                        <b>@item.Name</b>  @Html.ActionLink("Bỏ chọn", "DisLike", new { id = item.ID, @strURL = Request.Url.ToString() })
+                    </div>
+                }
+                else
+                {
+                    <div class="inputfield">
+                        @item.Name  @Html.ActionLink("Chọn", "Like", new { id = item.ID, @strURL = Request.Url.ToString() })
+                    </div>
+                }
+
+
+
+            }
+
+
+
+        }
+    </div>
+
+</div>

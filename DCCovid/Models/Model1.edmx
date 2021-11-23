@@ -5,14 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="DCDCovidModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="cate_post">
-          <Key>
-            <PropertyRef Name="PostID" />
-            <PropertyRef Name="CategoryID" />
-          </Key>
-          <Property Name="PostID" Type="bigint" Nullable="false" />
-          <Property Name="CategoryID" Type="bigint" Nullable="false" />
-        </EntityType>
         <EntityType Name="cate_user">
           <Key>
             <PropertyRef Name="UserID" />
@@ -72,6 +64,7 @@
           <Property Name="TypeID" Type="int" />
           <Property Name="CreateDate" Type="datetime" />
           <Property Name="IsDelete" Type="bit" />
+          <Property Name="Status" Type="bit" />
         </EntityType>
         <EntityType Name="News">
           <Key>
@@ -108,6 +101,7 @@
           <Property Name="IsDelete" Type="bit" Nullable="false" />
           <Property Name="CreateDay" Type="datetime" />
           <Property Name="PostID" Type="bigint" />
+          <Property Name="CateID" Type="bigint" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -188,30 +182,6 @@
           <Property Name="UserID" Type="bigint" Nullable="false" />
           <Property Name="RoomID" Type="bigint" Nullable="false" />
         </EntityType>
-        <Association Name="FK_cate_post_CategoryUserPost1">
-          <End Role="CategoryUserPost" Type="Self.CategoryUserPost" Multiplicity="1" />
-          <End Role="cate_post" Type="Self.cate_post" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CategoryUserPost">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="cate_post">
-              <PropertyRef Name="CategoryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_cate_post_PostCMT">
-          <End Role="PostCMT" Type="Self.PostCMT" Multiplicity="1" />
-          <End Role="cate_post" Type="Self.cate_post" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PostCMT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="cate_post">
-              <PropertyRef Name="PostID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_cate_user_CategoryUser">
           <End Role="CategoryUserPost" Type="Self.CategoryUserPost" Multiplicity="1" />
           <End Role="cate_user" Type="Self.cate_user" Multiplicity="*" />
@@ -296,6 +266,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PostCMT_CategoryUserPost">
+          <End Role="CategoryUserPost" Type="Self.CategoryUserPost" Multiplicity="0..1" />
+          <End Role="PostCMT" Type="Self.PostCMT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CategoryUserPost">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PostCMT">
+              <PropertyRef Name="CateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PostCMT_User">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="PostCMT" Type="Self.PostCMT" Multiplicity="*" />
@@ -369,7 +351,6 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="DCDCovidModelStoreContainer">
-          <EntitySet Name="cate_post" EntityType="Self.cate_post" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cate_user" EntityType="Self.cate_user" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryUserPost" EntityType="Self.CategoryUserPost" Schema="dbo" store:Type="Tables" />
@@ -384,14 +365,6 @@
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Group" EntityType="Self.User_Group" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="user_room" EntityType="Self.user_room" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_cate_post_CategoryUserPost1" Association="Self.FK_cate_post_CategoryUserPost1">
-            <End Role="CategoryUserPost" EntitySet="CategoryUserPost" />
-            <End Role="cate_post" EntitySet="cate_post" />
-          </AssociationSet>
-          <AssociationSet Name="FK_cate_post_PostCMT" Association="Self.FK_cate_post_PostCMT">
-            <End Role="PostCMT" EntitySet="PostCMT" />
-            <End Role="cate_post" EntitySet="cate_post" />
-          </AssociationSet>
           <AssociationSet Name="FK_cate_user_CategoryUser" Association="Self.FK_cate_user_CategoryUser">
             <End Role="CategoryUserPost" EntitySet="CategoryUserPost" />
             <End Role="cate_user" EntitySet="cate_user" />
@@ -419,6 +392,10 @@
           <AssociationSet Name="FK_News_ProductCategory" Association="Self.FK_News_ProductCategory">
             <End Role="Category" EntitySet="Category" />
             <End Role="News" EntitySet="News" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PostCMT_CategoryUserPost" Association="Self.FK_PostCMT_CategoryUserPost">
+            <End Role="CategoryUserPost" EntitySet="CategoryUserPost" />
+            <End Role="PostCMT" EntitySet="PostCMT" />
           </AssociationSet>
           <AssociationSet Name="FK_PostCMT_User" Association="Self.FK_PostCMT_User">
             <End Role="User" EntitySet="User" />
@@ -474,7 +451,7 @@
           </Key>
           <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="PostCMTs" Relationship="Self.cate_post" FromRole="CategoryUserPost" ToRole="PostCMT" />
+          <NavigationProperty Name="PostCMTs" Relationship="Self.FK_PostCMT_CategoryUserPost" FromRole="CategoryUserPost" ToRole="PostCMT" />
           <NavigationProperty Name="Users" Relationship="Self.cate_user" FromRole="CategoryUserPost" ToRole="User" />
         </EntityType>
         <EntityType Name="Image">
@@ -497,6 +474,7 @@
           <Property Name="TypeID" Type="Int32" />
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
           <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="Status" Type="Boolean" />
           <NavigationProperty Name="Room" Relationship="Self.FK_Message_Room" FromRole="Message" ToRole="Room" />
           <NavigationProperty Name="User" Relationship="Self.FK_Message_User" FromRole="Message" ToRole="User" />
         </EntityType>
@@ -536,8 +514,9 @@
           <Property Name="IsDelete" Type="Boolean" Nullable="false" />
           <Property Name="CreateDay" Type="DateTime" Precision="3" />
           <Property Name="PostID" Type="Int64" />
+          <Property Name="CateID" Type="Int64" />
+          <NavigationProperty Name="CategoryUserPost" Relationship="Self.FK_PostCMT_CategoryUserPost" FromRole="PostCMT" ToRole="CategoryUserPost" />
           <NavigationProperty Name="User" Relationship="Self.FK_PostCMT_User" FromRole="PostCMT" ToRole="User" />
-          <NavigationProperty Name="CategoryUserPosts" Relationship="Self.cate_post" FromRole="PostCMT" ToRole="CategoryUserPost" />
           <NavigationProperty Name="Users" Relationship="Self.Like" FromRole="PostCMT" ToRole="User" />
         </EntityType>
         <EntityType Name="Product">
@@ -647,6 +626,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PostCMT_CategoryUserPost">
+          <End Role="CategoryUserPost" Type="Self.CategoryUserPost" Multiplicity="0..1" />
+          <End Role="PostCMT" Type="Self.PostCMT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CategoryUserPost">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PostCMT">
+              <PropertyRef Name="CateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Message_Room">
           <End Role="Room" Type="Self.Room" Multiplicity="0..1" />
           <End Role="Message" Type="Self.Message" Multiplicity="*" />
@@ -707,10 +698,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="cate_post">
-          <End Role="CategoryUserPost" Type="Self.CategoryUserPost" Multiplicity="*" />
-          <End Role="PostCMT" Type="Self.PostCMT" Multiplicity="*" />
-        </Association>
         <Association Name="cate_user">
           <End Role="CategoryUserPost" Type="Self.CategoryUserPost" Multiplicity="*" />
           <End Role="User" Type="Self.User" Multiplicity="*" />
@@ -743,6 +730,10 @@
             <End Role="Category" EntitySet="Categories" />
             <End Role="Product" EntitySet="Products" />
           </AssociationSet>
+          <AssociationSet Name="FK_PostCMT_CategoryUserPost" Association="Self.FK_PostCMT_CategoryUserPost">
+            <End Role="CategoryUserPost" EntitySet="CategoryUserPosts" />
+            <End Role="PostCMT" EntitySet="PostCMTs" />
+          </AssociationSet>
           <AssociationSet Name="FK_Message_Room" Association="Self.FK_Message_Room">
             <End Role="Room" EntitySet="Rooms" />
             <End Role="Message" EntitySet="Messages" />
@@ -762,10 +753,6 @@
           <AssociationSet Name="FK_User_User_Group" Association="Self.FK_User_User_Group">
             <End Role="User_Group" EntitySet="User_Group" />
             <End Role="User" EntitySet="Users" />
-          </AssociationSet>
-          <AssociationSet Name="cate_post" Association="Self.cate_post">
-            <End Role="CategoryUserPost" EntitySet="CategoryUserPosts" />
-            <End Role="PostCMT" EntitySet="PostCMTs" />
           </AssociationSet>
           <AssociationSet Name="cate_user" Association="Self.cate_user">
             <End Role="CategoryUserPost" EntitySet="CategoryUserPosts" />
@@ -831,6 +818,7 @@
                 <ScalarProperty Name="TypeID" ColumnName="TypeID" />
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -869,6 +857,7 @@
                 <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
                 <ScalarProperty Name="CreateDay" ColumnName="CreateDay" />
                 <ScalarProperty Name="PostID" ColumnName="PostID" />
+                <ScalarProperty Name="CateID" ColumnName="CateID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -948,14 +937,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="cate_post" TypeName="DCDCovidModel.cate_post" StoreEntitySet="cate_post">
-            <EndProperty Name="CategoryUserPost">
-              <ScalarProperty Name="ID" ColumnName="CategoryID" />
-            </EndProperty>
-            <EndProperty Name="PostCMT">
-              <ScalarProperty Name="ID" ColumnName="PostID" />
-            </EndProperty>
-          </AssociationSetMapping>
           <AssociationSetMapping Name="cate_user" TypeName="DCDCovidModel.cate_user" StoreEntitySet="cate_user">
             <EndProperty Name="CategoryUserPost">
               <ScalarProperty Name="ID" ColumnName="CateID" />

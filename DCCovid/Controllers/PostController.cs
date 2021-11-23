@@ -9,28 +9,29 @@ using System.Web.Mvc;
 
 namespace DCCovid.Controllers
 {
-    public class PostController : Controller
+    public class PostController : BaseController
     {
         private DCCovidDbcontext db = new DCCovidDbcontext();
         public ActionResult Index()
         {
             List<Image> listimg = db.Images.Where(d => d.Type == "POST").OrderBy(d => d.ID).ToList();
             ViewBag.ListImg = listimg;
+            Load();
             return View(db.PostCMTs.ToList().Where(d => d.IsDelete == false && d.PostID == null));
         }
-       
+
         public ActionResult GetData()
         {
             db.Configuration.ProxyCreationEnabled = false;
             var results = db.PostCMTs.ToList();
             var img = db.Images.Where(d => d.Type == "POST").ToList();
-            
+
             return Json(new { Data = results, TotalItems = results.Count, listimg = img, TotalImg = img.Count }, JsonRequestBehavior.AllowGet);
         }
         // GET: Posts/Details/5
         public ActionResult Details(long id)
         {
-                var sesspost = new PostSes();
+            var sesspost = new PostSes();
             sesspost.PostID = id;
             Session.Add("Post", sesspost);
 
@@ -42,18 +43,22 @@ namespace DCCovid.Controllers
             }
             ViewBag.Cmt = db.PostCMTs.Where(d => d.PostID == id && d.PostID != null).ToList();
             List<Image> listimg = db.Images.Where(d => d.Type == "CMT").OrderBy(d => d.ID).ToList();
+            List<Image> listimgpost = db.Images.Where(d => d.Type == "POST" && d.TypeID == id).OrderBy(d => d.ID).ToList();
             ViewBag.ListImg = listimg;
+            ViewBag.ListImgPost = listimgpost;
             return View();
         }
 
         // GET: Posts/Create
         public ActionResult Create(long? id)
         {
+            ViewBag.CateID = new SelectList(db.CategoryUserPosts.ToList(), "ID", "Name");
             return View();
         }
         [HttpPost]
         public ActionResult Create(PostCMT post)
         {
+            ViewBag.CateID = new SelectList(db.CategoryUserPosts.ToList(), "ID", "Name");
             var sess = Session["MEMBER"] as UserLogin;
             var sesspost = Session["Post"] as PostSes;
             if (ModelState.IsValid)
@@ -64,9 +69,9 @@ namespace DCCovid.Controllers
                 post.CreateDay = DateTime.Now;
                 db.PostCMTs.Add(post);
                 db.SaveChanges();
-                HttpFileCollectionBase files = Request.Files; //lấy file 
+                HttpFileCollectionBase files = Request.Files; 
 
-                for (int i = 0; i < files.Count; i++) //đi qua lần lượt các file => lưu file
+                for (int i = 0; i < files.Count; i++) 
                 {
                     var fileName = "";
                     HttpPostedFileBase fileUpload = files[i];
@@ -76,11 +81,11 @@ namespace DCCovid.Controllers
 
                         var path = Path.Combine(Server.MapPath("~/Assets/Thumbnails/"), fileName);
                         fileUpload.SaveAs(path);
-                        InsertIMG(post.ID, fileName, post.PostID); // gọi hàm thêm ảnh, truyền vào id và tên ảnh
+                        InsertIMG(post.ID, fileName, post.PostID); 
                     }
 
                 }
-
+                SetAlert("Đã tạo bài viết", "success");
                 if (post.PostID != null)
                 {
                     string url = "/Post/Details/" + sesspost.PostID;
@@ -94,6 +99,7 @@ namespace DCCovid.Controllers
 
         public ActionResult Like(long id, string strURL)
         {
+
             var sess = Session["MEMBER"] as UserLogin;
             Session.Add("url", strURL);
             PostCMT post = db.PostCMTs.Find(id);
@@ -112,10 +118,11 @@ namespace DCCovid.Controllers
             {
                 return RedirectToAction("Index");
             }
-            
+
         }
         public ActionResult DisLike(long id, string strURL)
         {
+
             var sess = Session["MEMBER"] as UserLogin;
             Session.Add("url", strURL);
             PostCMT post = db.PostCMTs.Find(id);
@@ -141,9 +148,10 @@ namespace DCCovid.Controllers
             PostCMT post = db.PostCMTs.Find(id);
             post.IsDelete = true;
             db.SaveChanges();
+            SetAlert("Đã xóa bài viết", "success");
             return RedirectToAction("Index");
         }
-       
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

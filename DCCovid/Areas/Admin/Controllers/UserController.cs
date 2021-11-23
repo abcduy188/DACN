@@ -17,31 +17,35 @@ namespace DCCovid.Areas.Admin.Controllers
             //var user = db.Users.OrderBy(d => d.Name).ToList();
             ViewBag.ListUser = db.Users.ToList();
             ViewBag.GroupID = new SelectList(db.User_Group.ToList(), "ID", "Name");
+            ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name");
             return View();
         }
-        public ActionResult GetData()
-        {
-            db.Configuration.ProxyCreationEnabled = false;
-            var results = db.Users.ToList();
-            return Json(new { Data = results, TotalItems = results.Count }, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult Create()
-        {
-            ViewBag.GroupID = new SelectList(db.User_Group.ToList(), "ID", "Name");
-            return View();
-        }
+        //public ActionResult GetData()
+        //{
+        //    db.Configuration.ProxyCreationEnabled = false;
+        //    var results = db.Users.ToList();
+        //    return Json(new { Data = results, TotalItems = results.Count }, JsonRequestBehavior.AllowGet);
+        //}
+        //public ActionResult Create()
+        //{
+        //    ViewBag.GroupID = new SelectList(db.User_Group.ToList(), "ID", "Name");
+        //    ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name");
+        //    return View();
+        //}
 
-       
+
         public ActionResult Edit(long id )
         {
             var user = db.Users.Find(id);
             ViewBag.GroupID = new SelectList(db.User_Group.ToList(), "ID", "Name", user.GroupID);
+            ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name",user.SexID);
             return PartialView(user);
         }
         [HttpPost]
         public ActionResult Create(User user)
         {
             ViewBag.GroupID = new SelectList(db.User_Group.ToList(), "ID", "Name");
+            ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name");
             var session = (UserLogin)Session["DUY"];
             user.CreateBy = session.Name;
             user.CreateDate = DateTime.Now;
@@ -71,6 +75,7 @@ namespace DCCovid.Areas.Admin.Controllers
         public ActionResult Edit(User entity)
         {
             ViewBag.GroupID = new SelectList(db.User_Group.ToList(), "ID", "Name", entity.GroupID);
+            ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name", entity.SexID);
             if (ModelState.IsValid)
             {
                 var user = db.Users.Find(entity.ID);
@@ -158,7 +163,6 @@ namespace DCCovid.Areas.Admin.Controllers
         public ActionResult Detail(long id)
         {
             User user = db.Users.Find(id);
-
             return PartialView(user);
         }
     }
