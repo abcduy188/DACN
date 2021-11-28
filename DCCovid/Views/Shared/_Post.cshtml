@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title id="site-body1">@ViewBag.Title - My ASP.NET Application</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/Content/Post.css" />
+    <link href=" https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="~/Content/app.css">
+    <link rel="stylesheet" href="~/Content/grid.css">
+    <link href="~/Content/Post.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+        <div class="container">
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         class="crayons-icon">
+                        <path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0111 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 01-1.969 5.617zm-2.006-.742A6.977 6.977 0 0018 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 004.875-1.975l.15-.15z">
+                        </path>
+                    </svg>
+                </button>
+            </form>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" style="padding-left: 00px;">
+                @*<ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Viết Bài<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Chat</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Đăng Nhập</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Đăng Ký</a>
+                        </li>
+                    </ul>*@
+                <ul class="navbar-nav mr-auto">
+
+                    <li class="nav-item active">
+                        <a href="#" title="" class="nav-link">Tin tức</a>
+                        @*<ul class="navbar-nav mr-auto">
+                                @{Html.RenderAction("NewCategory", "News");}
+                            </ul>*@
+                    </li>
+                    <li class="nav-item active">
+                        <a href="/post" class="nav-link">
+                            Sản phẩm
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a href="/post" class="nav-link">
+                            Bài viết
+                        </a>
+                    </li>
+
+                    @{
+                        var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
+                        if (sess != null)
+                        {
+                            <li class="nav-item active">
+                                <a href="/user" class="nav-link">
+                                    Bạn bè
+                                </a>
+                            </li>
+                            <li class="nav-item active">
+                                <div id="counthere1" class="nav-link">
+
+                                </div>
+                            </li>
+                            <li class="nav-item active">
+                                <a href="/user/info/@sess.UserID" class="nav-link">
+                                    @sess.Name
+                                </a>
+                            </li>
+                            <li class="nav-item active">
+                                <a href="/user/logout" class="nav-link">
+                                    Logout
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item active">
+                                <a href="/user/login" class="nav-link">
+                                    Login
+                                </a>
+                            </li>
+                            <li class="nav-item active">
+                                <a href="/user/register" class="nav-link">
+                                    Register
+                                </a>
+                            </li>
+                        }
+                    }
+                    <li class="nav-item active">
+                        @{ Html.RenderAction("CartPartial", "Cart");}
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    <div>
+        @if (TempData["AlertMessage"] != null)
+        {
+            <div id="alertM" class="alert @TempData["AlertType"] hide">
+                @TempData["AlertMessage"]
+            </div>}
+
+        @RenderBody()
+    </div>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"
+            integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="
+            crossorigin="anonymous"></script>
+    @*<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="~/Scripts/app.js"></script>
+
+    <script src="~/Scripts/fetchApi.js"></script>
+    <script src="~/Scripts/covidApi.js"></script>
+
+    <script src="~/Scripts/JavaScript.js"></script>
+    <script>
+        $(document).ready(function () {
+            //custom alert
+            $('#alertM').removeClass('hide');
+            $('#alertM').delay(1000).slideUp(500);
+            LoadCount1();
+
+        });
+
+        function LoadCount1() {
+            $.ajax({
+                url: '/home/Noti',
+                type: 'GET',
+                success: function (res) {
+                    var html = "";
+                    var title = document.title;
+                    if (res.data > 0) {
+                        html += "<a class='nav-link' href = '/user/message' >Tin nhắn(" + res.data + ")</a>"
+
+                        var newTitle = '(' + res.data + ') ' + title;
+                        document.title = newTitle;
+                    }
+                    else {
+                        html += "<a href = '/user/message' >Tin nhắn</a>"
+                    }
+                    $('#counthere1').html(html);
+                }
+            });
+        }
+        function newUpdate() {
+            update = setInterval(LoadCount, 2000);
+        }
+        var docBody = document.getElementById('site-body1');
+        docBody.onload = newUpdate;
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

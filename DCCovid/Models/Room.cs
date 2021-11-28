@@ -24,6 +24,7 @@ namespace DCCovid.Models
         public long ID { get; set; }
         public string Name { get; set; }
         public Nullable<bool> IsDelete { get; set; }
+        public Nullable<long> LastMess { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Message> Messages { get; set; }

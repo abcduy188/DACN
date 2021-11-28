@@ -42,7 +42,7 @@ namespace DCCovid.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.Cmt = db.PostCMTs.Where(d => d.PostID == id && d.PostID != null).ToList();
+            ViewBag.Cmt = db.PostCMTs.Where(d => d.PostID == id && d.PostID != null && d.IsDelete == false).ToList();
             List<Image> listimg = db.Images.Where(d => d.Type == "CMT").OrderBy(d => d.ID).ToList();
             List<Image> listimgpost = db.Images.Where(d => d.Type == "POST" && d.TypeID == id).OrderBy(d => d.ID).ToList();
             ViewBag.ListImg = listimg;
@@ -145,12 +145,16 @@ namespace DCCovid.Controllers
         }
         // POST: Posts/Delete/5
         [HttpGet, ActionName("Delete")]
-        public ActionResult DeleteConfirmed(long id)
+        public ActionResult DeleteConfirmed(long id, string strURL)
         {
             PostCMT post = db.PostCMTs.Find(id);
             post.IsDelete = true;
             db.SaveChanges();
-            SetAlert("Đã xóa bài viết", "success");
+            SetAlert("Đã xóa", "success");
+            if(strURL!= null)
+            {
+                return Redirect(strURL);
+            }    
             return RedirectToAction("Index");
         }
 

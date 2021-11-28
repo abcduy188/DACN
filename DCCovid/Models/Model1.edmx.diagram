@@ -19,7 +19,13 @@
         <AssociationConnector Association="DCDCovidModel.FK_News_ProductCategory" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.FK_Product_ProductCategory" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.FK_PostCMT_CategoryUserPost" ManuallyRouted="false" />
-        <AssociationConnector Association="DCDCovidModel.FK_Message_Room" ManuallyRouted="false" />
+        <AssociationConnector Association="DCDCovidModel.FK_Message_Room" ManuallyRouted="true" >
+          <ConnectorPoint PointX="4.5" PointY="9.3480029296875" />
+          <ConnectorPoint PointX="5.916666666666667" PointY="9.3480029296875" />
+          <ConnectorPoint PointX="6.083333333333333" PointY="9.3480029296875" />
+          <ConnectorPoint PointX="8.25" PointY="9.3480029296875" />
+          <ConnectorPoint PointX="8.25" PointY="6.8167936197916656" />
+        </AssociationConnector>
         <AssociationConnector Association="DCDCovidModel.FK_Message_User" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.FK_PostCMT_User" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.FK_User_Sex" ManuallyRouted="false" />
@@ -27,6 +33,11 @@
         <AssociationConnector Association="DCDCovidModel.cate_user" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.Like" ManuallyRouted="false" />
         <AssociationConnector Association="DCDCovidModel.user_room" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="DCDCovidModel.Order" Width="1.5" PointX="7.5" PointY="0.75" />
+        <EntityTypeShape EntityType="DCDCovidModel.OrderDetail" Width="1.5" PointX="12.25" PointY="9" />
+        <AssociationConnector Association="DCDCovidModel.FK_Order_User" />
+        <AssociationConnector Association="DCDCovidModel.FK_OrderDetail_Order" />
+        <AssociationConnector Association="DCDCovidModel.FK_OrderDetail_Product" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

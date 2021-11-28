@@ -3,6 +3,7 @@
     ViewBag.Title = "Message";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
+   
     DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
 }
 @section js{
@@ -133,9 +134,8 @@
                         var mess = listmess.Last();
                         if (mess.Status == true && mess.UserID != sess.UserID)
                         {
-                            var messses = new DCCovid.Common.MessSes();
-                            messses.MessID = mess.ID;
-                            Session.Add("messses", messses);
+                           
+                            
                             <td><b><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></b></td>
                             <td>
                                 <form action="/Room/Create/@item.ID" , method="post">

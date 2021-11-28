@@ -19,14 +19,34 @@ namespace DCCovid.Controllers
         private DCCovidDbcontext db = new DCCovidDbcontext();
         public ActionResult Index(int page = 1, int pageSize = 10)
         {
-          
+
             var sessroom = Session["Room"] as RoomLogin;
             var room = db.Rooms.Find(sessroom.RoomID);
-            var messages = db.Messages.Include(m => m.Room).Include(m => m.User).Where(m => m.RoomID == room.ID).OrderByDescending(d=>d.ID);
+            var messages = db.Messages.Include(m => m.Room).Include(m => m.User).Where(m => m.RoomID == room.ID).OrderByDescending(d => d.ID);
             ViewBag.Mess = messages.ToPagedList(page, pageSize);
             List<Image> listimg = db.Images.Where(d => d.Type == "MESS").OrderBy(d => d.ID).ToList();
             ViewBag.ListImg = listimg;
+            var sess = Session["MEMBER"] as UserLogin;
+           
+            if (sess != null)
+            {
+                User user = db.Users.Find(sess.UserID);
+                var listroomofuser = user.Rooms.ToList();
+                var listuser = new List<User>();
+                var listuser2 = new List<User>();
+                var user2 = new User();
+                foreach (var i in listroomofuser)
+                {
+                    if (i.Messages.Count > 0)
+                    {
+                        listuser2 = i.Users.Where(d => d.ID != user.ID).ToList();
+                        user2 = db.Users.Find(listuser2.Last().ID);
+                        listuser.Add(user2);
+                    }
+                }
 
+                ViewBag.User = listuser;
+            }
             Load();
             return View();
         }
@@ -37,22 +57,22 @@ namespace DCCovid.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
         public ActionResult Create([Bind(Include = "ID,RoomID,UserID,Text")] Message message)
         {
             var sess = Session["MEMBER"] as UserLogin;
             var user = db.Users.Find(sess.UserID);
             Room room = new Room();
-            if (message.Text == "Bắt đầu !!!")
+            if (message.Text == "Bắt đầu !!!" && message.TypeID == 1)
             {
 
                 var demo = GiveMeANumber();
-                if(demo == -1)
+                if (demo == -1)
                 {
                     return Redirect("/user");
-                }    
+                }
                 User user2 = db.Users.Find(demo);
-                room.Name = ("Find@@@" + user.ID + user2.ID ).ToString();
+                room.Name = ("Find@@@" + user.ID + user2.ID).ToString();
                 string namechange = ("Find@@@" + user2.ID + user.ID).ToString();
                 if (db.Rooms.Count(d => d.Name == room.Name) > 0 || db.Rooms.Count(d => d.Name == namechange) > 0)
                 {
@@ -84,21 +104,26 @@ namespace DCCovid.Controllers
                     db.SaveChanges();
                     return Redirect("/Message/Index");
                 }
-               
+
             }
             else
             {
-               
+
                 var sessroom = Session["Room"] as RoomLogin;
-             
-                 room = db.Rooms.Find(sessroom.RoomID);
+
+                room = db.Rooms.Find(sessroom.RoomID);
                 if (ModelState.IsValid)
                 {
                     message.RoomID = room.ID;
                     message.UserID = user.ID;
                     message.Status = true;
                     message.CreateDate = DateTime.Now;
+
                     db.Messages.Add(message);
+
+                    db.SaveChanges();
+                    room.LastMess = message.ID;
+
                     db.SaveChanges();
                     HttpFileCollectionBase files = Request.Files; //lấy file 
                     for (int i = 0; i < files.Count; i++) //đi qua lần lượt các file => lưu file
@@ -117,7 +142,7 @@ namespace DCCovid.Controllers
                     return RedirectToAction("Index");
                 }
             }
-           
+
             return View(message);
         }
 
@@ -173,18 +198,18 @@ namespace DCCovid.Controllers
             var sess = Session["MEMBER"] as UserLogin;
             User user = db.Users.Find(sess.UserID);
             ArrayList ar = new ArrayList();
-            foreach (var i in db.Users.Where(d=>d.ID!= sess.UserID && d.Isdelete == false && d.Iscouple == 1).ToList())
+            foreach (var i in db.Users.Where(d => d.ID != sess.UserID && d.Isdelete == false && d.Iscouple == 1).ToList())
             {
                 ar.Add(i.ID);
-            }    
-            if(ar.Count!=0)
+            }
+            if (ar.Count != 0)
             {
                 Random r = new Random();
                 int index = r.Next(0, ar.Count - 1);
                 return (long)ar[index];
             }
             return -1;
-            
+
         }
 
     }

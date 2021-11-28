@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title id="site-body">@ViewBag.Title - My ASP.NET Application</title>
     <link rel="shortcut icon" href="~/Content/img/favicon.png" type="image/png">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -13,62 +13,97 @@
 
     <link rel="stylesheet" href="~/Content/app.css">
     <link rel="stylesheet" href="~/Content/grid.css">
+    <link href="~/Content/Post.css" rel="stylesheet" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <link href="~/Content/a.css" rel="stylesheet" />
 </head>
 <body class="loading">
 
     <div class="body-content">
         <div class="nav-wrapper">
+
             <div class="container">
                 <div class="nav">
                     <a href="/" class="logo">
                         C<i class="bx bxs-virus-block bx-tada"></i>VID TRACKER
                     </a>
-                    <ul>
-                        @{Html.RenderAction("NewCategory", "News");}
-                    </ul>
-                    <a href="/post" class="logo">
-                        Sản phẩm
-                    </a>
-                    <a href="/post" class="logo">
-                        Bài viết
-                    </a>
-                    @{
-                        var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
-                        if (sess != null)
-                        {
 
-                            <a href="/user" class="logo">
-                                Bạn bè
-                            </a>
-                            <div id="counthere">
 
-                            </div>
-                            <a href="/user/info/@sess.UserID" class="logo">
-                                @sess.Name
-                            </a>
-                            <a href="/user/logout" class="logo">
-                                Logout
-                            </a>
-                        }
-                        else
-                        {
-                            <a href="/user/login" class="logo">
-                                Login
-                            </a>
-                            <a href="/user/register" class="logo">
-                                Register
-                            </a>
-                        }
-                    }
+                    <nav>
+                        <ul>
 
-                    <div class="darkmode-switch" id="darkmode-switch">
-                        <span>
-                            <i class="bx bxs-moon"></i>
-                            <i class="bx bxs-sun"></i>
-                        </span>
-                    </div>
+                            <li>
+                                <a href="#" title="Khóa học chuyên đề">Tin tức</a>
+                                <ul>
+                                    @{Html.RenderAction("NewCategory", "News");}
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="/post">
+                                    Sản phẩm
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/post">
+                                    Bài viết
+                                </a>
+                            </li>
+
+                            @{
+                                var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
+                                if (sess != null)
+                                {
+                                    <li>
+                                        <a href="/user">
+                                            Bạn bè
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div id="counthere">
+
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a href="/user/info/@sess.UserID">
+                                            @sess.Name
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/user/logout">
+                                            Logout
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="/user/login">
+                                            Login
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/user/register">
+                                            Register
+                                        </a>
+                                    </li>
+                                }
+                            }
+
+                        </ul>
+
+                    </nav>
+
+                </div>
+
+
+
+                @{ Html.RenderAction("CartPartial", "Cart");}
+                <div class="darkmode-switch" id="darkmode-switch">
+                    <span>
+                        <i class="bx bxs-moon"></i>
+                        <i class="bx bxs-sun"></i>
+                    </span>
                 </div>
             </div>
         </div>
@@ -91,8 +126,17 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
     <script src="~/Scripts/app.js"></script>
+
     <script src="~/Scripts/fetchApi.js"></script>
     <script src="~/Scripts/covidApi.js"></script>
 
@@ -102,6 +146,7 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     <script>
+
         $(document).ready(function () {
             //custom alert
             $('#alertM').removeClass('hide');
@@ -109,25 +154,36 @@
             LoadCount();
 
         });
+
         function LoadCount() {
             $.ajax({
                 url: '/home/Noti',
                 type: 'GET',
                 success: function (res) {
                     var html = "";
+                    var title = document.title;
                     if (res.data > 0) {
-                        html += "<a href = '/user/message' class='logo' ><b>Tin nhắn</b> (" + res.data + ")</a>"
+                        html += "<a href = '/user/message' >Tin nhắn(" + res.data + ")</a>"
 
+                        var newTitle = '(' + res.data + ') ' + title;
+                        document.title = newTitle;
                     }
                     else {
-                        html += "<a href = '/user/message' class='logo' ><b>Tin nhắn </b></a>"
+                        html += "<a href = '/user/message' >Tin nhắn</a>"
                     }
                     $('#counthere').html(html);
                 }
             });
         }
+        function newUpdate() {
+            update = setInterval(LoadCount, 2000);
+        }
+        var docBody = document.getElementById('site-body');
+        docBody.onload = newUpdate;
     </script>
     @RenderSection("scripts", required: false)
     @RenderSection("js", required: false)
 </body>
 </html>
+
+

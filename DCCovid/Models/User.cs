@@ -22,6 +22,7 @@ namespace DCCovid.Models
             this.CategoryUserPosts = new HashSet<CategoryUserPost>();
             this.PostCMTs1 = new HashSet<PostCMT>();
             this.Rooms = new HashSet<Room>();
+            this.Orders = new HashSet<Order>();
         }
     
         public long ID { get; set; }
@@ -57,5 +58,7 @@ namespace DCCovid.Models
         public virtual ICollection<PostCMT> PostCMTs1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Room> Rooms { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

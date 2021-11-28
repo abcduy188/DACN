@@ -1,0 +1,45 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,400;1,500;1,600;1,700&family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Lora', serif;
+    font-family: 'Poppins', sans-serif;
+}
+
+.nav-link {
+    color: black;
+}
+
+    .nav-link:hover {
+        color: blueviolet;
+    }
+
+#avatar {
+    width: 40px;
+    height: 50px;
+    clip-path: circle(75px at 50% 50%);
+    border-radius: 50%;
+}
+
+.user > a {
+    color: black;
+    text-decoration: none;
+}
+
+.post > img {
+    width: 500px;
+    height: 100%;
+}
+
+.list {
+    display: flex;
+}
+
+.title > b {
+    font-size: 30px;
+}
+
+.user-comment {
+    border-radius: 3px;
+    background: white;
+    box-shadow: 0 0 0 1px grey;
+}

@@ -5,7 +5,7 @@
 {
     var child = Model.Where(d => d.ParentID == item.ID);
     var hasChild = child.Count() > 0;
-    <li>
+    <li class="nav-item active">
         <a href="/news/Category/@item.ID ">
             @item.Name
             @if (hasChild == true)
@@ -14,10 +14,10 @@
             }
         </a>
         <!-- menu con sổ ngang cấp 1 -->
-        <ul>
+        <ul class="navbar-nav mr-auto">
             @foreach (var childItem in child)
             {
-                <li>
+                <li class="nav-item active">
                     <a href="/tin-tuc/@childItem.SeoTitle-@childItem.ID ">@childItem.Name</a>
                 </li>
             }

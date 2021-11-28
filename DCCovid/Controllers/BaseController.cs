@@ -19,19 +19,17 @@ namespace DCCovid.Controllers
                 var user = db.Users.Find(sess.UserID);
                 var listroom = user.Rooms.ToList();
                 var count = 0;
-                var Listmess = new List<Message>();
+                var mess = new Message();
                 foreach (var i in listroom)
                 {
-                    Listmess = i.Messages.OrderByDescending(d => d.ID).Take(1).ToList();
-                    if (Listmess.Count != 0)
+                    mess = db.Messages.Find(i.LastMess);
+                    if(mess != null)
                     {
-                        var mess = Listmess.Last();
-
                         if (mess.Status == true && mess.UserID != sess.UserID)
                         {
                             count++;
                         }
-                    }
+                    }    
                 }
                 var cou = new CountSes();
                 cou.Count = count;

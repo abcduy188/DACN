@@ -12,35 +12,25 @@ namespace DCCovid.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Product
+    public partial class Order
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Product()
+        public Order()
         {
             this.OrderDetails = new HashSet<OrderDetail>();
         }
     
         public long ID { get; set; }
-        public string Name { get; set; }
-        public string SeoTitle { get; set; }
-        public string Code { get; set; }
-        public string Description { get; set; }
-        public string Image { get; set; }
-        public Nullable<long> CategoryID { get; set; }
-        public Nullable<decimal> Price { get; set; }
-        public Nullable<decimal> PromotionPrice { get; set; }
-        public Nullable<int> Quantity { get; set; }
-        public string Detail { get; set; }
-        public bool Status { get; set; }
-        public string CreateBy { get; set; }
+        public Nullable<long> UserID { get; set; }
         public Nullable<System.DateTime> CreateDate { get; set; }
-        public string ModifiedBy { get; set; }
-        public Nullable<System.DateTime> ModifiedDate { get; set; }
-        public Nullable<System.DateTime> TopHot { get; set; }
-        public int ViewCount { get; set; }
-        public Nullable<bool> IsDelete { get; set; }
+        public int Status { get; set; }
+        public string ShipName { get; set; }
+        public string ShipPhone { get; set; }
+        public string ShipAddress { get; set; }
+        public string ShipEmail { get; set; }
+        public Nullable<decimal> TotalPrice { get; set; }
     
-        public virtual Category Category { get; set; }
+        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }

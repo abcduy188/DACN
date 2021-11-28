@@ -2,6 +2,8 @@
 @using PagedList.Mvc;
 @{
     ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Post.cshtml";
+    var listuser = (List<DCCovid.Models.User>)ViewBag.User;
     var listmess = (PagedList.IPagedList<DCCovid.Models.Message>)ViewBag.Mess;
     var img = (List<DCCovid.Models.Image>)ViewBag.ListImg;
     DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
@@ -25,6 +27,16 @@
             };
             reader.readAsDataURL(event.target.files[0]);
         };
+
+        (function () {
+            var target = $('#target')[0];
+            $("#source").scroll(function () {
+                target.prop("scrollTop", this.scrollTop)
+                    .prop("scrollLeft", this.scrollLeft);
+            });
+        })();
+        var chatHistory = document.getElementById("target");
+        chatHistory.scrollTop = chatHistory.scrollHeight;
     </script>
 }
 @{ var room = Session["Room"] as DCCovid.Common.RoomLogin;
@@ -36,7 +48,7 @@
         {
             if (i.ID != sess.UserID)
             {
-                <h2>@i.Name</h2>
+                <h4>@i.Name</h4>
             }
 
         }
@@ -46,112 +58,268 @@
         <h2>Bạn ẩn danh</h2>
     }
 }
-
-<div class="container">
-    <table class="table">
-        <tr>
-            <th>
-                Người gửi
-            </th>
-            <th>
-                Nội dung
-            </th>
-            <th></th>
-        </tr>
-
-        @foreach (var item in listmess.OrderBy(d => d.ID))
-        {
+<!--#region part1  -->
+@*<div class="container">
+        <table class="table">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.User.Name)
-                </td>
-                <td>
+                <th>
+                    Người gửi
+                </th>
+                <th>
+                    Nội dung
+                </th>
+                <th></th>
+            </tr>
 
-                    @if (img != null)
-                    {
-                        foreach (var image in img.Where(d => d.TypeID == item.ID))
+            @foreach (var item in listmess.OrderBy(d => d.ID))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.User.Name)
+                    </td>
+                    <td>
+
+                        @if (img != null)
                         {
-
-                            <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
-                        }
-                    }
-                    @Html.DisplayFor(modelItem => item.Text)
-                </td>
-                <td>
-                    @{
-
-                        if (sess != null)
-                        {
-
-                            if (sess.Name == item.User.Name)
+                            foreach (var image in img.Where(d => d.TypeID == item.ID))
                             {
-                                <a id="deleteUser" class="deleteUser" data-target="#basic"
-                                   data-toggle="modal"
-                                   data-path="@Url.Action("Delete", "Message", new { @id = @item.ID })">Xóa</a>
+
+                                <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
+                            }
+                        }
+                        @item.Text
+                    </td>
+                    <td>
+                        @{
+
+                            if (sess != null)
+                            {
+
+                                if (sess.Name == item.User.Name)
+                                {
+                                    <a id="deleteUser" class="deleteUser" data-target="#basic"
+                                       data-toggle="modal"
+                                       data-path="@Url.Action("Delete", "Message", new { @id = @item.ID })">Xóa</a>
+                                }
+                                else
+                                {
+                                    <span></span>
+                                }
                             }
                             else
                             {
                                 <span></span>
                             }
+
+                        }
+
+                    </td>
+                </tr>
+            }
+
+        </table>
+        <div class="pagination" style="margin-left: 400px">
+            <p> Xem tin nhắn cũ hơn ... @Html.PagedListPager(listmess, page => Url.Action("Index", new { page }))</p>
+        </div>
+        @using (Html.BeginForm("Create", "Message", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+                        <img src="" style="height:100px" id="output0" />
+                        <input type="file" name="fileUpload" multiple onchange="loadFile(event)" />
+                    </div>
+
+                </div>
+
+
+
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>*@
+
+<!--#endregion-->
+
+<div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Delete Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                Xóa tin nhắn này?
+
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
+                <button id="btnContinueDelete" type="button" class="btn btn-primary">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="padding-top:50px">
+    <div class="row">
+        <div class="col-4">
+            <div id="source" class="scroll-example" style="width: 380px; height: 300px ;">
+                @foreach (var i in listuser)
+                {
+                <div style="display: flex; padding-top:15px; padding-left:10px">
+
+                    <div>
+                        <img src="~/Assets/Thumbnails/avticon.png" height="40px" width="40px">
+
+                    </div>
+                    <form action="/Room/Create/@i.ID" , method="post">
+
+                        <input type="submit" value="@i.Name" class="btn">
+                    </form>
+
+                </div>
+                }
+
+
+            </div>
+
+        </div>
+        <div class="col-8">
+
+            <div id="target" class="scroll-example" style="width: 100%;height: 350px;">
+                <div class="row">
+
+                    @foreach (var item in listmess.OrderBy(d => d.ID))
+                    {
+                        if (item.User.ID != sess.UserID)
+                        {
+                            <div class="col-12 user1">
+                                <b> @item.User.Name</b>
+                                <p>
+
+
+                                    @item.Text
+
+
+                                </p>
+                                @if (img != null)
+                                {
+                                    foreach (var image in img.Where(d => d.TypeID == item.ID))
+                                    {
+
+                                        <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
+                                    }
+                                }
+                            </div>
                         }
                         else
                         {
-                            <span></span>
+                            <div class="col-12 user2" style="text-align: end;margin-top: 25px;">
+                                <b>@item.User.Name</b>
+                                <p>
+
+
+                                    @item.Text
+
+
+                                </p>
+                                @if (img != null)
+                                {
+                                    foreach (var image in img.Where(d => d.TypeID == item.ID))
+                                    {
+
+                                        <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
+                                    }
+                                }
+
+                            </div>
+
                         }
+
+                        @*{
+
+                                if (sess != null)
+                                {
+
+                                    if (sess.Name == item.User.Name)
+                                    {
+                                        <a id="deleteUser" class="deleteUser" data-target="#basic"
+                                           data-toggle="modal"
+                                           data-path="@Url.Action("Delete", "Message", new { @id = @item.ID })">Xóa</a>
+                                    }
+                                    else
+                                    {
+                                        <span></span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span></span>
+                                }
+
+                            }*@
+
+
 
                     }
 
-                </td>
-            </tr>
+                </div>
+            </div>
+
+            @using (Html.BeginForm("Create", "Message", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+
+
+                <div style="display:flex">
+                    <div>
+                        @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control", @style = "width:550px", @required = "required", @placeholder = "Thêm bình luận..." } })
+                        @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-offset-2 col-md-10">
+
+                        <button type="submit" style="background:#ffffff"><i class="fas fa-location-arrow"></i></button>
+                    </div>
+                </div>
+                <div style="margin-top:15px">
+                    <img src="" style="height:100px" id="output0" />
+                    <input type="file" name="fileUpload" onchange="loadFile(event)" />
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .scroll-example {
+        display: inline-block;
+        width: 40%;
+        height: 500px;
+        overflow: hidden;
+        border: 1px solid black;
+        margin-right: 20px;
+        height: 100px;
+        overflow: auto;
+    }
+
+        .scroll-example::-webkit-scrollbar {
+            display: none;
         }
 
-    </table>
-    <div class="pagination" style="margin-left: 400px">
-        <p> Xem tin nhắn cũ hơn ... @Html.PagedListPager(listmess, page => Url.Action("Index", new { page }))</p>
-    </div>
-    @using (Html.BeginForm("Create", "Message", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        @Html.AntiForgeryToken()
-
-        <div class="form-horizontal">
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
-                    <img src="" style="height:100px" id="output0" />
-                    <input type="file" name="fileUpload" multiple onchange="loadFile(event)" />
-                </div>
-
-            </div>
-
-
-
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create" class="btn btn-default" />
-                </div>
-            </div>
-        </div>
+    .scroll-example {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
-    </div>
-    <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title">Delete Confirmation</h4>
-                </div>
-                <div class="modal-body">
-                    Xóa tin nhắn này?
-
-                </div>
-                <div class="modal-footer">
-                    <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
-                    <button id="btnContinueDelete" type="button" class="btn btn-primary">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
+</style>

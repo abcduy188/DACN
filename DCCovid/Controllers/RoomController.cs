@@ -19,7 +19,7 @@ namespace DCCovid.Controllers
         }
         public ActionResult CancelChat()
         {
-          
+
             var sess = Session["MEMBER"] as UserLogin;
             User user = db.Users.Find(sess.UserID);
             var listroom = user.Rooms.ToList();
@@ -33,7 +33,7 @@ namespace DCCovid.Controllers
 
                 }
             }
-            if(roomd.ID == 0)
+            if (roomd.ID == 0)
             {
                 user.Iscouple = 0;
                 db.SaveChanges();
@@ -87,10 +87,7 @@ namespace DCCovid.Controllers
                             roomd = db.Rooms.Find(item.ID);
                         }
                     }
-                    if(roomd.ID ==null)
-                    {
-                        return Redirect("/user");
-                    }    
+
                     sessroom.RoomID = roomd.ID;
                     sessroom.Name = roomd.Name;
                     Session.Add("Room", sessroom);
@@ -98,17 +95,8 @@ namespace DCCovid.Controllers
                 }
                 else
                 {
-                    var messses = Session["messses"] as MessSes;
-                    if(messses!= null)
-                    {
-                        var mes = db.Messages.Find(messses.MessID);
-                        mes.Status = false;
-                        counttime--;
-                        cou.Count = counttime;
-                        Session.Add("CountSes", cou);
-                        db.SaveChanges();
-                    }    
-                   
+                  
+
                     room.Name = (user.ID + user2.ID).ToString();
 
                     string namechange = (user2.ID + user.ID).ToString();
@@ -120,6 +108,17 @@ namespace DCCovid.Controllers
                         {
                             room1 = db.Rooms.SingleOrDefault(d => d.Name == room.Name);
                         }
+                        var roomm = db.Rooms.Find(room1.ID);
+                        var mes = db.Messages.Find(roomm.LastMess);
+                        if(mes!= null)
+                        {
+                            mes.Status = false;
+                            counttime--;
+                            cou.Count = counttime;
+                            Session.Add("CountSes", cou);
+                            db.SaveChanges();
+                        }    
+                      
                         sessroom.RoomID = room1.ID;
                         sessroom.Name = room1.Name;
                         Session.Add("Room", sessroom);

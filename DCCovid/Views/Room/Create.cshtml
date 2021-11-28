@@ -13,7 +13,7 @@
         <h4>Bắt đầu nhắn tin</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-      
+        @Html.HiddenFor(model=>model.TypeID == 1)
 
         <div class="form-group">
             <label class = "control-label col-md-2">Nội dung</label>
