@@ -59,6 +59,7 @@ namespace DCCovid.Areas.Admin.Controllers
                 products.CreateBy = session.Name;
                 products.Image = fileName;
                 products.CreateDate = DateTime.Now;
+                products.IsDelete = false;
                 db.Products.Add(products);
                 db.SaveChanges();
                 SetAlert("Thêm sản phẩm thành công", "success");

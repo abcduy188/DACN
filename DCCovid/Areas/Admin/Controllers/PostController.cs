@@ -11,10 +11,11 @@ namespace DCCovid.Areas.Admin.Controllers
     {
         private DCCovidDbcontext db = new DCCovidDbcontext();
         // GET: Admin/Post
-        public ActionResult Index()
+        public ActionResult Index(int? page, int pageSize = 3)
         {
-            var list = db.PostCMTs.Where(d => d.PostID == null).ToList();
+            var list = db.PostCMTs.OrderByDescending(d=>d.CreateDay).Where(d => d.PostID == null).ToList();
             ViewBag.img = db.Images.Where(d => d.Type == "POST").ToList();
+            int pageNum = (page ?? 1);
             return View(list);
         }
         

@@ -7,6 +7,9 @@
     var listmess = (PagedList.IPagedList<DCCovid.Models.Message>)ViewBag.Mess;
     var img = (List<DCCovid.Models.Image>)ViewBag.ListImg;
     DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
+    var room = Session["Room"] as DCCovid.Common.RoomLogin;
+    var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
+    var rooma = db.Rooms.Find(room.RoomID);
 }
 @section scripts
 {
@@ -39,118 +42,8 @@
         chatHistory.scrollTop = chatHistory.scrollHeight;
     </script>
 }
-@{ var room = Session["Room"] as DCCovid.Common.RoomLogin;
-    var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
-    var rooma = db.Rooms.Find(room.RoomID);
-    if (!rooma.Name.StartsWith("Find@@@"))
-    {
-        foreach (var i in rooma.Users.ToList())
-        {
-            if (i.ID != sess.UserID)
-            {
-                <h4>@i.Name</h4>
-            }
-
-        }
-    }
-    else
-    {
-        <h2>Bạn ẩn danh</h2>
-    }
-}
-<!--#region part1  -->
-@*<div class="container">
-        <table class="table">
-            <tr>
-                <th>
-                    Người gửi
-                </th>
-                <th>
-                    Nội dung
-                </th>
-                <th></th>
-            </tr>
-
-            @foreach (var item in listmess.OrderBy(d => d.ID))
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.User.Name)
-                    </td>
-                    <td>
-
-                        @if (img != null)
-                        {
-                            foreach (var image in img.Where(d => d.TypeID == item.ID))
-                            {
-
-                                <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
-                            }
-                        }
-                        @item.Text
-                    </td>
-                    <td>
-                        @{
-
-                            if (sess != null)
-                            {
-
-                                if (sess.Name == item.User.Name)
-                                {
-                                    <a id="deleteUser" class="deleteUser" data-target="#basic"
-                                       data-toggle="modal"
-                                       data-path="@Url.Action("Delete", "Message", new { @id = @item.ID })">Xóa</a>
-                                }
-                                else
-                                {
-                                    <span></span>
-                                }
-                            }
-                            else
-                            {
-                                <span></span>
-                            }
-
-                        }
-
-                    </td>
-                </tr>
-            }
-
-        </table>
-        <div class="pagination" style="margin-left: 400px">
-            <p> Xem tin nhắn cũ hơn ... @Html.PagedListPager(listmess, page => Url.Action("Index", new { page }))</p>
-        </div>
-        @using (Html.BeginForm("Create", "Message", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            @Html.AntiForgeryToken()
-
-            <div class="form-horizontal">
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
-                        <img src="" style="height:100px" id="output0" />
-                        <input type="file" name="fileUpload" multiple onchange="loadFile(event)" />
-                    </div>
-
-                </div>
 
 
-
-
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Create" class="btn btn-default" />
-                    </div>
-                </div>
-            </div>
-        }
-    </div>*@
-
-<!--#endregion-->
 
 <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
@@ -171,155 +64,161 @@
     </div>
 </div>
 
-<div class="container" style="padding-top:50px">
-    <div class="row">
-        <div class="col-4">
-            <div id="source" class="scroll-example" style="width: 380px; height: 300px ;">
-                @foreach (var i in listuser)
-                {
-                <div style="display: flex; padding-top:15px; padding-left:10px">
 
-                    <div>
-                        <img src="~/Assets/Thumbnails/avticon.png" height="40px" width="40px">
 
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card chat-app">
+                <div id="plist" class="people-list">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search...">
                     </div>
-                    <form action="/Room/Create/@i.ID" , method="post">
+                    <ul class="list-unstyled chat-list mt-2 mb-0">
+                        @foreach (var i in listuser)
+                        {
+                           
+                            <li class="clearfix">
+                                <img src="~/Assets/Thumbnails/avticon.png" alt="avatar">
+                                <div class="about">
+                                    <form action="/Room/Create/@i.ID" , method="post">
 
-                        <input type="submit" value="@i.Name" class="btn">
-                    </form>
+                                        <input type="submit" value="@i.Name" class="btn">
+                                    </form>
+                                  
+                                    
+                                </div>
+                            </li>
+                        }
 
+
+                    </ul>
                 </div>
-                }
+                <div class="chat">
+                    <div class="chat-header clearfix">
+                        <div class="row">
+                            <div class="col-lg-6">
 
-
-            </div>
-
-        </div>
-        <div class="col-8">
-
-            <div id="target" class="scroll-example" style="width: 100%;height: 350px;">
-                <div class="row">
-
-                    @foreach (var item in listmess.OrderBy(d => d.ID))
-                    {
-                        if (item.User.ID != sess.UserID)
-                        {
-                            <div class="col-12 user1">
-                                <b> @item.User.Name</b>
-                                <p>
-
-
-                                    @item.Text
-
-
-                                </p>
-                                @if (img != null)
-                                {
-                                    foreach (var image in img.Where(d => d.TypeID == item.ID))
+                                @{
+                                    if (!rooma.Name.StartsWith("Find@@@"))
                                     {
+                                        foreach (var i in rooma.Users.ToList())
+                                        {
+                                            if (i.ID != sess.UserID)
 
-                                        <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
-                                    }
-                                }
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="col-12 user2" style="text-align: end;margin-top: 25px;">
-                                <b>@item.User.Name</b>
-                                <p>
+                                            {
+                                                <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                                                    <img src="~/Assets/Thumbnails/avticon.png" alt="avatar">
+                                                </a>
+                                                <div class="chat-about">
+
+                                                    <h5 class="m-b-0"><b>@i.Name</b></h5>
+                                                </div>
+                                            }
 
 
-                                    @item.Text
-
-
-                                </p>
-                                @if (img != null)
-                                {
-                                    foreach (var image in img.Where(d => d.TypeID == item.ID))
-                                    {
-
-                                        <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
-                                    }
-                                }
-
-                            </div>
-
-                        }
-
-                        @*{
-
-                                if (sess != null)
-                                {
-
-                                    if (sess.Name == item.User.Name)
-                                    {
-                                        <a id="deleteUser" class="deleteUser" data-target="#basic"
-                                           data-toggle="modal"
-                                           data-path="@Url.Action("Delete", "Message", new { @id = @item.ID })">Xóa</a>
+                                        }
                                     }
                                     else
                                     {
-                                        <span></span>
+                                        <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                                            <img src="~/Assets/Thumbnails/avticon.png" alt="avatar">
+                                        </a>
+                                        <div class="chat-about">
+                                            <h6 class="m-b-0">Bạn ẩn danh</h6>
+
+                                        </div>
                                     }
+                                }
+
+                            </div>
+                            <div class="col-lg-6 hidden-sm text-right">
+                                <a href="javascript:void(0);" class="btn btn-outline-secondary">
+                                    <i class="fa fa-camera"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="btn btn-outline-primary">
+                                    <i class="fa fa-image"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="btn btn-outline-info">
+                                    <i class="fa fa-cogs"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="btn btn-outline-warning">
+                                    <i class="fa fa-question"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scroll-example chat-history " id="target" >
+                        <ul class="m-b-0">
+                            @foreach (var item in listmess.OrderBy(d => d.ID))
+                            {
+                                if (item.User.ID == sess.UserID)
+                                {
+                                    <li class="clearfix">
+                                        <div class="message-data text-right">
+                                            <span class="message-data-time">@item.CreateDate.Value.ToString("HH:mm")</span>
+                                            <img src="~/Assets/Thumbnails/avticon.png" alt="avatar">
+                                        </div>
+                                        <div class="message other-message float-right">
+                                            @item.Text
+                                        </div>
+                                        @if (img != null)
+                                        {
+                                            foreach (var image in img.Where(d => d.TypeID == item.ID))
+                                            {
+                                                <div class="message other-message float-right"><img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" /> </div>
+
+                                            }
+                                        }
+                                    </li>
                                 }
                                 else
                                 {
-                                    <span></span>
+                                    <li class="clearfix">
+                                        <div class="message-data">
+                                            <span class="message-data-time">@item.CreateDate.Value.ToString("HH:mm")</span>
+                                        </div>
+                                        <div class="message my-message">@item.Text</div>
+                                        @if (img != null)
+                                        {
+                                            foreach (var image in img.Where(d => d.TypeID == item.ID))
+                                            {
+                                                <div class="message my-message"><img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" /> </div>
+
+                                            }
+                                        }
+                                    </li>
                                 }
 
-                            }*@
+
+                            }
 
 
+                        </ul>
+                    </div>
 
+                    @using (Html.BeginForm("Create", "Message", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+
+                        <div class="chat-message clearfix">
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-send"></i></span>
+                                </div>
+                                @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control", @style = "width:550px", @required = "required", @placeholder = "Thêm bình luận..." } })
+                            </div>
+                            <div style="margin-top:15px">
+                                <img src="" style="height:100px" id="output0" />
+                                <input type="file" name="fileUpload" onchange="loadFile(event)" />
+                            </div>
+                        </div>
                     }
 
                 </div>
             </div>
-
-            @using (Html.BeginForm("Create", "Message", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
-
-
-                <div style="display:flex">
-                    <div>
-                        @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control", @style = "width:550px", @required = "required", @placeholder = "Thêm bình luận..." } })
-                        @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-offset-2 col-md-10">
-
-                        <button type="submit" style="background:#ffffff"><i class="fas fa-location-arrow"></i></button>
-                    </div>
-                </div>
-                <div style="margin-top:15px">
-                    <img src="" style="height:100px" id="output0" />
-                    <input type="file" name="fileUpload" onchange="loadFile(event)" />
-                </div>
-
-            }
         </div>
     </div>
 </div>
-
-
-<style>
-    .scroll-example {
-        display: inline-block;
-        width: 40%;
-        height: 500px;
-        overflow: hidden;
-        border: 1px solid black;
-        margin-right: 20px;
-        height: 100px;
-        overflow: auto;
-    }
-
-        .scroll-example::-webkit-scrollbar {
-            display: none;
-        }
-
-    .scroll-example {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-</style>

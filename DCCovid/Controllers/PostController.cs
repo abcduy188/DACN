@@ -17,7 +17,10 @@ namespace DCCovid.Controllers
             List<Image> listimg = db.Images.Where(d => d.Type == "POST").OrderBy(d => d.ID).ToList();
             ViewBag.ListImg = listimg;
             Load();
-            return View(db.PostCMTs.ToList().Where(d => d.IsDelete == false && d.PostID == null && d.Status == 1));
+            ViewBag.cmt = db.PostCMTs.Where(d => d.IsDelete == false && d.PostID != null).ToList();
+            ViewBag.ListPost = db.PostCMTs.Where(d => d.IsDelete == false && d.PostID == null && d.Status == 1).ToList();
+            ViewBag.CateID = new SelectList(db.CategoryUserPosts.ToList(), "ID", "Name");
+            return View();
         }
         #region json 
         //public ActionResult GetData()
@@ -57,6 +60,7 @@ namespace DCCovid.Controllers
             return View();
         }
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult Create(PostCMT post)
         {
             ViewBag.CateID = new SelectList(db.CategoryUserPosts.ToList(), "ID", "Name");
@@ -69,8 +73,7 @@ namespace DCCovid.Controllers
                 post.LikeCount = 0;
                 post.CreateDay = DateTime.Now;
                 post.Status = 0;
-                db.PostCMTs.Add(post);
-                db.SaveChanges();
+               
                 HttpFileCollectionBase files = Request.Files; 
 
                 for (int i = 0; i < files.Count; i++) 
@@ -83,22 +86,48 @@ namespace DCCovid.Controllers
 
                         var path = Path.Combine(Server.MapPath("~/Assets/Thumbnails/"), fileName);
                         fileUpload.SaveAs(path);
-                        InsertIMG(post.ID, fileName, post.PostID); 
+                        //InsertIMG(post.ID, fileName, post.PostID); 
+                        post.Image = fileName;
+
                     }
 
                 }
-                SetAlert("Bài viết của bạn đang chở QTV duyệt", "warning");
+                db.PostCMTs.Add(post);
+                db.SaveChanges();
                 if (post.PostID != null)
                 {
                     string url = "/Post/Details/" + sesspost.PostID;
                     return Redirect(url);
                 }
+                SetAlert("Bài viết của bạn đang chở QTV duyệt", "warning");
                 return RedirectToAction("Index");
             }
 
             return View(post);
         }
 
+        [HttpPost]
+        public ActionResult CreateJs(PostCMT post)
+        {
+            var sess = Session["MEMBER"] as UserLogin;
+            if (ModelState.IsValid)
+            {
+                post.CreateBy = sess.Name;
+                post.UserID = sess.UserID;
+                post.LikeCount = 0;
+                post.CreateDay = DateTime.Now;
+                post.Status = 0;
+                post.CateID = 3;
+                db.PostCMTs.Add(post);
+                db.SaveChanges();
+                SetAlert("Bài viết của bạn đang chở QTV duyệt", "warning");
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
         public ActionResult Like(long id, string strURL)
         {
 

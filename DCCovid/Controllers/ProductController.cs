@@ -15,9 +15,15 @@ namespace DCCovid.Controllers
         [ChildActionOnly]
         public PartialViewResult ProductCategory()
         {
-            List<Category> model = db.Categories.Where(d=>d.Type == "PRODUCT").ToList();
+            List<Category> model = db.Categories.Where(d=>d.Type == "PRODUCT" && d.Status == true && d.IsDelete != true).ToList();
             return PartialView(model);
 
+        }
+        public ActionResult ListPOfCate(long id)
+        {
+            var product = db.Products.Where(d => d.CategoryID == id && d.Status==true && d.IsDelete == false).ToList();
+
+            return View(product);
         }
         public ActionResult Search(string KeyWord, int? page, int pageSize = 3)
         {
@@ -38,7 +44,7 @@ namespace DCCovid.Controllers
             return PartialView(model);
 
         }
-        public ActionResult Category(long CateID, int page = 1, int pageSize = 2)
+        public ActionResult Category(long CateID)
         {
 
             IEnumerable<Product> product = db.Products.Where(d => d.CategoryID == CateID).OrderBy(d => d.Name); // lấy danh sách sp theo category
@@ -53,7 +59,7 @@ namespace DCCovid.Controllers
                 }
             }
 
-            var result = product.ToPagedList(page, pageSize); // chuyển danh sách sản phẩm theo page list || nếu dùng pagelist trực tiếp sẽ lỗi
+            var result = product; // chuyển danh sách sản phẩm theo page list || nếu dùng pagelist trực tiếp sẽ lỗi
             return View(result);
         }
         public ActionResult Detail(long id)

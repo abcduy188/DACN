@@ -2,15 +2,17 @@
 @{
     ViewBag.Title = "Message";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
     var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
-   
+    var listcate = (List<DCCovid.Models.CategoryUserPost>)ViewBag.listCate;
+    var listuser = (List<DCCovid.Models.User>)ViewBag.listUser;
     DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
 }
 @section js{
     <script>
 
         $(document).ready(function () {
-          
+
 
         });
         function Delete(id) {
@@ -23,7 +25,7 @@
                     success: function (data) {
 
                         if (data.success) {
-                            
+
                             window.location.reload();
                             $.notify(data.message, {
                                 globalPosition: "top center",
@@ -46,7 +48,7 @@
                     success: function (data) {
 
                         if (data.success) {
-                            
+
                             window.location.reload();
                             $.notify(data.message, {
                                 globalPosition: "top center",
@@ -69,7 +71,7 @@
                     success: function (data) {
 
                         if (data.success) {
-                            
+
                             window.location.reload();
                             $.notify(data.message, {
                                 globalPosition: "top center",
@@ -82,89 +84,239 @@
                 });
             }
         }
+     
+
+
+       
+        function Start() {
+            var sel = document.getElementById('cars');
+            var el = document.getElementById('display');
+            var opt;
+            for (var i = 0, len = sel.options.length; i < len; i++) {
+                opt = sel.options[i];
+                if (opt.selected === true) {
+                    break;
+                }
+            }
+            var oldpass = 1;
+            var newpass = $('#Text').val();
+            var cate = sel.value;
+            var model = {
+                TypeID: oldpass,
+                Text: newpass,
+                Fav: cate
+
+            };
+            $.ajax({
+                url: '/Message/Create',
+                type: 'POST',
+                data: model,
+                success: function (resu) {
+                    if (resu.success) {
+                        window.location.reload();
+                        $('#modalfindfriend').modal("hide");
+
+
+                    } else {
+                         window.location.reload();
+                    }
+                }
+            })
+
+        }
     </script>
 }
-<h2>Tìm bạn nhắn tin</h2>
-@{
-    var user = db.Users.Find(sess.UserID);
-    if (user.Iscouple == 0)
-    {
-        <h4>Chưa kích hoạt <a class="btn btn-danger btn-sm" style="margin-left: 5px" onclick="Delete(@user.ID)"><i class="fa fa-trash"></i>Kích hoạt</a></h4>
-    }
-    else if (user.Iscouple == 1)
-    {
-
-        <h4>  Đã kích hoạt <a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
-        <p>
-            Đợi chờ quá lâu? <a href="/Room/Create">Click vào đây để tìm người nhắn tin</a>
-        </p>
-    }
-    else
-    {
-        <h4>Đang có người nhắn tin<a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
-        <p>
-            <form action="/Room/Create" method="post">
-                <input type="submit" value="vào phòng" />
-            </form>
-        </p>
-    }
-}
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            var listmess = item.Messages.OrderByDescending(d => d.ID).Take(1).ToList();
-            <tr>
+<div class="modal fade" id="modalfindfriend" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Tìm bạn nhắn tin</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label col-md-2">Nội dung</label>
+                    <div class="col-md-10">
+                        <input type="text" id="Text" name="Text" placeholder="Gõ 'Bắt đầu !!!' để tìm kiếm bạn bè" class="form-control text-box single-line" />
+                    </div>
+                </div>
+                <select name="cars" id="cars">
+                    <option value="1" id="1">Tất cả</option>
+                    <option value="2" id="2">Tin tức</option>
+                    <option value="3" id="3">Kiến thức</option>
+                    <option value="4" id="4">Kết bạn</option>
+                    <option value="6" id="6">Mua sắm</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
+                <button type="button" id="btnChange" onclick="Start()" class="btn btn-primary">Đổi</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
-                @{
-                    if (listmess.Count != 0)
-                    {
-                        var mess = listmess.Last();
-                        if (mess.Status == true && mess.UserID != sess.UserID)
-                        {
-                           
-                            
-                            <td><b><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></b></td>
-                            <td>
-                                <form action="/Room/Create/@item.ID" , method="post">
 
-                                    <input type="submit" value="Nhắn tin" class="btn">
-                                </form>
-                            </td>
+
+
+<section class="showTime">
+    <div class="container">
+        <h2>Tìm bạn nhắn tin</h2>
+        @{
+            var user = db.Users.Find(sess.UserID);
+            if (user.Iscouple == 0)
+            {
+                <h4>Chưa kích hoạt <a class="btn btn-danger btn-sm" style="margin-left: 5px" onclick="Delete(@user.ID)"><i class="fa fa-trash"></i>Kích hoạt</a></h4>
+            }
+            else if (user.Iscouple == 1)
+            {
+
+                <h4>  Đã kích hoạt <a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
+                <p>
+                    Đợi chờ quá lâu? <a id='findfriend' class='findfriend' data-target='#modalfindfriend' data-toggle='modal'> Click vào đây để tìm người nhắn tin</a>
+                </p>
+            }
+            else
+            {
+                <h4>Đang có người nhắn tin<a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
+                <p>
+                    <form action="/Room/Create" method="post">
+                        <input type="submit" value="vào phòng" />
+                    </form>
+                </p>
+            }
+        }
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var listmess = item.Messages.OrderByDescending(d => d.ID).Take(1).ToList();
+                    <tr>
+
+
+
+                        @{
+                            if (listmess.Count != 0)
+                            {
+                                var mess = listmess.Last();
+                                if (mess.Status == true && mess.UserID != sess.UserID)
+                                {
+
+
+                                    <td><b><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></b></td>
+                                    <td>
+                                        <form action="/Room/Create/@item.ID" , method="post">
+
+                                            <input type="submit" value="Nhắn tin" class="btn">
+                                        </form>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></td>
+                                    <td><form action="/Room/Create/@item.ID" , method="post"><input type="submit" value="Nhắn tin" class="btn"></form></td>
+                                }
+                            }
+                            else
+                            {
+                                <td><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></td>
+                                <td><form action="/Room/Create/@item.ID" , method="post"><input type="submit" value="Nhắn tin" class="btn"></form></td>
+                            }
+
+
                         }
-                        else
-                        {
-                            <td><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></td>
-                            <td><form action="/Room/Create/@item.ID" , method="post"><input type="submit" value="Nhắn tin" class="btn"></form></td>
-                        }
-                    }
-                    else
-                    {
-                        <td><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></td>
-                        <td><form action="/Room/Create/@item.ID" , method="post"><input type="submit" value="Nhắn tin" class="btn"></form></td>
-                    }
 
 
+
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+
+                <a class="nav-link active" id="1-tab" data-toggle="tab" href="#1" role="tab"
+                   aria-controls="home" aria-selected="true">Tất cả</a>
+            </li>
+            @foreach (var i in listcate.Where(d => d.ID != 1))
+            {
+                <li class="nav-item" role="presentation">
+
+                    <a class="nav-link" id="@i.ID-tab" data-toggle="tab" href="#@i.ID" role="tab"
+                       aria-controls="home" aria-selected="true">@i.Name</a>
+                </li>
+
+            }
+
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade" id="1" role="tabpanel" aria-labelledby="1-tab">
+
+                @foreach (var i in listuser)
+                {
+                    <div class="row showTimes__movie my-4">
+                        <div class="col-2">
+                            <img src="~/Assets/Thumbnails/avticon.png" class="img-fluid" height="50px" />
+                        </div>
+                        <div class="col-10">
+                            <div>
+                                <div class="showTimes__detail">
+                                    <a href="/user/profile/@i.ID"><h3 class="display-4">@i.Name</h3></a>
+
+                                    <form action="/Room/Create/@i.ID" , method="post">
+
+                                        <input type="submit" value="Nhắn tin" class="btn">
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                 }
 
 
+            </div>
+            @foreach (var i in listcate.Where(d => d.ID != 1))
+            {
+                var listuser1 = i.Users.ToList();
 
-            </tr>
+                <div class="tab-pane fade" id="@i.ID" role="tabpanel" aria-labelledby="@i.ID-tab">
+                    @foreach (var u in listuser1)
+                    {
+                        <div class="row showTimes__movie my-4">
+                            <div class="col-2">
+                                <img src="~/Assets/Thumbnails/avticon.png" class="img-fluid" height="50px" />
+                            </div>
+                            <div class="col-10">
+                                <div>
+                                    <div class="showTimes__detail">
+                                        <a href="/user/profile/@u.ID"><h3 class="display-4">@u.Name</h3></a>
 
-        }
-    </tbody>
-</table>
+                                        <form action="/Room/Create/@u.ID" , method="post">
+
+                                            <input type="submit" value="Nhắn tin" class="btn">
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
 
 
+        </div>
+    </div>
+</section>

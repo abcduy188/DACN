@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     ViewBag.Title = "Index";
     var listpost = (List<DCCovid.Models.PostCMT>)ViewBag.ListPost;
-    Layout = "~/Views/Shared/_Layout.cshtml";
+
     var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
     DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
 }
@@ -22,11 +22,15 @@
                     success: function (res) {
                         if (res.TotalItems > 0) {
                             var items = res.Data;
+                            var ses = res.Ses;
                             var html = "";
                             for (let i = 0; i < res.TotalItems; i++) {
                                 html += "<tr>";
                                 html += "<td>" + items[i].Name + "</td>";
-                                html += "<td><form action='/Room/Create/" + items[i].ID + "', method='post'><input type = 'submit' value ='Nhắn tin' class='btn'></form></td>";
+                                if (ses == 1) {
+                                    html += "<td><form action='/Room/Create/" + items[i].ID + "', method='post'><input type = 'submit' value ='Nhắn tin' class='btn'></form></td>";
+                                }
+
 
                             }
                             $('#showdata').html(html);
@@ -103,6 +107,13 @@
                 });
             }
         }
+        (function () {
+            var target = $('#target1')[0];
+            $("#target1").scroll(function () {
+                target.prop("scrollTop", this.scrollTop)
+                    .prop("scrollLeft", this.scrollLeft);
+            });
+        })();
     </script>
 }
 <div class="container">
@@ -116,16 +127,20 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="target1" class="scroll-example">
             @foreach (var item in Model)
             {
-              
+
                 <tr>
 
-                   
-                            <td><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></td>
-                            <td><form action="/Room/Create/@item.ID" , method="post"><input type="submit" value="Nhắn tin" class="btn"></form></td>
-                      
+
+                    <td><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></td>
+                    @if (sess != null)
+                    {
+                        <td><form action="/Room/Create/@item.ID" , method="post"><input type="submit" value="Nhắn tin" class="btn"></form></td>
+                    }
+
+
 
                 </tr>
 

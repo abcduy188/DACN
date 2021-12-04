@@ -1,5 +1,6 @@
 ﻿using DCCovid.Common;
 using DCCovid.Models;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,37 @@ namespace DCCovid.Controllers
         {
             var listcate = db.Categories.ToList();
             return View(listcate);
+        }
+        public ActionResult Search(string KeyWord, int? page, int pageSize = 3)
+        {
+            IQueryable<Product> product = db.Products;
+            if (!string.IsNullOrEmpty(KeyWord))
+            {
+                product = db.Products.Where(d => d.Name.Contains(KeyWord) || d.Description.Contains(KeyWord) && d.IsDelete == false);
+            }
+            ViewBag.KeyWord = KeyWord;
+            int pageNum = (page ?? 1);
+
+            ViewBag.Product = product.OrderBy(d => d.Name).ToPagedList(pageNum, pageSize);
+            IQueryable<User> user = db.Users;
+            if (!string.IsNullOrEmpty(KeyWord))
+            {
+                user = db.Users.Where(d => d.Name.Contains(KeyWord) && d.Isdelete == false);
+            }
+            
+            int pageNumUser = (page ?? 1);
+            ViewBag.User = user.OrderBy(d => d.Name).ToList() ;
+
+            IQueryable<PostCMT> post = db.PostCMTs;
+            if (!string.IsNullOrEmpty(KeyWord))
+            {
+                post = db.PostCMTs.Where(d => d.Text.Contains(KeyWord) && d.IsDelete == false && d.PostID == null);
+            }
+
+            ViewBag.img = db.Images.ToList();
+            ViewBag.Post = post.OrderByDescending(d => d.CreateDay).ToList();
+            return View();
+
         }
     }
 }

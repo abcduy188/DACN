@@ -1,26 +1,18 @@
 ﻿
 @model List<DCCovid.Models.Category>
 
-@foreach (var item in Model.Where(d => d.ParentID == null))
-{
-    var child = Model.Where(d => d.ParentID == item.ID);
-    var hasChild = child.Count() > 0;
-    <li class="nav-item active">
-        <a href="/news/Category/@item.ID ">
-            @item.Name
-            @if (hasChild == true)
-            {
-                <i class="fa fa-chevron-right"></i>
-            }
-        </a>
-        <!-- menu con sổ ngang cấp 1 -->
-        <ul class="navbar-nav mr-auto">
-            @foreach (var childItem in child)
-            {
-                <li class="nav-item active">
-                    <a href="/tin-tuc/@childItem.SeoTitle-@childItem.ID ">@childItem.Name</a>
-                </li>
-            }
-        </ul>
-    </li>
-}
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Tin Tức
+    </a>
+   
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        @foreach (var item in Model.Where(d => d.ParentID == null))
+        {
+
+            <a class="dropdown-item" href="/News/Category/@item.ID">@item.Name</a>
+        }
+        </div>
+    
+</li>

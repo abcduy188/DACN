@@ -1,12 +1,12 @@
 ﻿@model DCCovid.Models.Product
 @{
     ViewBag.Title = "Detail";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Post.cshtml";
     var ListRela = (List<DCCovid.Models.Product>)ViewBag.ListRele;
 }
 @* slider là productItem slide là productChill *@
-<section class="ChiTiet">
-    <div class="container">
+<section class="ChiTiet" style="background-color:white;border-radius:5px;padding:15px 0 15px 0">
+    <div class="container" >
         <div class="duongDan">
             <a style="text-decoration:none" href="/">Trang Chủ</a>
             <a>>></a>
@@ -27,7 +27,8 @@
                 <section class="laptopCarousel">
                     <!-- data-ride="carousel" -->
                     <div id="carouselLaptop" class="carousel slide carousel-fade">
-                        <ol class="carousel-indicators container">
+                        <!-- #region OLD-->
+                        @*<ol class="carousel-indicators container">
                             @{
                                 for (int i = 0; i < Model.Image.Split(',').Length; i++)
                                 {
@@ -64,6 +65,15 @@
                                     }
                                 }
                             }
+                        </div>*@
+                        <!-- #endregion-->
+                        <div class="carousel-inner">
+                           
+                                        <div class="carousel-item active">
+                                            <div class="overlay"></div>
+                                            <img src="@Url.Content("/Assets/Thumbnails/" + Model.Image)" class="d-block w-100" alt="..." height="280px" width="350px">
+                                        </div>
+                                  
                         </div>
                     </div>
                 </section>
@@ -94,137 +104,17 @@
 
 
             </div>
-            <div class="col-md-5">
-
-                <div class="wpb_wrapper">
-                    <p><span><strong><span style="color: #008000;">Bảo hành và dịch vụ:</span></strong></span></p>
-                    <p><span> ♦ Miễn phí vệ sinh laptop trong thời gian bảo hành.</span></p>
-                    <p><span> ♦ Giảm&nbsp;giá 10% khi mua Gaming Gear.</span></p>
-                    <p><span> ♦ Đổi mới trong 7 ngày nếu bị lỗi kĩ thuật.</span></p>
-                    <p><span>♦ Miễn phí quẹt thẻ ATM, Visa, Master.</span></p>
-                    <p><span>♦ Trả góp 0% bằng thẻ tín dụng qua M-Pos. <a href="/ho-tro" target="_blank" rel="noopener">Chi tiết.</a></span></p>
-                    <p><span>♦ <strong>Chính sách đảm bảo hài lòng.</strong> <a href="/ho-tro" target="_blank" rel="noopener">Chi tiết.</a></span></p>
-                    <p><span> ♦ Linh kiện nâng cấp bảo hành theo tiêu chuẩn nhà sản xuất.</span></p>
-                    <p><span> ♦ Hỗ trợ cài đặt hệ điều hành và phần mềm.</span></p>
-                </div>
-            </div>
+           
         </div>
     </div>
-    @*<div class="container">
-        <div class="row">
-            <div class="col-8">
-                <h1 class="newIn__title">Thông Tin Bổ Sung</h1>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>CPU</th>
-                            <td>
-                                <p>@Model.CPU</p>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th>GPU</th>
-                            <td>
-                                <p>@Model.GPU</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Màn hình</th>
-                            <td>
-                                <p>@Model.Screen</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Hệ điều hành</th>
-                            <td>
-                                <p>@Model.OperatingSystem</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>RAM</th>
-                            <td>
-                                <p>@Model.RAM</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Ổ cứng SSD</th>
-                            <td>
-                                <p>@Model.SSDHardDrive</p>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th>Lan</th>
-                            <td>
-                                <p>Gigabit Lan</p>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th>Các cổng kết nối</th>
-                            <td>
-                                <p>@Model.ConnectionPorts</p>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Bàn Phím</th>
-                            <td>
-                                <p>@Model.Keyboard</p>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Pin</th>
-                            <td>
-                                <p>@Model.Pin</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Kích thước</th>
-                            <td>
-                                <p>@Model.Size</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Trọng lượng</th>
-                            <td>
-                                <p>@Model.Weight</p>
-                            </td>
-
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-4">
-                <div style="padding-top:300px">
-                    @if (Model.LinkVideo == null)
-                    {
-                        <iframe width="500" height="300"
-                                src=" https://www.youtube.com//embed/lduffUEP7tg" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
-                    }
-                    else
-                    {
-                        <iframe width="500" height="300"
-                                src="@Model.LinkVideo" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
-                    }
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container" style="padding-top:20px">
+ 
+    <div class="container" style="padding-top:20px;padding-left:50px">
         <h1 class="newIn__title">Mô Tả</h1>
         @Html.Raw(Model.Detail)
-    </div>*@
+    </div>
 </section>
 <section class="productSell">
-    <div class="container">
+    <div class="container" style="background-color:white;border-radius:5px;padding-top:10px;margin-bottom:20px">
         <h1 class="newProductTitle">Sản Phẩm Liên Quan</h1>
         <div class="slider owl-carousel">
             @foreach (var item in ListRela.Where(d => d.ID != Model.ID))

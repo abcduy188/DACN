@@ -3,10 +3,10 @@
 @{
     var img = (List<DCCovid.Models.Image>)ViewBag.img;
     ViewBag.Title = "DetailNew";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Post.cshtml";
 }
 
-<div class="container">
+<div class="container" style="background-color: white; border-radius: 10px; padding: 15px 30px 15px 30px">
     <div class="duongDan">
         <a style="text-decoration:none" href="/">Trang Chủ</a>
         <a>>></a>
@@ -21,7 +21,7 @@
         </div>
         <p>@Model.Description</p>
         <div style="padding-bottom:20px">
-            <img src="~/Assets/Thumbnails/@Model.Image" style="width:1100px" />
+            <img src="~/Assets/Thumbnails/@Model.Image" style="width:1000px;align-content:center" />
         </div>
         <div>
             @Html.Raw(Model.Detail)

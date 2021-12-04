@@ -14,7 +14,7 @@ namespace DCCovid.Controllers
         [ChildActionOnly]
         public PartialViewResult NewCategory()
         {
-            var model = db.Categories.Where(d=>d.Type == "NEWS").ToList();
+            var model = db.Categories.Where(d=>d.Type == "NEWS" && d.Status == true && d.IsDelete!= true).ToList();
             return PartialView(model);
 
         }

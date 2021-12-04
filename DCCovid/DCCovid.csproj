@@ -226,6 +226,7 @@
     <Compile Include="ViewModel\Cart.cs" />
     <Compile Include="ViewModel\CPWViewModel.cs" />
     <Compile Include="ViewModel\LoginModel.cs" />
+    <Compile Include="ViewModel\MessageViewModel.cs" />
     <Compile Include="ViewModel\OrderDetailModel.cs" />
     <Compile Include="ViewModel\RegisterModel.cs" />
   </ItemGroup>
@@ -3007,9 +3008,32 @@
     <Content Include="Assets\Admin\vendor\jquery\jquery.min.js" />
     <Content Include="Assets\Admin\vendor\jquery\jquery.slim.js" />
     <Content Include="Assets\Admin\vendor\jquery\jquery.slim.min.js" />
+    <Content Include="Assets\Thumbnails\202111121007209505tt-pham-minh-chinh-1-16366889334841611865771-1636695521728-1636695521914166132869.jpg" />
+    <Content Include="Assets\Thumbnails\avatar1636590999028-16365909994531292982828.jpeg" />
+    <Content Include="Assets\Thumbnails\avt.jpg" />
+    <Content Include="Assets\Thumbnails\background1.png" />
+    <Content Include="Assets\Thumbnails\BG.png" />
+    <Content Include="Assets\Thumbnails\color-wheel-1024x1024.jpg" />
+    <Content Include="Assets\Thumbnails\devan.jpg" />
     <Content Include="Assets\Thumbnails\heart1.png" />
     <Content Include="Assets\Thumbnails\heart2.png" />
+    <Content Include="Assets\Thumbnails\lactroi.jpg" />
     <Content Include="Assets\Thumbnails\thao-itachi.jpg" />
+    <Content Include="Assets\Thumbnails\tiem-vacxin-16366211719031346305122.jpg" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\202111121007209505tt-pham-minh-chinh-1-16366889334841611865771-1636695521728-1636695521914166132869.jpg" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\avatar1636590999028-16365909994531292982828.jpeg" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\avt.jpg" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\avticon.png" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\background1.png" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\BG.png" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\color-wheel-1024x1024.jpg" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\devan.jpg" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\duy1.jpg" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\heart1.png" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\heart2.png" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\lactroi.jpg" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\thao-itachi.jpg" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\tiem-vacxin-16366211719031346305122.jpg" />
     <Content Include="Content\a.css" />
     <Content Include="Content\app.css" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -3018,9 +3042,11 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\grid.css" />
     <Content Include="Content\img\favicon.png" />
+    <Content Include="Content\img\Product.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\Post.css" />
     <Content Include="Content\register.css" />
+    <Content Include="Content\StyleSheet1.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -3261,6 +3287,10 @@
     <Content Include="Areas\Admin\Views\News\Edit.cshtml" />
     <Content Include="Assets\Admin\ckfinder\plugins\fileeditor\codemirror\LICENSE" />
     <Content Include="Assets\Admin\ckfinder\userfiles\.htaccess" />
+    <Content Include="Areas\Admin\Views\Post\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Product\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Product\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Product\Edit.cshtml" />
     <EntityDeploy Include="Models\Model1.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Model1.Designer.cs</LastGenOutput>
@@ -3268,10 +3298,6 @@
     <Content Include="Models\Model1.edmx.diagram">
       <DependentUpon>Model1.edmx</DependentUpon>
     </Content>
-    <Content Include="Areas\Admin\Views\Post\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Product\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Product\Create.cshtml" />
-    <Content Include="Areas\Admin\Views\Product\Edit.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\covidApi.js" />
     <Content Include="Scripts\fetchApi.js" />
@@ -3333,6 +3359,9 @@
     <Content Include="Views\Product\Detail.cshtml" />
     <Content Include="Views\Product\Search.cshtml" />
     <Content Include="Views\Shared\_Post.cshtml" />
+    <Content Include="Views\Shared\ProductCategory.cshtml" />
+    <Content Include="Views\Product\ListPOfCate.cshtml" />
+    <Content Include="Views\Home\Search.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -3372,6 +3401,8 @@
           <DevelopmentServerPort>53812</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>https://localhost:44334/</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>https://localhost:44334/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

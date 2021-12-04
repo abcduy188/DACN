@@ -1,0 +1,18 @@
+﻿
+@model List<DCCovid.Models.Category>
+
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Sản phẩm
+    </a>
+
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        @foreach (var item in Model.Where(d => d.ParentID == null))
+        {
+
+            <a class="dropdown-item" href="/Product/ListPOfCate/@item.ID">@item.Name</a>
+        }
+    </div>
+
+</li>

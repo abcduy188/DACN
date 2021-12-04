@@ -19,92 +19,86 @@
     <link href="~/Content/a.css" rel="stylesheet" />
 </head>
 <body class="loading">
+    <style>
 
+        .thuxem {
+            display: flex;
+        }
+
+        .icon {
+            margin: 0 20px;
+            cursor: pointer;
+            position: relative;
+        }
+
+
+            .icon .tooltip {
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateY(50%);
+                color: red;
+                padding: 10px 18px;
+                font-size: 20px;
+                font-weight: 500;
+                border-radius: 25px;
+                opacity: 0;
+                pointer-events: none;
+                box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.2);
+            }
+
+                .icon .tooltip:before {
+                    position: absolute;
+                    content: '';
+                    height: 15px;
+                    width: 15px;
+                    left: 50%;
+                    bottom: -6px;
+                    transform: translateX(50%) rotate(90deg);
+                }
+
+        .tooltip {
+            transition: 0.3s;
+        }
+
+        .icon:hover .tooltip {
+            opacity: 1;
+            pointer-events: auto;
+            top: -70px;
+        }
+
+
+        .facebook .tooltip:before,
+        .facebook .tooltip {
+            background: var(--facebook-color);
+        }
+    </style>
     <div class="body-content">
         <div class="nav-wrapper">
 
             <div class="container">
                 <div class="nav">
-                    <a href="/" class="logo">
-                        C<i class="bx bxs-virus-block bx-tada"></i>VID TRACKER
-                    </a>
+                    <div class="icon facebook">
+                        <a href="/post">
+                            C<i class="bx bxs-virus-block bx-tada"></i>VID TRACKER
+                        </a>
+                        <span class="tooltip">Click vào bài viết</span>
+                    </div>
+                   
 
 
-                    <nav>
-                        <ul>
-
-                            <li>
-                                <a href="#" title="Khóa học chuyên đề">Tin tức</a>
-                                <ul>
-                                    @{Html.RenderAction("NewCategory", "News");}
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="/post">
-                                    Sản phẩm
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/post">
-                                    Bài viết
-                                </a>
-                            </li>
-
-                            @{
-                                var sess = Session["MEMBER"] as DCCovid.Common.UserLogin;
-                                if (sess != null)
-                                {
-                                    <li>
-                                        <a href="/user">
-                                            Bạn bè
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <div id="counthere">
-
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <a href="/user/info/@sess.UserID">
-                                            @sess.Name
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/user/logout">
-                                            Logout
-                                        </a>
-                                    </li>
-                                }
-                                else
-                                {
-                                    <li>
-                                        <a href="/user/login">
-                                            Login
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/user/register">
-                                            Register
-                                        </a>
-                                    </li>
-                                }
-                            }
-
-                        </ul>
-
-                    </nav>
-
+                    <div class="darkmode-switch" id="darkmode-switch">
+                        <span>
+                            <i class="bx bxs-moon"></i>
+                            <i class="bx bxs-sun"></i>
+                        </span>
+                    </div>
                 </div>
 
 
 
-                @{ Html.RenderAction("CartPartial", "Cart");}
-                <div class="darkmode-switch" id="darkmode-switch">
-                    <span>
-                        <i class="bx bxs-moon"></i>
-                        <i class="bx bxs-sun"></i>
-                    </span>
-                </div>
+              
+               
             </div>
         </div>
         @if (TempData["AlertMessage"] != null)

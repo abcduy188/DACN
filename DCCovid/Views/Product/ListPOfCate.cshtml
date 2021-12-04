@@ -1,0 +1,29 @@
+﻿@model IEnumerable<DCCovid.Models.Product>
+
+@{
+    ViewBag.Title = "ListPOfCate";
+    Layout = "~/Views/Shared/_Post.cshtml";
+}
+
+<div class="container bootstrap snipets">
+    <h1 class="text-center text-muted">Product catalog</h1>
+    <div class="row flow-offset-1">
+        @foreach (var i in Model)
+        {
+            <div class="col-xs-6 col-md-4">
+                <div class="product tumbnail thumbnail-3">
+                    <a href="/product/detail/@i.ID">
+                        <img src="~/Assets/Thumbnails/@i.Image" height="280px" width="350px">
+                    </a>
+                    <div class="caption">
+                        <h6><a href="/product/detail/@i.ID">@i.Name</a></h6><span class="price">
+                            <del>@i.Price.Value.ToString("N0")</del>
+                        </span><span class="price sale">@(i.PromotionPrice.HasValue? i.PromotionPrice.Value.ToString("N0"):"Liên hệ")</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+      
+    </div>
+</div>

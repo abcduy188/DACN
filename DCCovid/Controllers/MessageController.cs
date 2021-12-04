@@ -11,6 +11,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Collections;
 using PagedList;
+using DCCovid.ViewModel;
 
 namespace DCCovid.Controllers
 {
@@ -31,7 +32,9 @@ namespace DCCovid.Controllers
             if (sess != null)
             {
                 User user = db.Users.Find(sess.UserID);
-                var listroomofuser = user.Rooms.ToList();
+                var listroomofuser1 = user.Rooms.ToList();
+                var listroomofuser2 = user.Rooms.Where(d => d.Name.StartsWith("Find@@@")).ToList();
+                var listroomofuser = listroomofuser1.Except(listroomofuser2);
                 var listuser = new List<User>();
                 var listuser2 = new List<User>();
                 var user2 = new User();
@@ -58,18 +61,22 @@ namespace DCCovid.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Create([Bind(Include = "ID,RoomID,UserID,Text")] Message message)
+        public ActionResult Create(MessageViewModel mesview)
         {
+            var message = new Message();
+            message.Text = mesview.Text;
+            message.TypeID = mesview.TypeID;
             var sess = Session["MEMBER"] as UserLogin;
             var user = db.Users.Find(sess.UserID);
             Room room = new Room();
-            if (message.Text == "Bắt đầu !!!" && message.TypeID == 1)
+            if (message.Text == "Bắt đầu !!!" && message.TypeID == 1 && user.Iscouple == 1)
             {
 
-                var demo = GiveMeANumber();
+                var demo = GiveMeANumber(mesview.Fav);
                 if (demo == -1)
                 {
-                    return Redirect("/user");
+                    SetAlert("Hiện không có đối phuọng, bạn thử lại sau nhé", "error");
+                    return Redirect("/user/message");
                 }
                 User user2 = db.Users.Find(demo);
                 room.Name = ("Find@@@" + user.ID + user2.ID).ToString();
@@ -102,7 +109,8 @@ namespace DCCovid.Controllers
                     room.Users.Add(user);
                     room.Users.Add(user2);
                     db.SaveChanges();
-                    return Redirect("/Message/Index");
+                    SetAlert("Đã tìm được đối tượng", "success");
+                    return Json(new { success = true }, JsonRequestBehavior.AllowGet);
                 }
 
             }
@@ -110,7 +118,11 @@ namespace DCCovid.Controllers
             {
 
                 var sessroom = Session["Room"] as RoomLogin;
-
+                if(sessroom == null)
+                {
+                    SetAlert("Bạn đã có đối tượng nhắn tin rồi", "warning");
+                    return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+                } 
                 room = db.Rooms.Find(sessroom.RoomID);
                 if (ModelState.IsValid)
                 {
@@ -193,21 +205,41 @@ namespace DCCovid.Controllers
             return Json(new { success = true, message = "Deleted Successfully", JsonRequestBehavior.AllowGet });
 
         }
-        private long GiveMeANumber()
+        private long GiveMeANumber(long? a)
         {
             var sess = Session["MEMBER"] as UserLogin;
             User user = db.Users.Find(sess.UserID);
             ArrayList ar = new ArrayList();
-            foreach (var i in db.Users.Where(d => d.ID != sess.UserID && d.Isdelete == false && d.Iscouple == 1).ToList())
+
+            if(a == null)
             {
-                ar.Add(i.ID);
+                foreach (var i in db.Users.Where(d => d.ID != sess.UserID && d.Isdelete == false && d.Iscouple == 1).ToList())
+                {
+                    ar.Add(i.ID);
+                }
+                if (ar.Count != 0)
+                {
+                    Random r = new Random();
+                    int index = r.Next(0, ar.Count - 1);
+                    return (long)ar[index];
+                }
             }
-            if (ar.Count != 0)
+            else
             {
-                Random r = new Random();
-                int index = r.Next(0, ar.Count - 1);
-                return (long)ar[index];
+                var cate = db.CategoryUserPosts.Find(a);
+                var list = cate.Users.ToList();
+                foreach (var i in list.Where(d => d.ID != sess.UserID && d.Isdelete == false && d.Iscouple == 1).ToList())
+                {
+                    ar.Add(i.ID);
+                }
+                if (ar.Count != 0)
+                {
+                    Random r = new Random();
+                    int index = r.Next(0, ar.Count - 1);
+                    return (long)ar[index];
+                }
             }
+            
             return -1;
 
         }

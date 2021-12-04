@@ -34,6 +34,33 @@
 @section scripts
 {
     <script>
+
+
+        $(document).ready(function () {
+            /*  getUser();*/
+            loadInput();
+        });
+        function loadInput() {
+            var html = "";
+
+            html += "<input type='text' class = 'form-control' style = 'width:350px; height: auto' required placeholder = 'Thêm bình luận...'id = 'slug'/>";
+            $('#showinput').html(html);
+        }
+        function ChangeToSlug() {
+            var title, slug;
+
+            //Lấy text từ thẻ input title
+            title = document.getElementById("title").value;
+            var iduser = $('#iduser').val();
+
+            slug = "/\@@" + title;
+            slug = slug.split("@@")[1] + " ";
+            var html1 = "<a href='/user/profile/" + iduser + "'>" + slug + "</a>";
+
+            var html = "<input type='text' class = 'form-control' style = 'width:350px; height: auto' required placeholder = 'Thêm bình luận...'id = 'slug' value='" + html1 + "'/>";
+
+            $('#showinput').html(html);
+        }
         (function () {
             var target = $("#target")[0]; // <== Getting raw element
             $("#source").scroll(function () {
@@ -59,16 +86,39 @@
         };
         var objDiv = document.getElementById("target");
         objDiv.scrollTop = objDiv.scrollHeight;
+        function Cmtne() {
+
+            var oldpass = $('#PostID').val();
+            var newpass = $('#text').val();
+
+            var model = {
+                PostID: oldpass,
+                text: newpass,
+
+            };
+            $.ajax({
+                url: '/post/create',
+                type: 'POST',
+                data: model,
+                success: function (resu) {
+                    if (resu.success) {
+                        html.location.reload;
+                        $('#modalchangepass').modal("hide");
+                    }
+                }
+            })
+
+        }
     </script>
 
 
 }
 
 
-<div class="container" style="padding-top:100px">
+<div class="container">
     <div class="row">
 
-        <div class="col-6" id="source">
+        <div class="col-6" id="source" style="background-color:white; border-radius:5px">
 
             <div class="list">
                 <div class="post-details">
@@ -90,17 +140,22 @@
             <div class="title">
                 <b>@Html.DisplayFor(modelItem => post.Title)</b>
                 <p>
-                    @Html.DisplayFor(modelItem => post.Text)
+                    @Html.Raw(post.Text)
                 </p>
-                @if (imgpost != null)
-                {
-                    foreach (var image in imgpost.Where(d => d.TypeID == post.ID))
+                @*@if (imgpost != null)
                     {
+                        foreach (var image in imgpost.Where(d => d.TypeID == post.ID))
+                        {
 
-                        <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
+                            <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
+                        }
+                    }*@
+
+                @{ if (post.Image != null)
+                    {
+                        <img src="~/Assets/Thumbnails/@post.Image" style="height:100px" />
                     }
                 }
-
 
 
             </div>
@@ -137,7 +192,7 @@
                 }
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-4" style="background-color:white; border-radius:5px; margin-left:10px">
             <div class="comment scroll-example" id="target" style="margin-top: 20px; width: 100%; height: 500px">
                 @foreach (var i in cmt)
                 {
@@ -145,9 +200,9 @@
                     {
                         <div style="margin-left:20px">
                             <div class="comment-user">
-                                @if (post.User.ImageUser == null)
+                                @if (i.User.ImageUser == null)
                                 {
-                                    <img src="~/Assets/Thumbnails/@post.User.ImageUser" alt="" width="30px" height="30px">
+                                    <img src="~/Assets/Thumbnails/@i.User.ImageUser" alt="" width="30px" height="30px">
                                 }
                                 else
                                 {
@@ -155,6 +210,8 @@
                                 }
 
                                 <b>@i.CreateBy  </b>
+                                <input type="hidden" id="title" value="@i.CreateBy" />
+                                <input type="hidden" id="iduser" value="@i.ID" />
                                 <span>@i.CreateDay.Value.ToString("hh:mm")</span>
                             </div>
                             <div class="comment-post">
@@ -162,16 +219,16 @@
                             </div>
                         </div>
 
-                        if (img != null)
-                        {
-                            foreach (var image in img.Where(d => d.TypeID == i.ID))
+                        @*if (img != null)
                             {
+                                foreach (var image in img.Where(d => d.TypeID == i.ID))
+                                {
 
-                                <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
-                            }
-                        }
-
-
+                                    <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
+                                }
+                            }*@
+                        <img src="~/Assets/Thumbnails/@i.Image" style="height:100px" />
+                        <a onclick="ChangeToSlug();">Reply</a>
                         if (sess != null)
                         {
                             if (i.User.ID == sess.UserID)
@@ -223,22 +280,24 @@
                         <div class="form-horizontal">
 
 
-                            @*<a>Bình Luận @Html.ValidationSummary(true, "", new { @class = "text-danger" })</a>*@
+
                             @Html.HiddenFor(m => m.PostID, new { Value = sesspost.PostID.ToString() })
                             <div class="form-group ">
 
                                 <div class="col-md-10">
-                                    <div style="display:flex">
-                                        <div>
-                                            @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control", @style = "width:250px", @required = "required", @placeholder = "Thêm bình luận..." } })
-                                            @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="col-md-offset-2 col-md-10">
-                                            @*<i class="fas fa-location-arrow"><input placeholder="Text" type="submit" value="Binh luan" class="btn btn-default" /></i>*@
-                                            @*<input placeholder="Text" type="submit" value="Binh luan" class="btn btn-default" />*@
-                                            <button type="submit" style="background:#ffffff"><i class="fas fa-location-arrow"></i></button>
-                                        </div>
+
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
                                     </div>
+                                    <div class="col-md-offset-2 col-md-10">
+
+                                        <button type="submit" style="background:#ffffff;"><i class="fas fa-location-arrow"></i></button>
+                                    </div>
+
                                     <div style="margin-top:15px">
                                         <img src="" style="height:100px" id="output0" />
                                         <input type="file" name="fileUpload" onchange="loadFile(event)" />
@@ -246,10 +305,12 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
 
-                            </div>
+
+
                         </div>
+
+
                     }
                 }
                 else
