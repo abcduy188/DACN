@@ -6,12 +6,12 @@
 }
 
 
-<div class="container bootstrap snipets">
+<div class="container bootstrap snipets"style="background-color:white; border-radius:10px" >
     <h1 class="text-center text-muted">Tin tức</h1>
-    <div class="row flow-offset-1">
+    <div class="row flow-offset-1" >
         @foreach (var i in Model)
         {
-            <div class="col-xs-6 col-md-4">
+            <div class="col-xs-6 col-md-4" >
                 <div class="product tumbnail thumbnail-3">
                     <a href="/news/detailnew/@i.ID">
                         <img src="~/Assets/Thumbnails/@i.Image" height="auto" width="350px">

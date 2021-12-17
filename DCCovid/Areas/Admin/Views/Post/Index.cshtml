@@ -1,5 +1,5 @@
-﻿
-@model List<DCCovid.Models.PostCMT>
+﻿@model PagedList.IPagedList<DCCovid.Models.PostCMT>
+@using PagedList.Mvc;
 @{
     ViewBag.Title = "Index";
     var img = (List<DCCovid.Models.Image>)ViewBag.img;
@@ -50,7 +50,7 @@
                 success: function (data) {
 
                     if (data.success) {
-                        
+
                         window.location.reload();
                         $.notify(data.message, {
                             globalPosition: "top center",
@@ -60,10 +60,11 @@
                     }
                 }
             });
-            
+
         });
     </script>
 }
+<div id="PlaceHolderHere"></div>
 <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -118,8 +119,8 @@
                     <thead>
                         <tr>
 
-                            <th scope="col" style="width: 40%;">Tên tin tức</th>
-                            <th scope="col" style="width: 40%;">Ngày đăng</th>
+                          
+                            <th scope="col" style="width: 20%;">Người đăng</th>
                             <th scope="col" style="width: 15%;">Hình ảnh</th>
                             <th scope="col" style="width: 15%;">Danh mục</th>
                             <th scope="col" style="width: 15%;">Ngày tạo</th>
@@ -130,76 +131,77 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
-                            <tr id="row_@item.ID">
-                                <td style="width: 30%;">@item.Title</td>
-                                <td style="width: 30%;">@item.User.Name</td>
-                                <td style="width: 15%;">
-                                    @foreach (var image in img.Where(d => d.TypeID == item.ID))
-                                    { //từ list hình ảnh ở viewbag, dùng foreach lấy ra  những hình ảnh có typeID = id của product
+                        <tr id="row_@item.ID">
 
-                                        <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
+                            <td style="width: 30%;">@item.User.Name</td>
+                            <td style="width: 15%;">
+                                @if(item.Image!= null)
+                {
+                                <img src="~/Assets/Thumbnails/@item.Image" style="height:100px" />
+                }
+                                
+
+                            </td>
+                            <td style="width: 15%;">@item.CategoryUserPost.Name</td>
+                           
+                            <td>@String.Format("{0:MMMMM d,yyyy}", item.CreateDay) at @String.Format("{0:HH:mm}", item.CreateDay)</td>
+                            <td>
+                                @{
+                                    if (item.Status == -1)
+                                    {
+                                        <span style="color:red">Đã từ chối</span>
                                     }
-                                </td>
-                                <td style="width: 15%;">@item.CategoryUserPost.Name</td>
-                                <td>@item.CreateDay</td>
-                                <td>
-                                    @{
-                                        if (item.Status == -1)
+                                    else if (item.Status == 0)
+                                    {
+                                        <span style="color:orange">Đang Chờ duyệt</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:green">Đã duyệt</span>
+                                    }
+                                }
+                                <a id="statusPost" class="statusPost" data-target="#statuspost"
+                                   data-toggle="modal"
+                                   data-path="@Url.Action("Change", "Post", new { @id = @item.ID })">
+                                    Tác vụ
+                                </a>
+                            </td>
+
+                            <td style="width: 10%;">
+
+                                <a id="deletepost" class="deletepost" data-target="#basic"
+                                   data-toggle="modal"
+                                   data-path="@Url.Action("Delete", "Post", new { @id = @item.ID })">
+
+
+                                    @{ if (item.IsDelete == true)
                                         {
-                                            <span>Đã từ chối</span>
-                                        }
-                                        else if (item.Status == 0)
-                                        {
-                                            <span>Đang Chờ duyệt</span>
+                                            <span>(Đã xóa)Khôi phục</span>
                                         }
                                         else
                                         {
-                                            <span>Đã duyệt</span>
+                                            <span>(Bình thường) Xóa</span>
                                         }
                                     }
-                                    <a id="statusPost" class="statusPost" data-target="#statuspost"
-                                       data-toggle="modal"
-                                       data-path="@Url.Action("Change", "Post", new { @id = @item.ID })">
-                                        Tác vụ
-                                    </a>
-                                </td>
-                                <td>
-                                    @{
-                                        if (item.IsDelete == true)
-                                        {
-                                            <span>Đã xóa</span>
-                                        }
-                                        else
-                                        {
-                                            <span>OK</span>
-                                        }
-                                    }
+                                </a>
 
-                                </td>
-                                <td style="width: 10%;">
-                                    <a href="/Admin/post/Edit/@item.ID">Edit</a>  ||
-                                    <a id="deletepost" class="deletepost" data-target="#basic"
-                                       data-toggle="modal"
-                                       data-path="@Url.Action("Delete", "Post", new { @id = @item.ID })">
-
-
-                                        @{ if (item.IsDelete == true)
-                                            {
-                                                <span>Khôi phục</span>
-                                            }
-                                            else
-                                            {
-                                                <span>Xóa</span>
-                                            }
-                                        }
-                                    </a>
-
-                                </td>
-                            </tr>
+                            </td>
+                            <td>
+                                <button type="button" class="deleteUser" data-toggle="ajax-modal1" data-target="#detailspost"
+                                        data-url="@Url.Action($"detail/{item.ID}")">
+                                    Detail
+                                </button>
+                            </td>
+                        </tr>
                         }
 
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div id="container" style="margin-left: 20px; padding-top:20px">
+            <div class="pagination" style="margin-left: 400px">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page}))
             </div>
         </div>
     </div>

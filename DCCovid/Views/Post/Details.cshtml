@@ -118,11 +118,11 @@
 <div class="container">
     <div class="row">
 
-        <div class="col-6" id="source" style="background-color:white; border-radius:5px">
+        <div class="col-6" id="source" style="background-color:white; border-radius:5px;padding:10px 10px 10px 10px">
 
             <div class="list">
                 <div class="post-details">
-                    @if (post.User.ImageUser == null)
+                    @if (post.User.ImageUser != null)
                     {
                         <img src="~/Assets/Thumbnails/@post.User.ImageUser" alt="" width="50px" height="50px">
                     }
@@ -130,33 +130,30 @@
                     {
                         <img src="~/Assets/Thumbnails/avticon.png" alt="" width="50px" height="50px">
                     }
+                    <a href="/user/profile/@post.User.ID" style="text-decoration: none;color: black;"><b>@post.CreateBy</b></a>
+                    <p>@String.Format("{0:MMMMM d,yyyy}", post.CreateDay) at @String.Format("{0:HH:mm}", post.CreateDay)</p>
 
                 </div>
-                <div class="user" style="margin-left:15px">
-                    <b href="" style="text-decoration: none;color: black;">@post.CreateBy</b>
-                    <p>@post.CreateDay.Value.ToString("HH:mm dd/MM")</p>
-                </div>
+
             </div>
             <div class="title">
                 <b>@Html.DisplayFor(modelItem => post.Title)</b>
                 <p>
                     @Html.Raw(post.Text)
                 </p>
-                @*@if (imgpost != null)
-                    {
-                        foreach (var image in imgpost.Where(d => d.TypeID == post.ID))
-                        {
 
-                            <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
-                        }
-                    }*@
 
                 @{ if (post.Image != null)
                     {
-                        <img src="~/Assets/Thumbnails/@post.Image" style="height:100px" />
+
+                        <a href="~/Assets/Thumbnails/@post.Image" onclick="">
+                            <img src="~/Assets/Thumbnails/@post.Image" style="width:500px" />
+                        </a>
+
                     }
                 }
-
+                <br>
+                <b>#@post.CategoryUserPost.Name</b>
 
             </div>
             <div style="margin-top:10px">
@@ -198,9 +195,9 @@
                 {
                     if (cmt != null)
                     {
-                        <div style="margin-left:20px">
+                        <div style="margin:10px 10px 10px 10px">
                             <div class="comment-user">
-                                @if (i.User.ImageUser == null)
+                                @if (i.User.ImageUser != null)
                                 {
                                     <img src="~/Assets/Thumbnails/@i.User.ImageUser" alt="" width="30px" height="30px">
                                 }
@@ -208,27 +205,25 @@
                                 {
                                     <img src="~/Assets/Thumbnails/avticon.png" alt="" width="30px" height="30px">
                                 }
+                                <a href="/user/profile/@i.User.ID" style="text-decoration: none;color: black;"> <b>@i.CreateBy  </b></a>
 
-                                <b>@i.CreateBy  </b>
                                 <input type="hidden" id="title" value="@i.CreateBy" />
                                 <input type="hidden" id="iduser" value="@i.ID" />
-                                <span>@i.CreateDay.Value.ToString("hh:mm")</span>
+                                <span>@String.Format("{0:MMMMM d,yyyy}", i.CreateDay) at @String.Format("{0:HH:mm}", i.CreateDay)</span>
                             </div>
                             <div class="comment-post">
                                 <p>@i.Text</p>
                             </div>
                         </div>
 
-                        @*if (img != null)
-                            {
-                                foreach (var image in img.Where(d => d.TypeID == i.ID))
-                                {
 
-                                    <img src="~/Assets/Thumbnails/@image.FileName" style="height:100px" />
-                                }
-                            }*@
-                        <img src="~/Assets/Thumbnails/@i.Image" style="height:100px" />
-                        <a onclick="ChangeToSlug();">Reply</a>
+                        if (i.Image != null)
+                        {
+                            <img src="~/Assets/Thumbnails/@i.Image" style="height:100px" />
+                        }
+
+
+
                         if (sess != null)
                         {
                             if (i.User.ID == sess.UserID)
@@ -277,38 +272,42 @@
                     {
                         @Html.AntiForgeryToken()
 
-                        <div class="form-horizontal">
 
 
 
-                            @Html.HiddenFor(m => m.PostID, new { Value = sesspost.PostID.ToString() })
-                            <div class="form-group ">
 
-                                <div class="col-md-10">
-
-                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(m => m.PostID, new { Value = sesspost.PostID.ToString() })
+                        <div class="post-user-comment-box">
 
 
-                                    <div class="col-md-10">
-                                        @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
-                                        @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="col-md-offset-2 col-md-10">
 
-                                        <button type="submit" style="background:#ffffff;"><i class="fas fa-location-arrow"></i></button>
-                                    </div>
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                                    <div style="margin-top:15px">
-                                        <img src="" style="height:100px" id="output0" />
-                                        <input type="file" name="fileUpload" onchange="loadFile(event)" />
-                                    </div>
+
+                            <div class="d-flex align-items-start mt-2">
+                                <a class="pe-2" href="#">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle" alt="Generic placeholder image" height="31">
+                                </a>
+                                <div class="w-100">
+                                    @Html.EditorFor(model => model.Text, new { @class = "form-control border-0 form-control-sm" })
+                                    @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+                                    <button type="submit" style="background:#ffffff;"><i class="fas fa-location-arrow"></i></button>
                                 </div>
                             </div>
 
 
 
+                            <div style="margin-top:15px">
+                                <img src="" style="height:100px" id="output0" />
+                                <input type="file" name="fileUpload" onchange="loadFile(event)" />
+                            </div>
 
                         </div>
+
+
+
+
+
 
 
                     }

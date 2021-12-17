@@ -119,30 +119,30 @@
 <div class="container">
 
     <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
+        
         <tbody id="target1" class="scroll-example">
             @foreach (var item in Model)
             {
 
-                <tr>
+            <tr>
+
+                @if (item.ImageUser != null)
+                {
+                    <td><a href="/user/profile/@item.ID" style="text-decoration: none;color: black;"><img src="~/Assets/Thumbnails/@item.ImageUser" height="30px" /> <b>   @item.Name</b></a></td>
+                }
+                else
+                {
+                    <td><a href="/user/profile/@item.ID" style="text-decoration: none;color: black;"><img src="~/Assets/Thumbnails/avticon.png" height="30px" /> <b>   @item.Name</b></a></td>
+                }
+
+                @if (sess != null)
+                {
+                    <td><form action="/Room/Create/@item.ID" , method="post"><input type="submit" value="Nhắn tin" class="btn"></form></td>
+                }
 
 
-                    <td><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></td>
-                    @if (sess != null)
-                    {
-                        <td><form action="/Room/Create/@item.ID" , method="post"><input type="submit" value="Nhắn tin" class="btn"></form></td>
-                    }
 
-
-
-                </tr>
+            </tr>
 
             }
         </tbody>

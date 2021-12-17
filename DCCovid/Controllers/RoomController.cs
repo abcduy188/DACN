@@ -37,6 +37,8 @@ namespace DCCovid.Controllers
             {
                 user.Iscouple = 0;
                 db.SaveChanges();
+                Session.Remove("messses");
+                return Json(new { success = true, message = "Changed Successfully", JsonRequestBehavior.AllowGet });
             }
             else
             {
@@ -53,9 +55,10 @@ namespace DCCovid.Controllers
                 db.Rooms.Remove(roomd);
                 user.Iscouple = 0;
                 db.SaveChanges();
+                Session.Remove("messses");
+                return Json(new { success = false, message = "Changed Successfully", JsonRequestBehavior.AllowGet });
             }
-            Session.Remove("messses");
-            return Json(new { success = true, message = "Changed Successfully", JsonRequestBehavior.AllowGet });
+           
 
         }
         public ActionResult Create()

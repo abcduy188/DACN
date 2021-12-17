@@ -24,7 +24,7 @@ namespace DCCovid.Controllers
             var sessroom = Session["Room"] as RoomLogin;
             var room = db.Rooms.Find(sessroom.RoomID);
             var messages = db.Messages.Include(m => m.Room).Include(m => m.User).Where(m => m.RoomID == room.ID).OrderByDescending(d => d.ID);
-            ViewBag.Mess = messages.ToPagedList(page, pageSize);
+            ViewBag.Mess = messages.ToList();
             List<Image> listimg = db.Images.Where(d => d.Type == "MESS").OrderBy(d => d.ID).ToList();
             ViewBag.ListImg = listimg;
             var sess = Session["MEMBER"] as UserLogin;
@@ -76,7 +76,7 @@ namespace DCCovid.Controllers
                 if (demo == -1)
                 {
                     SetAlert("Hiện không có đối phuọng, bạn thử lại sau nhé", "error");
-                    return Redirect("/user/message");
+                    return Json(new { success = true }, JsonRequestBehavior.AllowGet);
                 }
                 User user2 = db.Users.Find(demo);
                 room.Name = ("Find@@@" + user.ID + user2.ID).ToString();

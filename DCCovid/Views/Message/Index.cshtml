@@ -4,7 +4,7 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Post.cshtml";
     var listuser = (List<DCCovid.Models.User>)ViewBag.User;
-    var listmess = (PagedList.IPagedList<DCCovid.Models.Message>)ViewBag.Mess;
+    var listmess = (List<DCCovid.Models.Message>)ViewBag.Mess;
     var img = (List<DCCovid.Models.Image>)ViewBag.ListImg;
     DCCovid.Models.DCCovidDbcontext db = new DCCovid.Models.DCCovidDbcontext();
     var room = Session["Room"] as DCCovid.Common.RoomLogin;
@@ -41,19 +41,166 @@
         var chatHistory = document.getElementById("target");
         chatHistory.scrollTop = chatHistory.scrollHeight;
     </script>
+   
+        <script>
+
+        $(document).ready(function () {
+
+
+        });
+        function Delete(id) {
+            if (confirm('Bật chế độ tìm bạn nhắn tin?')) {
+
+                $.ajax({
+
+                    type: "POST",
+                    url: '@Url.Action("FindFr", "Message")/' + id,
+                    success: function (data) {
+
+                        if (data.success) {
+
+                            window.location.reload();
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+
+                        }
+                    }
+
+                });
+            }
+        }
+         function Create() {
+            if (confirm('Bật chế độ tìm bạn nhắn tin?')) {
+
+                $.ajax({
+
+                    type: "POST",
+                    url: '/room/create',
+                    success: function (data) {
+
+                        if (data.success) {
+
+                            window.location.reload();
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+
+                        }
+                    }
+
+                });
+            }
+        }
+         function Cancel() {
+            if (confirm('Hủy nhắn tin với người này?')) {
+
+                $.ajax({
+
+                    type: "POST",
+                    url: '@Url.Action("CancelChat", "Room")/',
+                    success: function (data) {
+
+                        if (data.success) {
+
+                            window.location.reload();
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+
+                        } else {
+                            window.location.href = "/post";
+                        }
+                    }
+
+                });
+            }
+        }
+
+
+
+
+        function Start() {
+            var sel = document.getElementById('cars');
+            var el = document.getElementById('display');
+            var opt;
+            for (var i = 0, len = sel.options.length; i < len; i++) {
+                opt = sel.options[i];
+                if (opt.selected === true) {
+                    break;
+                }
+            }
+            var oldpass = 1;
+            var newpass = $('#Text').val();
+            var cate = sel.value;
+            var model = {
+                TypeID: oldpass,
+                Text: newpass,
+                Fav: cate
+
+            };
+            $.ajax({
+                url: '/Message/Create',
+                type: 'POST',
+                data: model,
+                success: function (resu) {
+                    if (resu.success) {
+                        window.location.reload();
+                        $('#modalfindfriend').modal("hide");
+
+
+                    } else {
+                         window.location.reload();
+                    }
+                }
+            })
+
+        }
+        </script>
+    
 }
 
+<div class="modal fade" id="modalfindfriend" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h6 class="modal-title">Tìm bạn nhắn tin</h6>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label col-md-2">Nội dung</label>
+                    <div class="col-md-10">
+                        <input type="text" id="Text" name="Text" placeholder="Gõ 'Bắt đầu !!!' để tìm kiếm bạn bè" class="form-control text-box single-line" />
+                    </div>
+                </div>
+                <select name="cars" id="cars">
+                    <option value="1" id="1">Tất cả</option>
+                    <option value="2" id="2">Tin tức</option>
+                    <option value="3" id="3">Kiến thức</option>
+                    <option value="4" id="4">Kết bạn</option>
+                    <option value="6" id="6">Mua sắm</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
+                <button type="button" id="btnChange" onclick="Start()" class="btn btn-primary">Tạo phòng</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Delete Confirmation</h4>
-            </div>
+
             <div class="modal-body">
-                Xóa tin nhắn này?
+                Thu hồi tin nhắn này?
+
 
             </div>
             <div class="modal-footer">
@@ -77,10 +224,37 @@
                         </div>
                         <input type="text" class="form-control" placeholder="Search...">
                     </div>
+                    <h5>Tìm bạn nhắn tin</h5>
+                    @{
+                        var user = db.Users.Find(sess.UserID);
+                        if (user.Iscouple == 0)
+                        {
+                            <h4>Chưa kích hoạt <a class="btn btn-danger btn-sm" style="margin-left: 5px" onclick="Delete(@user.ID)"><i class="fa fa-trash"></i>Kích hoạt</a></h4>
+                        }
+                        else if (user.Iscouple == 1)
+                        {
+
+                            <h4>  Đã kích hoạt <a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
+                            <p>
+                                Đợi chờ quá lâu? <a id='findfriend' class='findfriend' data-target='#modalfindfriend' data-toggle='modal'> Click vào đây để tìm người nhắn tin</a>
+                            </p>
+                        }
+                        else
+                        {
+                            <h4>Đang có người nhắn tin<a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
+                            <p>
+                                <form action="/Room/Create" method="post">
+                                    <input type="submit" value="vào phòng" />
+                                </form>
+                            </p>
+                        }
+                    }
                     <ul class="list-unstyled chat-list mt-2 mb-0">
+
+
                         @foreach (var i in listuser)
                         {
-                           
+
                             <li class="clearfix">
                                 <img src="~/Assets/Thumbnails/avticon.png" alt="avatar">
                                 <div class="about">
@@ -88,8 +262,8 @@
 
                                         <input type="submit" value="@i.Name" class="btn">
                                     </form>
-                                  
-                                    
+
+
                                 </div>
                             </li>
                         }
@@ -151,7 +325,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="scroll-example chat-history " id="target" >
+                    <div class="scroll-example chat-history " id="target">
                         <ul class="m-b-0">
                             @foreach (var item in listmess.OrderBy(d => d.ID))
                             {
@@ -159,12 +333,17 @@
                                 {
                                     <li class="clearfix">
                                         <div class="message-data text-right">
-                                            <span class="message-data-time">@item.CreateDate.Value.ToString("HH:mm")</span>
+                                            <span class="message-data-time">@String.Format("{0:MMMMM d,yyyy}", item.CreateDate) at @String.Format("{0:HH:mm}", item.CreateDate)</span>
                                             <img src="~/Assets/Thumbnails/avticon.png" alt="avatar">
                                         </div>
                                         <div class="message other-message float-right">
                                             @item.Text
                                         </div>
+                                        <a id="deleteUser" class="deleteUser" data-target="#basic"
+                                           data-toggle="modal"
+                                           data-path="@Url.Action("Delete", "Message", new { @id = @item.ID })"> <i class="fas fa-ellipsis-h float-right"></i></a>
+
+
                                         @if (img != null)
                                         {
                                             foreach (var image in img.Where(d => d.TypeID == item.ID))
@@ -179,8 +358,9 @@
                                 {
                                     <li class="clearfix">
                                         <div class="message-data">
-                                            <span class="message-data-time">@item.CreateDate.Value.ToString("HH:mm")</span>
+                                            <span class="message-data-time">@String.Format("{0:MMMMM d,yyyy}", item.CreateDate) at @String.Format("{0:HH:mm}", item.CreateDate)</span>
                                         </div>
+
                                         <div class="message my-message">@item.Text</div>
                                         @if (img != null)
                                         {

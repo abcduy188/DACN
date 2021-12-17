@@ -52,11 +52,19 @@
                         if (sess != null)
                         {
 
-                            <li class="nav-item active">
-                                <div id="counthere1">
 
-                                </div>
+
+                            <li class="nav-item dropdown" >
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Tin nhắn <span id="messinfo"></span>
+                                    </a>
+                                
+                                @{Html.RenderAction("Message", "User");
+                                }
                             </li>
+
+
+
                             <li class="nav-item active">
                                 <a href="/user/profile/@sess.UserID" class="nav-link">
                                     @sess.Name
@@ -64,7 +72,7 @@
                             </li>
                             <li class="nav-item active">
                                 <a href="/user/logout" class="nav-link">
-                                    Logout
+                                    Đăng xuất
                                 </a>
                             </li>
                         }
@@ -72,12 +80,12 @@
                         {
                             <li class="nav-item active">
                                 <a href="/user/login" class="nav-link">
-                                    Login
+                                    Đăng nhập
                                 </a>
                             </li>
                             <li class="nav-item active">
                                 <a href="/user/register" class="nav-link">
-                                    Register
+                                    Đăng kí
                                 </a>
                             </li>
                         }
@@ -113,7 +121,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
-
+    <script src="~/Assets/admin/ckeditor/ckeditor.js"></script>
+    <script src="~/Assets/admin/ckfinder/ckfinder.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="~/Scripts/app.js"></script>
 
@@ -121,8 +130,7 @@
     <script src="~/Scripts/covidApi.js"></script>
 
     <script src="~/Scripts/JavaScript.js"></script>
-    <script src="~/Assets/admin/ckeditor/ckeditor.js"></script>
-    <script src="~/Assets/admin/ckfinder/ckfinder.js"></script>
+
     <script>
         $(document).ready(function () {
             //custom alert
@@ -140,15 +148,15 @@
                     var html = "";
                     var title = document.title;
                     if (res.data > 0) {
-                        html += "<a class='nav-link' href = '/user/message'style='color: red' >Tin nhắn(" + res.data + ")</a>"
+
+
+                        html += "<b style: 'color:red'> ("+res.data+ ")</b";
 
                         var newTitle = '(' + res.data + ') ' + title;
                         document.title = newTitle;
                     }
-                    else {
-                        html += "<a class='nav-link' href = '/user/message' >Tin nhắn</a>"
-                    }
-                    $('#counthere1').html(html);
+                   
+                    $('#messinfo').html(html);
                 }
             });
         };

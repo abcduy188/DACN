@@ -11,7 +11,8 @@ namespace DCCovid.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class User
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -35,6 +36,7 @@ namespace DCCovid.Models
         public string Phone { get; set; }
         public bool Status { get; set; }
         public Nullable<int> SexID { get; set; }
+        [DataType(DataType.Date)]
         public Nullable<System.DateTime> BirthDay { get; set; }
         public Nullable<System.DateTime> CreateDate { get; set; }
         public string CreateBy { get; set; }

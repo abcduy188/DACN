@@ -32,7 +32,8 @@ namespace DCCovid.Controllers
             }
            
         }
-        public ActionResult Message()
+        [ChildActionOnly]
+        public PartialViewResult Message()
         {
             var sess = Session["MEMBER"] as UserLogin;
             ViewBag.listCate = db.CategoryUserPosts.ToList();
@@ -57,10 +58,10 @@ namespace DCCovid.Controllers
                     }
                 }
                
-                return View(listuser);
+                return PartialView(listuser);
             }
             else
-            return View();
+            return PartialView();
         }
         public ActionResult GetData()
         {

@@ -19,7 +19,7 @@
         $(document).ready(function () {
             LoadData();
         });
-        $('.modal').css('overflow-y', 'auto');
+        
         var editor = CKEDITOR.replace('txtDetail', {
             customConfig: '/Assets/admin/ckeditor/config.js',
         });
@@ -43,23 +43,37 @@
         function CreateQuest() {
 
             var oldpass = $('#textfast').val();
-           
+            
             var model = {
-                Text: oldpass
-               
-            };
-            $.ajax({
-                url: '/Post/CreateJs',
-                type: 'POST',
-                data: model,
-                success: function (resu) {
-                    if (resu.success) {
-                        window.location.reload();
+                 Text : oldpass,
+            }
+            if (Validate()) {
+                $.ajax({
+                    url: '/Post/CreateJs',
+                    type: 'POST',
+                    data: model,
+                    success: function (resu) {
+                        if (resu.success) {
+                            window.location.reload();
+                        }
                     }
-                }
-            })
+                })
+            }
+           
 
-        }
+        };
+        function Validate() {
+            var check = false
+            var oldpass = $('#textfast').val();
+            if (oldpass === '') {
+                $('#textfast').next().html('Bạn chưa nhập nội dung');
+                check = false;
+            } else {
+                $('#textfast').next().html('');
+                check = true;
+            }
+            return check
+        };
     </script>
 }
 <div class="modal fade" id="createpost" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
@@ -80,18 +94,18 @@
 
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            
-                                    @Html.TextAreaFor(model => model.Text, new { @class = "form-control", @id = "txtDetail" })
-                                    @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
-                               
-                         
 
-                           
+                            @Html.TextAreaFor(model => model.Text, new { @class = "form-control", @id = "txtDetail" })
+                            @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
 
-                                <div class="col-md-10">
-                                    <img src="" style="height:100px" id="output0" />
-                                    <input type="file" name="fileUpload" multiple onchange="loadFile(event)" />
-                                </div>
+
+
+
+
+                            <div class="col-md-10">
+                                <img src="" style="height:100px" id="output0" />
+                                <input type="file" name="fileUpload" multiple onchange="loadFile(event)" />
+                            </div>
 
                             <div class="inputfield">
                                 @Html.LabelFor(model => model.CateID, "Thể loại", htmlAttributes: new { @class = "control-label col-md-2" })
@@ -114,201 +128,13 @@
                 {
                     <div class="container" style="margin-top:50px"></div>
                     <span>Bạn phải đăng nhập trước khi Bình luận</span>
-                    <a href="@Url.Action("Login","User",new {@strURL= Request.Url.ToString() })">Click vào đây để đăng nhập</a>
+                    <a href="@Url.Action("Login","User",new {@strURL= Request.Url.ToString() })">Bấm vào đây để đăng nhập</a>
                 }
             </div>
         </div>
     </div>
 </div>
-<!-- #region old-->
-@*<div class="container">
-        <div class="row">
-            <div class="col-3">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"
-                                 width="24" height="24" aria-hidden="true" class="crayons-icon crayons-icon--default">
-                                <g class="nc-icon-wrapper">
-                                    <path fill="#A0041E"
-                                          d="M13.344 18.702h-2a.5.5 0 01-.5-.5v-7a.5.5 0 01.5-.5h2a.5.5 0 01.5.5v7a.5.5 0 01-.5.5z">
-                                    </path>
-                                    <path fill="#FFE8B6" d="M9 20L22 7l13 13v17H9z"></path>
-                                    <path fill="#FFCC4D" d="M22 20h1v16h-1z"></path>
-                                    <path fill="#66757F"
-                                          d="M35 21a.997.997 0 01-.707-.293L22 8.414 9.707 20.707a1 1 0 11-1.414-1.414l13-13a.999.999 0 011.414 0l13 13A.999.999 0 0135 21z">
-                                    </path>
-                                    <path fill="#66757F"
-                                          d="M22 21a.999.999 0 01-.707-1.707l6.5-6.5a1 1 0 111.414 1.414l-6.5 6.5A.997.997 0 0122 21z">
-                                    </path>
-                                    <path fill="#C1694F" d="M14 30h4v6h-4z"></path>
-                                    <path fill="#55ACEE" d="M14 21h4v4h-4zm12.5 0h4v4h-4zm0 9h4v4h-4z"></path>
-                                    <path fill="#5C913B"
-                                          d="M37.5 37.5A1.5 1.5 0 0136 39H8a1.5 1.5 0 010-3h28a1.5 1.5 0 011.5 1.5z">
-                                    </path>
-                                </g>
-                            </svg>Trang Chủ
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"
-                                 width="24" height="24">
-                                <g class="nc-icon-wrapper">
-                                    <path fill="#FFD983"
-                                          d="M36 4H14a4 4 0 00-4 4v24H8a4 4 0 000 8h24a4 4 0 004-4V12a4 4 0 000-8z">
-                                    </path>
-                                    <path fill="#E39F3D" d="M12 14h24v-2H14l-2-1z"></path>
-                                    <path fill="#FFE8B6"
-                                          d="M14 4a4 4 0 00-4 4v24.555A3.955 3.955 0 008 32a4 4 0 104 4V11.445c.59.344 1.268.555 2 .555a4 4 0 000-8z">
-                                    </path>
-                                    <path fill="#C1694F"
-                                          d="M16 8a2 2 0 11-4.001-.001A2 2 0 0116 8m-6 28a2 2 0 11-4.001-.001A2 2 0 0110 36m24-17a1 1 0 01-1 1H15a1 1 0 010-2h18a1 1 0 011 1m0 4a1 1 0 01-1 1H15a1 1 0 110-2h18a1 1 0 011 1m0 4a1 1 0 01-1 1H15a1 1 0 110-2h18a1 1 0 011 1m0 4a1 1 0 01-1 1H15a1 1 0 110-2h18a1 1 0 011 1">
-                                    </path>
-                                </g>
-                            </svg>Tin Tức
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"
-                                 width="24" height="24">
-                                <g class="nc-icon-wrapper">
-                                    <path fill="#F4900C"
-                                          d="M15 4a8 8 0 00-8 8v8h2v-8a6 6 0 0112 0v8h2v-8a8 8 0 00-8-8z"></path>
-                                    <path fill="#DD2E44" d="M5 12l2 2 2-2 2 2 2-2 2 2 2-2 2 2 2-2 2 2 2-2v23H5z"></path>
-                                    <path fill="#FFCC4D"
-                                          d="M29 9a8 8 0 00-8 8v8h2v-8a6 6 0 0112 0v8h2v-8a8 8 0 00-8-8z"></path>
-                                    <path fill="#744EAA" d="M19 17l2 2 2-2 2 2 2-2 2 2 2-2 2 2 2-2 2 2 2-2v23H19z">
-                                    </path>
-                                </g>
-                            </svg>Mua Bán
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"
-                                 width="24" height="24">
-                                <g class="nc-icon-wrapper">
-                                    <path fill="#FFD983"
-                                          d="M33 15.06c0 6.439-5 7.439-5 13.44 0 3.098-3.123 3.359-5.5 3.359-2.053 0-6.586-.779-6.586-3.361C15.914 22.5 11 21.5 11 15.06c0-6.031 5.285-10.92 11.083-10.92C27.883 4.14 33 9.029 33 15.06z">
-                                    </path>
-                                    <path fill="#CCD6DD"
-                                          d="M26.167 36.5c0 .828-2.234 2.5-4.167 2.5-1.933 0-4.167-1.672-4.167-2.5 0-.828 2.233-.5 4.167-.5 1.933 0 4.167-.328 4.167.5z">
-                                    </path>
-                                    <path fill="#FFCC4D"
-                                          d="M26.707 14.293a.999.999 0 00-1.414 0L22 17.586l-3.293-3.293a1 1 0 10-1.414 1.414L21 19.414V30a1 1 0 102 0V19.414l3.707-3.707a.999.999 0 000-1.414z">
-                                    </path>
-                                    <path fill="#99AAB5" d="M28 35a2 2 0 01-2 2h-8a2 2 0 01-2-2v-6h12v6z"></path>
-                                    <path fill="#CCD6DD"
-                                          d="M15.999 36a1 1 0 01-.163-1.986l12-2a.994.994 0 011.15.822.999.999 0 01-.822 1.15l-12 2a.927.927 0 01-.165.014zm0-4a1 1 0 01-.163-1.986l12-2a.995.995 0 011.15.822.999.999 0 01-.822 1.15l-12 2a.927.927 0 01-.165.014z">
-                                    </path>
-                                </g>
-                            </svg>Số Liệu Covid
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/post/create">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"
-                                 width="24" height="24">
-                                <g class="nc-icon-wrapper">
-                                    <path fill="#FFD983"
-                                          d="M36 4H14a4 4 0 00-4 4v24H8a4 4 0 000 8h24a4 4 0 004-4V12a4 4 0 000-8z">
-                                    </path>
-                                    <path fill="#E39F3D" d="M12 14h24v-2H14l-2-1z"></path>
-                                    <path fill="#FFE8B6"
-                                          d="M14 4a4 4 0 00-4 4v24.555A3.955 3.955 0 008 32a4 4 0 104 4V11.445c.59.344 1.268.555 2 .555a4 4 0 000-8z">
-                                    </path>
-                                    <path fill="#C1694F"
-                                          d="M16 8a2 2 0 11-4.001-.001A2 2 0 0116 8m-6 28a2 2 0 11-4.001-.001A2 2 0 0110 36m24-17a1 1 0 01-1 1H15a1 1 0 010-2h18a1 1 0 011 1m0 4a1 1 0 01-1 1H15a1 1 0 110-2h18a1 1 0 011 1m0 4a1 1 0 01-1 1H15a1 1 0 110-2h18a1 1 0 011 1m0 4a1 1 0 01-1 1H15a1 1 0 110-2h18a1 1 0 011 1">
-                                    </path>
-                                </g>
-                            </svg>Thêm bài viết mới
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-6">
-                @foreach (var item in post)
-                {
-                    <div class="user" style="max-width:100%;min-width:500px;display:flex">
-                        <img src="~/Assets/Thumbnails/@item.User.ImageUser" id="avatar" />
-                        <div class="user" style="padding-left:20px">
-                            <a href="/user/profile/@item.User.ID"><b>@item.CreateBy</b><br /></a>
-                            <p>@item.CreateDay.Value.ToString("dd/MM")</p>
-                        </div>
-                    </div>
-                    <div>
-                        <p>Thể Loại: @item.CategoryUserPost.Name</p>
-                    </div>
-                    <div class="post">
-                        <b>@Html.DisplayFor(modelItem => item.Title)</b>
-                        <p>@Html.DisplayFor(modelItem => item.Text)</p>
-                        @if (img != null)
-                        {
-                            foreach (var image in img.Where(d => d.TypeID == item.ID))
-                            {
 
-                                <img src="~/Assets/Thumbnails/@image.FileName" style="width:500px" height="100%" />
-                            }
-                        }
-                    </div>
-
-                    <div style="padding-top: 20px">
-
-                        @{
-
-                            var count = 0;
-                            count = item.Users.Count();
-                            item.LikeCount = count;
-                            <span>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="24" height="24">
-                                    <path fill="#DD2E44" d="M39.885 15.833c0-5.45-4.418-9.868-9.867-9.868-3.308 0-6.227 1.633-8.018 4.129-1.791-2.496-4.71-4.129-8.017-4.129-5.45 0-9.868 4.417-9.868 9.868 0 .772.098 1.52.266 2.241C5.751 26.587 15.216 35.568 22 38.034c6.783-2.466 16.249-11.447 17.617-19.959.17-.721.268-1.469.268-2.242z"></path>
-                                </svg>
-                                @item.LikeCount
-                            </span>
-                            item.LikeCount = count;
-
-                        }
-                        @Html.ActionLink("Bình luận", "Details", new { id = item.ID }, new { @class = "btn btn-default" })
-                    </div>
-
-                    <div>
-
-                        @{
-
-                            if (sess != null)
-                            {
-                                if (item.CreateBy == sess.Name)
-                                {
-                                    <a id="deletePost" class="deletePost" data-target="#basic"
-                                       data-toggle="modal"
-                                       data-path="@Url.Action("Delete", "Post", new { @id = @item.ID })">Xóa</a>
-                                }
-                                else
-                                {
-                                    <span>
-
-                                    </span>
-                                }
-                            }
-                            else
-                            {
-                                <span>
-
-                                </span>
-                            }
-
-
-                        }
-
-                    </div>
-                    <hr />
-                }
-            </div>
-            <div class="col-3"></div>
-        </div>
-    </div>*@<!-- #endregion-->
 <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -349,13 +175,13 @@
                     </div>
                     <div class="d-flex align-items-start">
                         @{
-                                if (sess != null)
-                                {
+                            if (sess != null)
+                            {
 
-                                    var user = db.Users.Find(sess.UserID);
+                                var user = db.Users.Find(sess.UserID);
                                 <img src="~/Assets/Thumbnails/@user.ImageUser" class="rounded-circle avatar-lg img-thumbnail" alt="profile-image"><div class="w-100 ms-3">
                                     <h4 class="my-0">@user.Name</h4>
-                                    
+
                                     <button type="button" class="btn btn-soft-primary btn-xs waves-effect mb-2 waves-light">Follow</button>
                                     <button type="button" class="btn btn-soft-success btn-xs waves-effect mb-2 waves-light">Message</button>
                                 </div><a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
@@ -364,14 +190,14 @@
                             }
                             else
                             {
-                                <img src="~/Assets/Thumbnails/color-wheel-1024x1024.jpg" class="rounded-circle avatar-lg img-thumbnail" alt="profile-image">
+                                <img src="~/Assets/Thumbnails/avticon.png" class="rounded-circle avatar-lg img-thumbnail" alt="profile-image">
                                 <div class="w-100 ms-3">
-                                    <h4 class="my-0">Khanh Duy</h4>
+                                    <h4 class="my-0">ADMIN</h4>
                                     <p class="text-muted"></p>
-                                    <button type="button" class="btn btn-soft-primary btn-xs waves-effect mb-2 waves-light">Follow</button>
-                                    <button type="button" class="btn btn-soft-success btn-xs waves-effect mb-2 waves-light">Message</button>
+                                   
+                                   
                                 </div>
-                               
+
                             }
                         }
 
@@ -387,7 +213,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title mb-3">Inbox</h4>
+                    <h4 class="header-title mb-3">Thành viên</h4>
 
                     <div class="inbox-widget" data-simplebar="init" style="max-height: 350px;">
                         <div class="simplebar-wrapper" style="margin: 0px;">
@@ -417,7 +243,8 @@
                         <form action="#" class="comment-area-box mb-3">
                             <span class="input-icon">
                                 <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createpost" style="margin-bottom:10px">Thêm bài viết mới</a>
-                                <textarea rows="3" id="textfast" name="fname" class="form-control" placeholder="Cảm nghĩ nhanh"></textarea>
+                                <textarea rows="3" id="textfast" name="fname" class="form-control" placeholder="Cảm nghĩ nhanh" required></textarea>
+                                <span class="cm-error text-danger"></span>
                             </span>
                             <div class="comment-area-btn">
                                 <div class="float-end">
@@ -451,32 +278,32 @@
                                 </div>
                             </div>
                         </form>
-                       
+
                     }
 
 
                     <!-- end comment box -->
                     <!-- Story Box-->
 
-                    @foreach (var i in post)
+                    @foreach (var i in post.OrderByDescending(d=>d.CreateDay))
                     {
                         <div class="border border-light p-2 mb-3">
                             <div class="d-flex align-items-start">
                                 <img class="me-2 avatar-sm rounded-circle" src="~/Assets/Thumbnails/avticon.png" alt="Generic placeholder image">
                                 <div class="w-100">
-                                    <h5 class="">@i.User.Name <small class="text-muted">@i.CreateDay.Value.ToString("HH:mm")</small></h5>
+                                    <h5 class="">@i.User.Name <small class="text-muted">@String.Format("{0:MMMMM d,yyyy}", i.CreateDay) at @String.Format("{0:HH:mm}", i.CreateDay)</small></h5>
                                     <div class="">
                                         @Html.Raw(i.Text)
-                                        <br>
-                                        @*@if (img != null)
-                                        {
-                                            foreach (var image in img.Where(d => d.TypeID == i.ID))
-                                            {
 
-                                                <img src="~/Assets/Thumbnails/@image.FileName" style="width:500px" height="100%" />
-                                            }
-                                        }*@
-                                        <img src="~/Assets/Thumbnails/@i.Image" style="width:500px" height="100%" />
+
+                                        <br>
+                                       
+
+                                        @if (i.Image != null)
+                                        {
+                                            <img src="~/Assets/Thumbnails/@i.Image" style="width:500px" height="100%" />
+                                        }
+                                        <b>#@i.CategoryUserPost.Name</b>
                                         <hr />
                                         <div class="mt-2">
                                             @{
@@ -527,14 +354,14 @@
                                             </div>
                                         </div>
 
-                                        <div class="d-flex align-items-start mt-2">
+                                        @*<div class="d-flex align-items-start mt-2">
                                             <a class="pe-2" href="#">
                                                 <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle" alt="Generic placeholder image" height="31">
                                             </a>
                                             <div class="w-100">
                                                 <input type="text" id="simpleinput" class="form-control border-0 form-control-sm" placeholder="Add comment">
                                             </div>
-                                        </div>
+                                        </div>*@
                                     </div>
                                 }
                             }
