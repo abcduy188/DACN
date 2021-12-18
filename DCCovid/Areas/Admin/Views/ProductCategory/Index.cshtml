@@ -5,14 +5,147 @@
     var listCate = (List<DCCovid.Models.Category>)ViewBag.ListCate;
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+@section js
+{
+    <script>
+        var path_to_delete;
+
+        $(".status").click(function (e) {
+            path_to_delete = $(this).data('path');
+        });
+
+        $('#btnContinueDeleteCate').click(function () {
+            window.location = path_to_delete;
+        });
+
+
+    </script>
+}
+
+<div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Delete Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this item?
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
+                <button id="btnContinueDeleteCate" type="button" class="btn btn-primary">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="createCate" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Thêm danh mục sản phẩm</h4>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Create", "ProductCategory", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        <h4>Danh mục sản phẩm</h4>
+                        <hr />
+                        @Html.Hidden("Type", (object)ViewBag.Type)
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.Status)
+                                    @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit"style="background-color:aqua" value="Tạo" class="btn btn-default" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createCateNews" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Thêm danh mục bài viết</h4>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Create", "ProductCategory", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        <h4>Danh mục bài viết</h4>
+                        <hr />
+                        @Html.Hidden("Type", (object)ViewBag.TypeNews)
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.Status)
+                                    @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" style="background-color:aqua" value="Tạo" class="btn btn-default" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container-fluid">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Danh mục</h1>
     <p>
 
-        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createUser">Thêm danh mục</a>
+        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createCate">Thêm danh mục sản phẩm</a>
+        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createCateNews">Thêm danh mục bài viết</a>
     </p>
+
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -21,35 +154,35 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-               
-                        <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Name)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.SeoTitle)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ParentID)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Status)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.CreateBy)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.CreateDate)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ModifiedBy)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ModifiedDate)
-                            </th>
-                            <th></th>
-                        </tr>
-                   
+
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.SeoTitle)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ParentID)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Status)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.CreateBy)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.CreateDate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ModifiedBy)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ModifiedDate)
+                        </th>
+                        <th></th>
+                    </tr>
+
                     <tbody>
                         @foreach (var item in listCate.Where(d => d.ParentID == null))
                         {
@@ -83,30 +216,50 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.ModifiedDate)
                                 </td>
-                                <td></td>
-                                @foreach (var childItem in child)
-                                {
-                            <tr id="row_@childItem.ID">
-                                <td>@childItem.Name</td>
-                                <td>@childItem.SeoTitle</td>
-                                <td>@childItem.ParentID</td>
                                 <td>
-                                    @if (childItem.Status == true)
-                                    {<span> Đang hoạt động</span>}
+                                    @if (item.IsDelete == false)
+                                    {
 
+                                        <span style="color:green">Đang hoạt động</span>
+                                    }
                                     else
-                                    {<span> Không hoạt động</span>}
+                                    {
+                                        <span style="color:red">Đã xóa</span>
+                                        }
                                 </td>
-                                <td>@childItem.CreateBy</td>
-                                <td>@childItem.CreateDate</td>
-                                <td>@childItem.ModifiedBy</td>
-                                <td>@childItem.ModifiedDate</td>
+                                <td>@item.Type</td>
                                 <td>
                                     @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
                                     @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-                                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                                    <a id="deleteUser" class="deleteUser" data-target="#basic"
+                                       data-toggle="modal"
+                                       data-path="@Url.Action("Delete", "ProductCategory", new { @id = @item.ID })">Delete</a>
                                 </td>
-                            </tr>
+                                @foreach (var childItem in child)
+                                {
+                                <tr id="row_@childItem.ID">
+                                    <td>@childItem.Name</td>
+                                    <td>@childItem.SeoTitle</td>
+                                    <td>@childItem.ParentID</td>
+                                    <td>
+                                        @if (childItem.Status == true)
+                                        {<span> Đang hoạt động</span>}
+
+                                        else
+                                        {<span> Không hoạt động</span>}
+                                    </td>
+                                    <td>@childItem.CreateBy</td>
+                                    <td>@childItem.CreateDate</td>
+                                    <td>@childItem.ModifiedBy</td>
+                                    <td>@childItem.ModifiedDate</td>
+                                    <td>
+                                        @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                                        @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                                        <a id="deleteUser" class="deleteUser" data-target="#basic"
+                                           data-toggle="modal"
+                                           data-path="@Url.Action("Delete", "ProductCategory", new { @id = @item.ID })">Delete</a>
+                                    </td>
+                                </tr>
                             }
 
                                 </tr>

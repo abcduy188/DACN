@@ -118,7 +118,7 @@
 <div class="container">
     <div class="row">
 
-        <div class="col-6" id="source" style="background-color:white; border-radius:5px;padding:10px 10px 10px 10px">
+        <div class="col-6" id="source" style="background-color:white; border-radius:5px;padding:20px 20px 20px 20px">
 
             <div class="list">
                 <div class="post-details">
@@ -189,13 +189,13 @@
                 }
             </div>
         </div>
-        <div class="col-4" style="background-color:white; border-radius:5px; margin-left:10px">
+        <div class="col-4" style="background-color:white; border-radius:5px; margin-left:10px;padding-bottom:10px">
             <div class="comment scroll-example" id="target" style="margin-top: 20px; width: 100%; height: 500px">
                 @foreach (var i in cmt)
                 {
                     if (cmt != null)
                     {
-                        <div style="margin:10px 10px 10px 10px">
+                        <div style="margin:10px 10px 10px 10px;padding:10px 10px 10px 10px;">
                             <div class="comment-user">
                                 @if (i.User.ImageUser != null)
                                 {
@@ -206,14 +206,37 @@
                                     <img src="~/Assets/Thumbnails/avticon.png" alt="" width="30px" height="30px">
                                 }
                                 <a href="/user/profile/@i.User.ID" style="text-decoration: none;color: black;"> <b>@i.CreateBy  </b></a>
+                                <span style="padding-left:10px">@String.Format("{0:MMM d,yyyy}", i.CreateDay) at @String.Format("{0:HH:mm}", i.CreateDay)</span>
+                                <div style="background-color:antiquewhite; border-radius:15px;margin-top:15px">
+                                    <input type="hidden" id="title" value="@i.CreateBy" />
+                                    <input type="hidden" id="iduser" value="@i.ID" />
 
-                                <input type="hidden" id="title" value="@i.CreateBy" />
-                                <input type="hidden" id="iduser" value="@i.ID" />
-                                <span>@String.Format("{0:MMMMM d,yyyy}", i.CreateDay) at @String.Format("{0:HH:mm}", i.CreateDay)</span>
+                                    @if (sess != null)
+                                    {
+                                        if (i.User.ID == sess.UserID)
+                                        {
+                                            <span>
+                                                <a id="deleteCMT" class="deleteCMT" data-target="#basic"
+                                                   data-toggle="modal"
+                                                   data-path="@Url.Action("Delete", "Post", new { @id = @i.ID,@strURL= Request.Url.ToString() } )"> <i class="fas fa-ellipsis-h float-right" style="margin-right:10px"></i></a>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span></span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span></span>
+                                    }
+                                    <div class="comment-post" style="padding:5px 0 3px 10px">
+                                        <p>@i.Text</p>
+                                    </div>
+                                </div>
+
                             </div>
-                            <div class="comment-post">
-                                <p>@i.Text</p>
-                            </div>
+
                         </div>
 
 
@@ -224,23 +247,7 @@
 
 
 
-                        if (sess != null)
-                        {
-                            if (i.User.ID == sess.UserID)
-                            {
-                                <a id="deleteCMT" class="deleteCMT" data-target="#basic"
-                                   data-toggle="modal"
-                                   data-path="@Url.Action("Delete", "Post", new { @id = @i.ID, @strURL= Request.Url.ToString() })">Xóa</a>
-                            }
-                            else
-                            {
-                                <span></span>
-                            }
-                        }
-                        else
-                        {
-                            <span></span>
-                        }
+
 
                     }
                     <hr />
@@ -276,7 +283,10 @@
 
 
 
-                        @Html.HiddenFor(m => m.PostID, new { Value = sesspost.PostID.ToString() })
+                        @Html.HiddenFor(m => m.PostID, new
+                        {
+                            Value = sesspost.PostID.ToString()
+        })
                         <div class="post-user-comment-box">
 
 
@@ -285,13 +295,31 @@
 
 
                             <div class="d-flex align-items-start mt-2">
-                                <a class="pe-2" href="#">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle" alt="Generic placeholder image" height="31">
-                                </a>
+                                @{
+                                    if (sess != null)
+                                    {
+                                        var user = db.Users.Find(sess.UserID);
+                                        if (user.ImageUser != null)
+                                        {
+                                            <a class="pe-2" href="#">
+                                                <img src="~/Assets/Thumbnails/@user.ImageUser" class="rounded-circle" alt="Generic placeholder image" height="31">
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a class="pe-2" href="#">
+                                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle" alt="Generic placeholder image" height="31">
+                                            </a>
+                                        }
+                                    }
+
+                                }
+
+                                <button type="submit" style="background:#ffffff;margin:0 5px 0 5px"><i class="fas fa-location-arrow"></i></button>
                                 <div class="w-100">
-                                    @Html.EditorFor(model => model.Text, new { @class = "form-control border-0 form-control-sm" })
+                                    @Html.TextBoxFor(model => model.Text, new { @class = "form-control border-0 form-control-sm", @style = "width: 250px", @placeholder = "Nhập bình luận tại đây" })
                                     @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
-                                    <button type="submit" style="background:#ffffff;"><i class="fas fa-location-arrow"></i></button>
+
                                 </div>
                             </div>
 

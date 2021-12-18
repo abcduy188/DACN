@@ -5,25 +5,14 @@
     Layout = "~/Views/Shared/_Post.cshtml";
 }
 
-<div class="container">
+<div class="container" style="background-color:white">
     <div class="duongDan">
         <a style="text-decoration:none" href="/">Trang Chủ</a>
         <a>>></a>
         <a style="text-decoration: none;color: #fe3e65" href="#">Sản phẩm</a>
     </div>
-    @if (TempData["Success"] != null)
-    {
-        <div id="tempdata" class="alert alert-success">
-            <strong>Cập nhật thành công</strong>
-        </div>
-    }
-    @if (TempData["Delete"] != null)
-    {
-        <div id="tempdata" class="alert alert-success">
-            <strong>Đã xóa sản phẩm khỏi giỏ hàng</strong>
-        </div>
-    }
-    <div class="row">
+   
+    <div class="row" style="padding: 40px 10px 10px 10px">
         <h2 style="text-align:center">THÔNG TIN GIỎ HÀNG</h2>
         <table align="center" border="1" class="table">
             <tr style="text-align:center;font-weight:bold">
@@ -41,14 +30,18 @@
                 <tr style="text-align:center;font-weight:bold">
                     <td>@item.ID</td>
                     <td>@item.Name</td>
-                    <td><img src="/Assets/Thumbnail/@item.Image.Split(',')[0]" style="width:100px" /></td>
+                    <td><img src="/Assets/Thumbnails/@item.Image" style="width:100px" /></td>
                     @using (Html.BeginForm("CapnhatCart", "Cart", new { @ID = item.ID }))
                     {
                         <td>
                             <input type="number" value="@item.Quantity" min="1" name="txtSoluong" />
                         </td>
-                        <td>@item.Price</td>
-                        <td>@item.TotalItem</td>
+
+                        <td>@String.Format("{0:0,0}", @item.Price) VNĐ</td>
+                        <td>
+                            @String.Format("{0:0,0}", @item.TotalItem) VNĐ
+
+                        </td>
                         @*<td><a href="@Url.Action("Details","Book",new {masach=item.ID})">Chi Tiết</a></td>*@
                         <td><a href="/cart/xoacart/@item.ID"><i class="fa fa-trash-alt"></i></a></td>
                         <td><input type="submit" value="Cập Nhật" /></td>

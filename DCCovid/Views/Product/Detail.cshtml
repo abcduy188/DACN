@@ -7,19 +7,8 @@
 @* slider là productItem slide là productChill *@
 <section class="ChiTiet" style="background-color:white;border-radius:5px;padding:15px 0 15px 0">
     <div class="container" >
-        <div class="duongDan">
-            <a style="text-decoration:none" href="/">Trang Chủ</a>
-            <a>>></a>
-            <a style="text-decoration: none;" href="/san-pham/@Model.Category.SeoTitle-@Model.Category.ID">LapTop @Model.Category.Name</a>
-            <a>>></a>
-            <a style="text-decoration: none;color: #fe3e65" href="#">Chi tiết @Model.Name</a>
-        </div>
-        @if (TempData["Success"] != null)
-        {
-            <div id="tempdata" class="alert alert-success">
-                <strong>Đã thêm vào giỏ hàng</strong>
-            </div>
-        }
+       
+        
         <h3 style="color:red"><b>@Model.Name </b></h3>
         <h4> @Model.Description</h4>
         <div class="row">
@@ -87,7 +76,7 @@
                         <div class="thongTin">Bảo Hành: <strong>36 tháng</strong></div>
                         <div class="thongTin">Tình Trạng : <strong>Mới 100%</strong></div>
                         <div class="btn">
-                            <button type="button" name="add-to-cart" value="38363" class="buy"><a href="@Url.Action("AddCart","Cart",new {@ID =@Model.ID , @strURL= Request.Url.ToString() })">Thêm vào giỏ hàng</a></button>
+                            <button type="button" name="add-to-cart" value="38363" class="buy" style="background-color:aquamarine;padding:15px;border-radius:10px"><a style="text-decoration: none" href="@Url.Action("AddCart","Cart",new {@ID =@Model.ID , @strURL= Request.Url.ToString() })">Thêm vào giỏ hàng</a></button>
                         </div>
                     }
                     else
@@ -109,7 +98,7 @@
     </div>
  
     <div class="container" style="padding-top:20px;padding-left:50px">
-        <h1 class="newIn__title">Mô Tả</h1>
+        <h3 class="newIn__title">Mô Tả</h3>
         @Html.Raw(Model.Detail)
     </div>
 </section>
@@ -121,8 +110,8 @@
             {
                 <div class="row" style="padding: 0 10px 0 10px">
                     <div class="img">
-                        <a href="/chi-tiet/@item.SeoTitle-@item.ID">
-                            <img src="~/Assets/Thumbnail/@item.Image.Split(',')[0]" alt="">
+                        <a href="/product/detail/@item.ID">
+                            <img src="~/Assets/Thumbnails/@item.Image" height="50px">
                         </a>
                     </div>
                     <div class="content">

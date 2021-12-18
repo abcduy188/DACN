@@ -22,7 +22,7 @@
     <link href="~/Content/img/Product.css" rel="stylesheet" />
 
 </head>
-<body>
+<body style="background-image: url('/Assets/Thumbnails/snow1.png'); background-size:  100%;">
     <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
         <div class="container">
             <form class="form-inline my-2 my-lg-0" action="/home/search">
@@ -54,11 +54,11 @@
 
 
 
-                            <li class="nav-item dropdown" >
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Tin nhắn <span id="messinfo"></span>
-                                    </a>
-                                
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black">
+                                    Tin nhắn <span id="messinfo"></span>
+                                </a>
+
                                 @{Html.RenderAction("Message", "User");
                                 }
                             </li>
@@ -98,7 +98,8 @@
             </div>
         </div>
     </nav>
-    <div class="container">
+    
+    <div class="container" >
         @if (TempData["AlertMessage"] != null)
         {
             <div id="alertM" class="alert @TempData["AlertType"] hide">
@@ -150,12 +151,12 @@
                     if (res.data > 0) {
 
 
-                        html += "<b style: 'color:red'> ("+res.data+ ")</b";
+                        html += "<b style: 'color:red'> (" + res.data + ")</b";
 
                         var newTitle = '(' + res.data + ') ' + title;
                         document.title = newTitle;
                     }
-                   
+
                     $('#messinfo').html(html);
                 }
             });

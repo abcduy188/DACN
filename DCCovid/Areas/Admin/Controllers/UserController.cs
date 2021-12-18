@@ -20,18 +20,7 @@ namespace DCCovid.Areas.Admin.Controllers
             ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name");
             return View();
         }
-        //public ActionResult GetData()
-        //{
-        //    db.Configuration.ProxyCreationEnabled = false;
-        //    var results = db.Users.ToList();
-        //    return Json(new { Data = results, TotalItems = results.Count }, JsonRequestBehavior.AllowGet);
-        //}
-        //public ActionResult Create()
-        //{
-        //    ViewBag.GroupID = new SelectList(db.User_Group.ToList(), "ID", "Name");
-        //    ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name");
-        //    return View();
-        //}
+       
 
 
         public ActionResult Edit(long id )
@@ -60,6 +49,11 @@ namespace DCCovid.Areas.Admin.Controllers
                 }
                 else
                 {
+                    if(user.BirthDay >= DateTime.Now)
+                    {
+                        SetAlert("Ngày sinh không được lớn hơn ngày hiện tại", "error");
+                        return RedirectToAction("Index");
+                    }    
                     user.Iscouple = 0;
                     user.Isdelete = false;
                     db.Users.Add(user);
@@ -93,8 +87,18 @@ namespace DCCovid.Areas.Admin.Controllers
                 {
                     if (session.Email == "admin@admin.com")
                     {
-                        ChangeInfo(entity);
-                        return RedirectToAction("Index", "User");
+                       var i =  ChangeInfo(entity);
+                        if(i == 1)
+                        {
+                            SetAlert("Sửa thành công", "error");
+                            return RedirectToAction("Index", "User");
+                        }
+                        else
+                        {
+                            SetAlert("Ngày sinh không hợp lệ", "error");
+                            return RedirectToAction("Index", "User");
+                        }  
+                        
                     }
                     else
                     {
@@ -105,8 +109,17 @@ namespace DCCovid.Areas.Admin.Controllers
                         }
                         else
                         {
-                            ChangeInfo(entity);
-                            return RedirectToAction("Index", "User");
+                            var i = ChangeInfo(entity);
+                            if (i == 1)
+                            {
+                                SetAlert("Sửa thành công", "error");
+                                return RedirectToAction("Index", "User");
+                            }
+                            else
+                            {
+                                SetAlert("Ngày sinh không hợp lệ", "error");
+                                return RedirectToAction("Index", "User");
+                            }
                         }
                     }
                 }
@@ -118,7 +131,7 @@ namespace DCCovid.Areas.Admin.Controllers
         public ActionResult Delete(long id)
         {
             var user = db.Users.Find(id);
-            db.Users.Remove(user);
+            user.Isdelete = true;
             db.SaveChanges();
             SetAlert("Xoa thanh cong", "error");
             return RedirectToAction("Index");
@@ -137,7 +150,7 @@ namespace DCCovid.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
       
-        public void ChangeInfo(User entity)
+        public int ChangeInfo(User entity)
         {
             User user = db.Users.Find(entity.ID);
             user.Name = entity.Name;
@@ -149,16 +162,26 @@ namespace DCCovid.Areas.Admin.Controllers
             {
                 user.PassWord = user.PassWord;
             }
-            user.GroupID = entity.GroupID;
-            user.Email = entity.Email;
-            user.Phone = entity.Phone;
-            user.Address = entity.Address;
-            user.Status = entity.Status;
-            user.ModifiedBy = entity.ModifiedBy;
-            user.Vacxin = entity.Vacxin;
-            user.ModifiedDate = DateTime.Now;
-            db.SaveChanges();
-            SetAlert("Sửa tài khoản thành công", "success");
+            if (user.BirthDay >= DateTime.Now)
+            {
+                SetAlert("Ngày sinh không được lớn hơn ngày hiện tại", "error");
+                return -1;
+            }
+            else
+            {
+                user.GroupID = entity.GroupID;
+                user.Email = entity.Email;
+                user.Phone = entity.Phone;
+                user.Address = entity.Address;
+                user.Status = entity.Status;
+                user.ModifiedBy = entity.ModifiedBy;
+                user.Vacxin = entity.Vacxin;
+                user.ModifiedDate = DateTime.Now;
+                db.SaveChanges();
+                SetAlert("Sửa tài khoản thành công", "success");
+                return 1;
+            }
+           
         }
         public ActionResult Detail(long id)
         {

@@ -8,7 +8,7 @@
 <div id="PlaceHolderHere"></div>
 
 
-@*#region moda*@
+
 <div class="modal fade" id="basic" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -44,13 +44,13 @@
         </div>
     </div>
 </div>
-#region Createmodal
+
 <div class="modal fade" id="createUser" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Them tai khoan moi</h4>
+                <h4 class="modal-title">Thêm tài khoản mới</h4>
             </div>
             <div class="modal-body">
                 @using (Html.BeginForm("Create", "User", FormMethod.Post))
@@ -58,13 +58,13 @@
                     @Html.AntiForgeryToken()
 
                     <div class="form-horizontal">
-                        <h4>User</h4>
+                      
                         <hr />
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                         <div class="form-group">
                             @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="col-md-10">
-                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" , @required = "required" } })
                                 @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                             </div>
                         </div>
@@ -72,7 +72,7 @@
                         <div class="form-group">
                             @Html.LabelFor(model => model.PassWord, htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="col-md-10">
-                                @Html.EditorFor(model => model.PassWord, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.PasswordFor(model => model.PassWord, new { @class = "form-control", @required = "required" })
                                 @Html.ValidationMessageFor(model => model.PassWord, "", new { @class = "text-danger" })
                             </div>
                         </div>
@@ -80,7 +80,7 @@
                         <div class="form-group">
                             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="col-md-10">
-                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                             </div>
                         </div>
@@ -100,7 +100,7 @@
 
                         </div>
                         <div class="form-group">
-                            @Html.LabelFor(model => model.GroupID, "SEX", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <label>Giới tính</label>
                             <div class="col-md-10">
                                 @Html.DropDownList("SexID", null, htmlAttributes: new { @class = "form-control" })
                                 @Html.ValidationMessageFor(model => model.GroupID, "", new { @class = "text-danger" })
@@ -144,7 +144,7 @@
                                 <input type="submit" value="Create" id="themUser" class="btn btn-primary" />
                                 <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
                             </div>
-                          
+
                         </div>
                     </div>
                 }
@@ -152,7 +152,7 @@
         </div>
     </div>
 </div>
-#endregion 
+
 
 
 @section js
@@ -205,10 +205,10 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">User</h1>
+    <h1 class="h3 mb-2 text-gray-800">Tài khoản</h1>
     <p>
 
-        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createUser">Them User</a>
+        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createUser">Thêm người dùng mới</a>
     </p>
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -245,7 +245,10 @@
                                 @Html.DisplayNameFor(model => model.Vacxin)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.User_Group.Name)
+                                Group
+                            </th>
+                            <th>
+                                Trạng thái xóa
                             </th>
                             <th></th>
                         </tr>
@@ -265,7 +268,7 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Address)
                                 </td>
-                                
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.BirthDay)
                                 </td>
@@ -276,7 +279,7 @@
                                     @Html.DisplayFor(modelItem => item.Status)
                                     <a id="status" class="status" data-target="#basicstatus"
                                        data-toggle="modal"
-                                       data-path="@Url.Action("Status", "User", new { @id = @item.ID })">Thay doi</a>
+                                       data-path="@Url.Action("Status", "User", new { @id = @item.ID })">Thay đổi</a>
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Vacxin)
@@ -285,11 +288,25 @@
                                     @Html.DisplayFor(modelItem => item.User_Group.Name)
                                 </td>
                                 <td>
-                                    <button type="button" class="deleteUser" data-toggle="ajax-modal1" data-target="#addEmployee"
+                                    @{
+                                        if (item.Isdelete == true)
+                                        {
+
+
+                                            <span style="color:red"> Đã xóa</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:blue" >chưa xóa</span>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    <button type="button" style="background-color:aqua; border-radius:5px" class="deleteUser" data-toggle="ajax-modal1" data-target="#addEmployee"
                                             data-url="@Url.Action($"Edit/{item.ID}")">
                                         Edit
                                     </button>
-                                    <button type="button" class="deleteUser" data-toggle="ajax-modal1" data-target="#details"
+                                    <button type="button" style="background-color:greenyellow; border-radius:5px" class="deleteUser" data-toggle="ajax-modal1" data-target="#details"
                                             data-url="@Url.Action($"detail/{item.ID}")">
                                         Detail
                                     </button>

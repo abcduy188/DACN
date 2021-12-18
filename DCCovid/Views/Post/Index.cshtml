@@ -19,7 +19,7 @@
         $(document).ready(function () {
             LoadData();
         });
-        
+
         var editor = CKEDITOR.replace('txtDetail', {
             customConfig: '/Assets/admin/ckeditor/config.js',
         });
@@ -43,9 +43,9 @@
         function CreateQuest() {
 
             var oldpass = $('#textfast').val();
-            
+
             var model = {
-                 Text : oldpass,
+                Text: oldpass,
             }
             if (Validate()) {
                 $.ajax({
@@ -59,7 +59,7 @@
                     }
                 })
             }
-           
+
 
         };
         function Validate() {
@@ -160,19 +160,7 @@
         <div class="col-xl-5">
             <div class="card">
                 <div class="card-body">
-                    <div class="dropdown float-end">
-                        <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="mdi mdi-dots-vertical"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item">Edit</a>
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item">Delete</a>
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item">Block</a>
-                        </div>
-                    </div>
+
                     <div class="d-flex align-items-start">
                         @{
                             if (sess != null)
@@ -184,18 +172,16 @@
 
                                     <button type="button" class="btn btn-soft-primary btn-xs waves-effect mb-2 waves-light">Follow</button>
                                     <button type="button" class="btn btn-soft-success btn-xs waves-effect mb-2 waves-light">Message</button>
-                                </div><a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="mdi mdi-dots-vertical"></i>
-                                </a>
+                                </div>
                             }
                             else
                             {
                                 <img src="~/Assets/Thumbnails/avticon.png" class="rounded-circle avatar-lg img-thumbnail" alt="profile-image">
                                 <div class="w-100 ms-3">
-                                    <h4 class="my-0">ADMIN</h4>
+                                    <h4 class="my-0" style="margin-left:10px">DCCovid</h4>
                                     <p class="text-muted"></p>
-                                   
-                                   
+
+
                                 </div>
 
                             }
@@ -285,19 +271,27 @@
                     <!-- end comment box -->
                     <!-- Story Box-->
 
-                    @foreach (var i in post.OrderByDescending(d=>d.CreateDay))
+                    @foreach (var i in post.OrderByDescending(d => d.CreateDay))
                     {
                         <div class="border border-light p-2 mb-3">
                             <div class="d-flex align-items-start">
-                                <img class="me-2 avatar-sm rounded-circle" src="~/Assets/Thumbnails/avticon.png" alt="Generic placeholder image">
+                                @if (i.User.ImageUser != null)
+                                {
+                                    <img class="me-2 avatar-sm rounded-circle" src="~/Assets/Thumbnails/@i.User.ImageUser" alt="Generic placeholder image">
+                                }
+                                else
+                                {
+                                    <img class="me-2 avatar-sm rounded-circle" src="~/Assets/Thumbnails/avticon.png" alt="Generic placeholder image">
+                                }
+
                                 <div class="w-100">
-                                    <h5 class="">@i.User.Name <small class="text-muted">@String.Format("{0:MMMMM d,yyyy}", i.CreateDay) at @String.Format("{0:HH:mm}", i.CreateDay)</small></h5>
+                                    <h5 class=""><b>@i.User.Name</b> <small class="text-muted">@String.Format("{0:MMMMM d,yyyy}", i.CreateDay) at @String.Format("{0:HH:mm}", i.CreateDay)</small></h5>
                                     <div class="">
                                         @Html.Raw(i.Text)
 
 
                                         <br>
-                                       
+
 
                                         @if (i.Image != null)
                                         {
@@ -340,7 +334,15 @@
                                     var lastcmt = listcmt.Last();
                                     <div class="post-user-comment-box">
                                         <div class="d-flex align-items-start">
-                                            <img class="me-2 avatar-sm rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="Generic placeholder image">
+                                            @if (lastcmt.User.ImageUser != null)
+                                            {
+                                                <img class="me-2 avatar-sm rounded-circle" src="~/Assets/Thumbnails/@lastcmt.User.ImageUser" alt="Generic placeholder image">
+                                            }
+                                            else
+                                            {
+                                                <img class="me-2 avatar-sm rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="Generic placeholder image">
+                                            }
+
                                             <div class="w-100">
                                                 <h5 class="mt-0">@lastcmt.User.Name <small class="text-muted">@lastcmt.CreateDay.Value.ToString("HH:mm")</small></h5>
 
@@ -355,13 +357,13 @@
                                         </div>
 
                                         @*<div class="d-flex align-items-start mt-2">
-                                            <a class="pe-2" href="#">
-                                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle" alt="Generic placeholder image" height="31">
-                                            </a>
-                                            <div class="w-100">
-                                                <input type="text" id="simpleinput" class="form-control border-0 form-control-sm" placeholder="Add comment">
-                                            </div>
-                                        </div>*@
+                                                <a class="pe-2" href="#">
+                                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle" alt="Generic placeholder image" height="31">
+                                                </a>
+                                                <div class="w-100">
+                                                    <input type="text" id="simpleinput" class="form-control border-0 form-control-sm" placeholder="Add comment">
+                                                </div>
+                                            </div>*@
                                     </div>
                                 }
                             }

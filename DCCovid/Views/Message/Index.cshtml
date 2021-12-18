@@ -41,8 +41,8 @@
         var chatHistory = document.getElementById("target");
         chatHistory.scrollTop = chatHistory.scrollHeight;
     </script>
-   
-        <script>
+
+    <script>
 
         $(document).ready(function () {
 
@@ -70,7 +70,7 @@
 
                 });
             }
-        }
+            };
          function Create() {
             if (confirm('Bật chế độ tìm bạn nhắn tin?')) {
 
@@ -93,7 +93,7 @@
 
                 });
             }
-        }
+            };
          function Cancel() {
             if (confirm('Hủy nhắn tin với người này?')) {
 
@@ -118,7 +118,7 @@
 
                 });
             }
-        }
+            };
 
 
 
@@ -142,25 +142,29 @@
                 Fav: cate
 
             };
-            $.ajax({
-                url: '/Message/Create',
-                type: 'POST',
-                data: model,
-                success: function (resu) {
-                    if (resu.success) {
-                        window.location.reload();
-                        $('#modalfindfriend').modal("hide");
+
+                $.ajax({
+                    url: '/Message/Create',
+                    type: 'POST',
+                    data: model,
+                    success: function (resu) {
+                        if (resu.success) {
+                            window.location.reload();
+                            $('#modalfindfriend').modal("hide");
 
 
-                    } else {
-                         window.location.reload();
+                        } else {
+                            window.location.reload();
+                        }
                     }
-                }
-            })
+                })
 
-        }
-        </script>
-    
+
+
+            };
+
+    </script>
+
 }
 
 <div class="modal fade" id="modalfindfriend" tabindex="-1" role="basic" aria-hidden="true" style="display: none;">
@@ -172,9 +176,10 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label class="control-label col-md-2">Nội dung</label>
+
                     <div class="col-md-10">
                         <input type="text" id="Text" name="Text" placeholder="Gõ 'Bắt đầu !!!' để tìm kiếm bạn bè" class="form-control text-box single-line" />
+                        <span class="error"></span>
                     </div>
                 </div>
                 <select name="cars" id="cars">
@@ -218,30 +223,24 @@
         <div class="col-lg-12">
             <div class="card chat-app">
                 <div id="plist" class="people-list">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-search"></i></span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Search...">
-                    </div>
                     <h5>Tìm bạn nhắn tin</h5>
                     @{
                         var user = db.Users.Find(sess.UserID);
                         if (user.Iscouple == 0)
                         {
-                            <h4>Chưa kích hoạt <a class="btn btn-danger btn-sm" style="margin-left: 5px" onclick="Delete(@user.ID)"><i class="fa fa-trash"></i>Kích hoạt</a></h4>
+                            <h6>Chưa kích hoạt <a class="btn btn-danger btn-sm" style="margin-left: 5px" onclick="Delete(@user.ID)"><i class="fa fa-trash"></i>Kích hoạt</a></h6>
                         }
                         else if (user.Iscouple == 1)
                         {
 
-                            <h4>  Đã kích hoạt <a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
+                            <h6>  Đã kích hoạt <a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h6>
                             <p>
-                                Đợi chờ quá lâu? <a id='findfriend' class='findfriend' data-target='#modalfindfriend' data-toggle='modal'> Click vào đây để tìm người nhắn tin</a>
+                                Đợi chờ quá lâu? <a id='findfriend' class='findfriend' data-target='#modalfindfriend' data-toggle='modal' style="color:red"> Click vào đây để tìm người nhắn tin</a>
                             </p>
                         }
                         else
                         {
-                            <h4>Đang có người nhắn tin<a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
+                            <h6>Đang có người nhắn tin<a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h6>
                             <p>
                                 <form action="/Room/Create" method="post">
                                     <input type="submit" value="vào phòng" />
@@ -249,6 +248,13 @@
                             </p>
                         }
                     }
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search...">
+                    </div>
+
                     <ul class="list-unstyled chat-list mt-2 mb-0">
 
 
@@ -336,12 +342,12 @@
                                             <span class="message-data-time">@String.Format("{0:MMMMM d,yyyy}", item.CreateDate) at @String.Format("{0:HH:mm}", item.CreateDate)</span>
                                             <img src="~/Assets/Thumbnails/avticon.png" alt="avatar">
                                         </div>
-                                        <div class="message other-message float-right">
+                                        <div class="message other-message float-right" style="background-color:antiquewhite;color:black">
                                             @item.Text
                                         </div>
                                         <a id="deleteUser" class="deleteUser" data-target="#basic"
                                            data-toggle="modal"
-                                           data-path="@Url.Action("Delete", "Message", new { @id = @item.ID })"> <i class="fas fa-ellipsis-h float-right"></i></a>
+                                           data-path="@Url.Action("Delete", "Message", new { @id = @item.ID })"> <i class="fas fa-ellipsis-h float-right" style="margin-right:10px"></i></a>
 
 
                                         @if (img != null)

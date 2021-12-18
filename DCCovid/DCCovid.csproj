@@ -1325,6 +1325,7 @@
     <Content Include="Assets\Admin\ckfinder\_samples\sample.css" />
     <Content Include="Assets\Admin\ckfinder\_samples\standalone.html" />
     <Content Include="Assets\Admin\ckfinder\_samples\standalone_v1.html" />
+    <Content Include="Assets\Admin\css\a.css" />
     <Content Include="Assets\Admin\css\sb-admin-2.css" />
     <Content Include="Assets\Admin\css\sb-admin-2.min.css" />
     <Content Include="Assets\Admin\img\undraw_posting_photo.svg" />
@@ -3018,6 +3019,8 @@
     <Content Include="Assets\Thumbnails\heart1.png" />
     <Content Include="Assets\Thumbnails\heart2.png" />
     <Content Include="Assets\Thumbnails\lactroi.jpg" />
+    <Content Include="Assets\Thumbnails\snow.png" />
+    <Content Include="Assets\Thumbnails\snow1.png" />
     <Content Include="Assets\Thumbnails\thao-itachi.jpg" />
     <Content Include="Assets\Thumbnails\tiem-vacxin-16366211719031346305122.jpg" />
     <Content Include="Assets\Thumbnails\_thumbs\Images\202111121007209505tt-pham-minh-chinh-1-16366889334841611865771-1636695521728-1636695521914166132869.jpg" />
@@ -3032,8 +3035,10 @@
     <Content Include="Assets\Thumbnails\_thumbs\Images\heart1.png" />
     <Content Include="Assets\Thumbnails\_thumbs\Images\heart2.png" />
     <Content Include="Assets\Thumbnails\_thumbs\Images\lactroi.jpg" />
+    <Content Include="Assets\Thumbnails\_thumbs\Images\snow.png" />
     <Content Include="Assets\Thumbnails\_thumbs\Images\thao-itachi.jpg" />
     <Content Include="Assets\Thumbnails\_thumbs\Images\tiem-vacxin-16366211719031346305122.jpg" />
+    <Content Include="Assets\Thumbnails\_thumbs\snow.jpg" />
     <Content Include="Content\a.css" />
     <Content Include="Content\app.css" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -3299,6 +3304,8 @@
       <DependentUpon>Model1.edmx</DependentUpon>
     </Content>
     <Content Include="Areas\Admin\Views\Post\Detail.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductCategory\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductCategory\Edit.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\covidApi.js" />
     <Content Include="Scripts\fetchApi.js" />

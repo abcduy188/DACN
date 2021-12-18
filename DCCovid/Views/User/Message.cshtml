@@ -13,47 +13,24 @@
 
 
 
-    <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
-        @foreach (var item in Model)
+<div class="dropdown-menu" aria-labelledby="navbarDropdown1" style="width:300px">
+    @foreach (var item in Model)
+    {
+        var listmess = item.Messages.OrderByDescending(d => d.ID).Take(1).ToList();
         {
-            var listmess = item.Messages.OrderByDescending(d => d.ID).Take(1).ToList();
-
-
-
-
+            if (listmess.Count != 0)
             {
-                if (listmess.Count != 0)
+                var mess = listmess.Last();
+                if (mess.Status == true && mess.UserID != sess.UserID)
                 {
-                    var mess = listmess.Last();
-                    if (mess.Status == true && mess.UserID != sess.UserID)
-                    {
+                    <a class="dropdown-item" href="/user/profile/@item.ID">
 
+                        <form action="/Room/Create/@item.ID" , method="post">
 
-                        <a class="dropdown-item" href="/user/profile/@item.ID">
-                            
-                                <form action="/Room/Create/@item.ID" , method="post">
+                            <input type="submit" value="@item.Name" style="color:red" class="btn">
+                        </form>
 
-                                    <input type="submit" value="@item.Name"style="color:red" class="btn">
-                                </form>
-                           
-
-
-                        </a>
-
-
-
-                    }
-                    else
-                    {
-                        <a class="dropdown-item" href="/user/profile/@item.ID">
-
-                            <form action="/Room/Create/@item.ID" , method="post">
-
-                                <input type="submit" value="@item.Name"  class="btn">
-                            </form>
-
-                        </a>
-                    }
+                    </a>
                 }
                 else
                 {
@@ -66,176 +43,42 @@
 
                     </a>
                 }
+            }
+            else
+            {
+                <a class="dropdown-item" href="/user/profile/@item.ID">
 
+                    <form action="/Room/Create/@item.ID" , method="post">
 
+                        <input type="submit" value="@item.Name" class="btn">
+                    </form>
+
+                </a>
             }
 
-
-
-
-
+            <hr />
         }
-    </div>
-
-@*<section class="showTime">
-        <div class="container">
-            <h2>Tìm bạn nhắn tin</h2>
-            @{
-                var user = db.Users.Find(sess.UserID);
-                if (user.Iscouple == 0)
-                {
-                    <h4>Chưa kích hoạt <a class="btn btn-danger btn-sm" style="margin-left: 5px" onclick="Delete(@user.ID)"><i class="fa fa-trash"></i>Kích hoạt</a></h4>
-                }
-                else if (user.Iscouple == 1)
-                {
-
-                    <h4>  Đã kích hoạt <a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
-                    <p>
-                        Đợi chờ quá lâu? <a id='findfriend' class='findfriend' data-target='#modalfindfriend' data-toggle='modal'> Click vào đây để tìm người nhắn tin</a>
-                    </p>
-                }
-                else
-                {
-                    <h4>Đang có người nhắn tin<a class="btn btn-primary btn-sm" style="margin-left: 5px" onclick=Cancel()><i class="fa fa-trash"></i>Huy nhan tin</a></h4>
-                    <p>
-                        <form action="/Room/Create" method="post">
-                            <input type="submit" value="vào phòng" />
-                        </form>
-                    </p>
-                }
-            }
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            Name
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        var listmess = item.Messages.OrderByDescending(d => d.ID).Take(1).ToList();
-                        <tr>
+    }
 
 
 
-                            @{
-                                if (listmess.Count != 0)
-                                {
-                                    var mess = listmess.Last();
-                                    if (mess.Status == true && mess.UserID != sess.UserID)
-                                    {
 
+    @{
+        var user = db.Users.Find(sess.UserID);
+        if (user.Iscouple == 2)
+        {
+           
+           
+            <a class="dropdown-item">
 
-                                        <td><b><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></b></td>
-                                        <td>
-                                            <form action="/Room/Create/@item.ID" , method="post">
+                <p>
+                    <form action="/Room/Create" method="post">
+                        <input type="submit" value="Bạn ẩn danh" />
+                    </form>
+                </p>
 
-                                                <input type="submit" value="Nhắn tin" class="btn">
-                                            </form>
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></td>
-                                        <td><form action="/Room/Create/@item.ID" , method="post"><input type="submit" value="Nhắn tin" class="btn"></form></td>
-                                    }
-                                }
-                                else
-                                {
-                                    <td><a href="/user/profile/@item.ID" style="color:black">@item.Name</a></td>
-                                    <td><form action="/Room/Create/@item.ID" , method="post"><input type="submit" value="Nhắn tin" class="btn"></form></td>
-                                }
+            </a>
+        }
+    }
+</div>
 
-
-                            }
-
-
-
-                        </tr>
-
-                    }
-                </tbody>
-            </table>
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-
-                    <a class="nav-link active" id="1duy-tab" data-toggle="tab" href="#1duy" role="tab"
-                       aria-controls="home" aria-selected="true">Tất cả</a>
-                </li>
-                @foreach (var i in listcate.Where(d => d.ID != 1))
-                {
-                    string abc = i.ID + "duy";
-                    <li class="nav-item" role="presentation">
-
-                        <a class="nav-link" id="@abc-tab" data-toggle="tab" href="#@abc" role="tab"
-                           aria-controls="home" aria-selected="true">@i.Name</a>
-                    </li>
-
-                }
-
-            </ul>
-
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="1duy" role="tabpanel" aria-labelledby="1duy-tab">
-
-                    @foreach (var i in listuser)
-                    {
-                        <div class="row showTimes__movie my-4">
-                            <div class="col-2">
-                                <img src="~/Assets/Thumbnails/avticon.png" class="img-fluid" height="50px" />
-                            </div>
-                            <div class="col-10">
-                                <div>
-                                    <div class="showTimes__detail">
-                                        <a href="/user/profile/@i.ID"><h3 class="display-4">@i.Name</h3></a>
-
-                                        <form action="/Room/Create/@i.ID" , method="post">
-
-                                            <input type="submit" value="Nhắn tin" class="btn">
-                                        </form>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    }
-
-
-                </div>
-                @foreach (var i in listcate.Where(d => d.ID != 1))
-                {
-                    var listuser1 = i.Users.ToList();
-                    string abc = i.ID + "duy";
-                    <div class="tab-pane fade" id="@abc" role="tabpanel" aria-labelledby="@abc-tab">
-                        @foreach (var u in listuser1)
-                        {
-                            <div class="row showTimes__movie my-4">
-                                <div class="col-2">
-                                    <img src="~/Assets/Thumbnails/avticon.png" class="img-fluid" height="50px" />
-                                </div>
-                                <div class="col-10">
-                                    <div>
-                                        <div class="showTimes__detail">
-                                            <a href="/user/profile/@u.ID"><h3 class="display-4">@u.Name</h3></a>
-
-                                            <form action="/Room/Create/@u.ID" , method="post">
-
-                                                <input type="submit" value="Nhắn tin" class="btn">
-                                            </form>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        }
-
-                    </div>
-                }
-
-
-            </div>
-        </div>
-    </section>*@

@@ -67,13 +67,15 @@
                     data: model,
                     success: function (resu) {
                         if (resu.success) {
-                            html.location.reload;
-                            $('#modalchangepass').modal("hide");
+                            window.location.reload();
+                           
+                        } else {
+                            window.location.reload();
                         }
                     }
                 })
             
-        }
+        };
         function getData() {
             $.ajax({
                 url: '/user/getUser',

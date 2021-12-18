@@ -37,7 +37,7 @@ namespace DCCovid.Controllers
                 item = new Cart(ID);
                 item.strURL = strURL;
                 listCart.Add(item);
-                TempData["Success"] = "Thành công";
+                SetAlert("Thêm sản phẩm thành công", "success");
                 return Redirect(strURL);
             }
             else
@@ -71,7 +71,7 @@ namespace DCCovid.Controllers
             List<Cart> listCart = ListCart();
             if (listCart.Count == 0)
             {
-
+                SetAlert("Giỏ hàng trống", "error");
                 return RedirectToAction("Index", "Home");
             }
             ViewBag.Tongsoluong = TongSoLuong();
@@ -92,7 +92,7 @@ namespace DCCovid.Controllers
             if (sanpham != null)
             {
                 listCart.RemoveAll(n => n.ID == ID);
-                TempData["Delete"] = "Xóa giỏ hàng thành công";
+                SetAlert("Xóa giỏ hàng thành công", "success");
                 return RedirectToAction("Cart");
             }
             if (listCart.Count == 0)
@@ -109,13 +109,14 @@ namespace DCCovid.Controllers
             {
                 sanpham.Quantity = int.Parse(f["txtSoluong"].ToString());
             }
-            TempData["Success"] = "Thành công";
+            SetAlert("thành công", "success");
             return RedirectToAction("Cart");
         }
         public ActionResult XoatatcaCart()
         {
             List<Cart> listCart = ListCart();
             listCart.Clear();
+            SetAlert("Đã xóa giỏ hàng", "success");
             return RedirectToAction("Index", "Home");
         }
         public ActionResult Payment()
@@ -171,7 +172,7 @@ namespace DCCovid.Controllers
             }
             List<Cart> listCart = ListCart();
             listCart.Clear();
-            TempData["Success"] = "Thành công";
+            SetAlert("Thành công", "success");
             return Redirect("/Cart/Success");
         }
         public ActionResult Success()

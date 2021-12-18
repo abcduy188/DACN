@@ -20,7 +20,7 @@ namespace DCCovid.Controllers
         {
             var sess = Session["MEMBER"] as UserLogin;
             Load();
-            if(sess !=null)
+            if (sess != null)
             {
                 User user = db.Users.Find(sess.UserID);
                 ViewBag.ListPost = db.PostCMTs.ToList();
@@ -30,14 +30,14 @@ namespace DCCovid.Controllers
             {
                 return PartialView(db.Users.ToList().Where(d => d.Isdelete == false));
             }
-           
+
         }
         [ChildActionOnly]
         public PartialViewResult Message()
         {
             var sess = Session["MEMBER"] as UserLogin;
             ViewBag.listCate = db.CategoryUserPosts.ToList();
-            ViewBag.listUser = db.Users.Where(d=>d.ID!= sess.UserID && d.Isdelete == false && d.Status ==true ).ToList();
+            ViewBag.listUser = db.Users.Where(d => d.ID != sess.UserID && d.Isdelete == false && d.Status == true).ToList();
             Load();
             if (sess != null)
             {
@@ -50,18 +50,18 @@ namespace DCCovid.Controllers
                 var user2 = new User();
                 foreach (var i in listroomofuser)
                 {
-                    if(i.Messages.Count > 0)
+                    if (i.Messages.Count > 0)
                     {
                         listuser2 = i.Users.Where(d => d.ID != user.ID).ToList();
                         user2 = db.Users.Find(listuser2.Last().ID);
                         listuser.Add(user2);
                     }
                 }
-               
+
                 return PartialView(listuser);
             }
             else
-            return PartialView();
+                return PartialView();
         }
         public ActionResult GetData()
         {
@@ -71,21 +71,21 @@ namespace DCCovid.Controllers
             db.Configuration.ProxyCreationEnabled = false;
             if (sess != null)
             {
-                 results = db.Users.Where(d => d.Isdelete == false && d.ID != sess.UserID).ToList();
+                results = db.Users.Where(d => d.Isdelete == false && d.ID != sess.UserID).ToList();
                 ses = 1;
             }
             else
             {
-                 results = db.Users.Where(d => d.Isdelete == false).ToList();
+                results = db.Users.Where(d => d.Isdelete == false).ToList();
             }
-            return Json(new { Data = results, TotalItems = results.Count , Ses = ses }, JsonRequestBehavior.AllowGet);
+            return Json(new { Data = results, TotalItems = results.Count, Ses = ses }, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Login(string strURL)
         {
             Session.Add("url", strURL);
             return View();
         }
-        
+
         public ActionResult Register()
         {
             ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name");
@@ -140,10 +140,10 @@ namespace DCCovid.Controllers
 
                         if (result.Status == true)
                         {
-                           
+
                             Session.Add("MEMBER", userSession);
 
-                            
+
                             if (Session["url"] != null)
                             {
                                 return Redirect(Session["url"].ToString());
@@ -173,7 +173,7 @@ namespace DCCovid.Controllers
         [HttpPost]
         public ActionResult Register(RegisterModel model)
         {
-           
+
             var list = db.Users.ToList();
             if (ModelState.IsValid)
             {
@@ -218,7 +218,7 @@ namespace DCCovid.Controllers
                     mem.UserID = sess.UserID;
                     mem.Email = sess.Email;
                     Session.Add("MEMBER", mem);
-                    return RedirectToAction("UpdateSex","User");
+                    return RedirectToAction("UpdateSex", "User");
 
                 }
                 else
@@ -240,16 +240,16 @@ namespace DCCovid.Controllers
         {
             var sess = Session["MEMBER"] as UserLogin;
             ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name");
-            
+
             if (ModelState.IsValid)
             {
-              
+
                 if (sess != null)
                 {
-                  
+
                     var users = db.Users.Find(sess.UserID);
                     users.SexID = user.SexID;
-                  
+
                     db.SaveChanges();
                     TempData["Success"] = "Cập nhật thành công";
                     return Redirect("/Contact");
@@ -273,14 +273,14 @@ namespace DCCovid.Controllers
             var sess = Session["MEMBER"] as UserLogin;
 
             CategoryUserPost post = db.CategoryUserPosts.Find(id);
-            var listcate = db.CategoryUserPosts.Where(d=>d.ID != post.ID).ToList();
+            var listcate = db.CategoryUserPosts.Where(d => d.ID != post.ID).ToList();
             User user = db.Users.Find(sess.UserID);
-            if(post.ID == 1)
+            if (post.ID == 1)
             {
                 foreach (var item in listcate)
                 {
                     item.Users.Add(user);
-                    
+
                 }
                 post.Users.Add(user);
                 db.SaveChanges();
@@ -301,6 +301,8 @@ namespace DCCovid.Controllers
             var sess = Session["MEMBER"] as UserLogin;
 
             CategoryUserPost post = db.CategoryUserPosts.Find(id);
+            CategoryUserPost post1 = db.CategoryUserPosts.Find(1);
+            var listcate1 = db.CategoryUserPosts.Where(d => d.ID != post1.ID).ToList();
             var listcate = db.CategoryUserPosts.Where(d => d.ID != post.ID).ToList();
             User user = db.Users.Find(sess.UserID);
             if (post.ID == 1)
@@ -316,6 +318,11 @@ namespace DCCovid.Controllers
             else
             {
                 post.Users.Remove(user);
+                foreach (var i in listcate1)
+                {
+                    if (i.ID == user.ID)
+                        post1.Users.Remove(user);
+                }
                 db.SaveChanges();
             }
             if (strURL != null)
@@ -411,7 +418,7 @@ namespace DCCovid.Controllers
         public User Create(RegisterModel model)
         {
             var user = new User();
-           
+
             user.PassWord = Encryptor.MD5Hash(model.PassWord);
             user.Name = model.Name;
             user.Email = model.Email;
@@ -456,25 +463,25 @@ namespace DCCovid.Controllers
 
             new Mail().SendMail(AddressEmail, "Lấy lại mật khẩu từ DCDGear", content);
         }
-      
+
 
         public ActionResult getUser()
         {
-             db.Configuration.ProxyCreationEnabled = false;
+            db.Configuration.ProxyCreationEnabled = false;
             var sess = Session["MEMBER"] as UserLogin;
             var user = db.Users.Find(sess.UserID);
 
             return Json(new { data = user }, JsonRequestBehavior.AllowGet);
-        }    
+        }
 
         public ActionResult Info(long id)
         {
             var sess = Session["MEMBER"] as UserLogin;
             Load();
-           
-             if(id == sess.UserID)
+
+            if (id == sess.UserID)
             {
-                
+
                 var user = db.Users.Find(id);
                 return View();
             }
@@ -508,12 +515,12 @@ namespace DCCovid.Controllers
             if (ModelState.IsValid)
             {
                 ViewBag.SexID = new SelectList(db.Sexes.ToList(), "ID", "Name", user.SexID);
-               
+
                 user.Name = model.Name;
                 user.Address = model.Address;
                 user.Phone = model.Phone;
                 user.SexID = model.SexID;
-                if(model.BirthDay != null)
+                if (model.BirthDay != null)
                 {
                     user.BirthDay = model.BirthDay;
                 }
@@ -541,25 +548,32 @@ namespace DCCovid.Controllers
             string red = "/user/info/" + user.ID;
             return Redirect(red);
         }
-        
+
         [HttpPost]
         public ActionResult ChangePassWord(CPWViewModel model)
         {
             var sess = Session["MEMBER"] as UserLogin;
             var user = db.Users.Find(sess.UserID);
-           
-            if(user.PassWord != Encryptor.MD5Hash(model.OldPassWord))
+
+            if (user.PassWord != Encryptor.MD5Hash(model.OldPassWord))
             {
-                SetAlert("Đổi mật khẩu Thất bại", "success");
+                SetAlert("Mật khẩu cũ không đúng", "success");
+                return Json(new { success = false, message = "Passwordold not match", JsonRequestBehavior.AllowGet });
+            }
+            else if (model.NewPassWord != model.ConfirmPassWord)
+            {
+
+                SetAlert("Nhập lại mật khẩu không đúng", "success");
                 return Json(new { success = false, message = "Passwordold not match", JsonRequestBehavior.AllowGet });
             }
             else
             {
                 user.PassWord = Encryptor.MD5Hash(model.NewPassWord);
                 db.SaveChanges();
+                SetAlert("Đổi mật khẩu thành công", "success");
+                return Json(new { success = true, message = "Updated Successfully", JsonRequestBehavior.AllowGet });
             }
-            SetAlert("Đổi mật khẩu thành công", "success");
-            return Json(new { success = true, message = "Updated Successfully", JsonRequestBehavior.AllowGet });
+
         }
         public void InsertIMG(long id, string fileName)
         {
@@ -573,7 +587,7 @@ namespace DCCovid.Controllers
         public new ActionResult Profile(long id)
         {
             var user = db.Users.Find(id);
-            if(user == null)
+            if (user == null)
             {
                 SetAlert("Khong co nguoi ", "error");
                 return Redirect("/post");
@@ -581,7 +595,7 @@ namespace DCCovid.Controllers
             List<Image> listimg = db.Images.Where(d => d.Type == "POST").OrderBy(d => d.ID).ToList();
             ViewBag.ListImg = listimg;
             ViewBag.cmt = db.PostCMTs.Where(d => d.IsDelete == false && d.PostID != null).ToList();
-            ViewBag.listpost = db.PostCMTs.Where(d => d.IsDelete == false && d.PostID == null && d.UserID == id).ToList();
+            ViewBag.listpost = db.PostCMTs.Where(d => d.IsDelete != true && d.PostID == null && d.UserID == id && d.Status == 1).ToList();
             ViewBag.CateID = new SelectList(db.CategoryUserPosts.ToList(), "ID", "Name");
             return View(user);
 

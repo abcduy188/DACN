@@ -22,13 +22,32 @@ namespace DCCovid.Controllers
         {
 
             var sessroom = Session["Room"] as RoomLogin;
-            var room = db.Rooms.Find(sessroom.RoomID);
-            var messages = db.Messages.Include(m => m.Room).Include(m => m.User).Where(m => m.RoomID == room.ID).OrderByDescending(d => d.ID);
-            ViewBag.Mess = messages.ToList();
+            
+            if (sessroom != null)
+            {
+                var room = db.Rooms.Find(sessroom.RoomID);
+                if (room!= null)
+                {
+                    var messages = db.Messages.Include(m => m.Room).Include(m => m.User).Where(m => m.RoomID == room.ID).OrderByDescending(d => d.ID);
+                
+                    ViewBag.Mess = messages.ToList();
+                }
+                else
+                {
+                    SetAlert("Lỗi", "error");
+                    return Redirect("/post");
+                }
+
+            }
+            else
+            {
+                SetAlert("Lỗi", "error");
+                return Redirect("/post");
+            }
             List<Image> listimg = db.Images.Where(d => d.Type == "MESS").OrderBy(d => d.ID).ToList();
             ViewBag.ListImg = listimg;
             var sess = Session["MEMBER"] as UserLogin;
-           
+
             if (sess != null)
             {
                 User user = db.Users.Find(sess.UserID);
@@ -69,48 +88,55 @@ namespace DCCovid.Controllers
             var sess = Session["MEMBER"] as UserLogin;
             var user = db.Users.Find(sess.UserID);
             Room room = new Room();
-            if (message.Text == "Bắt đầu !!!" && message.TypeID == 1 && user.Iscouple == 1)
+            if (message.TypeID == 1 && user.Iscouple == 1)
             {
-
-                var demo = GiveMeANumber(mesview.Fav);
-                if (demo == -1)
+                if (message.Text == "Bắt đầu !!!")
                 {
-                    SetAlert("Hiện không có đối phuọng, bạn thử lại sau nhé", "error");
-                    return Json(new { success = true }, JsonRequestBehavior.AllowGet);
-                }
-                User user2 = db.Users.Find(demo);
-                room.Name = ("Find@@@" + user.ID + user2.ID).ToString();
-                string namechange = ("Find@@@" + user2.ID + user.ID).ToString();
-                if (db.Rooms.Count(d => d.Name == room.Name) > 0 || db.Rooms.Count(d => d.Name == namechange) > 0)
-                {
-                    var sessroom = new RoomLogin();
-                    Room room1 = db.Rooms.SingleOrDefault(d => d.Name == namechange);
-                    if (room1 == null)
+                    var demo = GiveMeANumber(mesview.Fav);
+                    if (demo == -1)
                     {
-                        room1 = db.Rooms.SingleOrDefault(d => d.Name == room.Name);
+                        SetAlert("Hiện không có đối phuọng, bạn thử lại sau nhé", "error");
+                        return Json(new { success = true }, JsonRequestBehavior.AllowGet);
                     }
-                    sessroom.RoomID = room1.ID;
-                    sessroom.Name = room1.Name;
-                    Session.Add("Room", sessroom);
+                    User user2 = db.Users.Find(demo);
+                    room.Name = ("Find@@@" + user.ID + user2.ID).ToString();
+                    string namechange = ("Find@@@" + user2.ID + user.ID).ToString();
+                    if (db.Rooms.Count(d => d.Name == room.Name) > 0 || db.Rooms.Count(d => d.Name == namechange) > 0)
+                    {
+                        var sessroom = new RoomLogin();
+                        Room room1 = db.Rooms.SingleOrDefault(d => d.Name == namechange);
+                        if (room1 == null)
+                        {
+                            room1 = db.Rooms.SingleOrDefault(d => d.Name == room.Name);
+                        }
+                        sessroom.RoomID = room1.ID;
+                        sessroom.Name = room1.Name;
+                        Session.Add("Room", sessroom);
 
-                    return Redirect("/Message/Index");
+                        return Redirect("/Message/Index");
+                    }
+                    else
+                    {
+                        user.Iscouple = 2;
+                        user2.Iscouple = 2;
+                        db.Rooms.Add(room);
+                        db.SaveChanges();
+                        var sessroom = new RoomLogin();
+                        Room room1 = db.Rooms.Find(room.ID);
+                        sessroom.RoomID = room.ID;
+                        sessroom.Name = room.Name;
+                        Session.Add("Room", sessroom);
+                        room.Users.Add(user);
+                        room.Users.Add(user2);
+                        db.SaveChanges();
+                        SetAlert("Đã tìm được đối tượng", "success");
+                        return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+                    }
                 }
                 else
                 {
-                    user.Iscouple = 2;
-                    user2.Iscouple = 2;
-                    db.Rooms.Add(room);
-                    db.SaveChanges();
-                    var sessroom = new RoomLogin();
-                    Room room1 = db.Rooms.Find(room.ID);
-                    sessroom.RoomID = room.ID;
-                    sessroom.Name = room.Name;
-                    Session.Add("Room", sessroom);
-                    room.Users.Add(user);
-                    room.Users.Add(user2);
-                    db.SaveChanges();
-                    SetAlert("Đã tìm được đối tượng", "success");
-                    return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+                    SetAlert("Định dạng không đúng", "success");
+                    return Json(new { success = false }, JsonRequestBehavior.AllowGet);
                 }
 
             }
@@ -118,11 +144,11 @@ namespace DCCovid.Controllers
             {
 
                 var sessroom = Session["Room"] as RoomLogin;
-                if(sessroom == null)
+                if (sessroom == null)
                 {
                     SetAlert("Bạn đã có đối tượng nhắn tin rồi", "warning");
                     return Json(new { success = false }, JsonRequestBehavior.AllowGet);
-                } 
+                }
                 room = db.Rooms.Find(sessroom.RoomID);
                 if (ModelState.IsValid)
                 {
@@ -211,7 +237,7 @@ namespace DCCovid.Controllers
             User user = db.Users.Find(sess.UserID);
             ArrayList ar = new ArrayList();
 
-            if(a == null)
+            if (a == null || a == 1)
             {
                 foreach (var i in db.Users.Where(d => d.ID != sess.UserID && d.Isdelete == false && d.Iscouple == 1).ToList())
                 {
@@ -239,7 +265,7 @@ namespace DCCovid.Controllers
                     return (long)ar[index];
                 }
             }
-            
+
             return -1;
 
         }

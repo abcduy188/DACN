@@ -15,7 +15,10 @@ namespace DCCovid.Areas.Admin.Controllers
         private DCCovidDbcontext db = new DCCovidDbcontext();
         public ActionResult Index()
         {
+            ViewBag.Type = "PRODUCT";
+            ViewBag.TypeNews = "NEWS";
             ViewBag.ListCate = db.Categories.OrderBy(d => d.ID).ToList();
+            ViewBag.ParentID = new SelectList(db.Categories.Where(d => d.ParentID == null && d.Type == "PRODUCT").ToList(), "ID", "Name");
             return View();
         }
         public ActionResult Create()
@@ -26,15 +29,18 @@ namespace DCCovid.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Create(Category productCategory)
         {
-            ViewBag.ParentID = new SelectList(db.Categories.Where(d => d.ParentID == null).ToList(), "ID", "Name");
+           
+           
+            ViewBag.ParentID = new SelectList(db.Categories.Where(d => d.ParentID == null && d.Type == "PRODUCT").ToList(), "ID", "Name");
             if (ModelState.IsValid)
             {
                 var session = (UserLogin)Session["DUY"];
                 productCategory.CreateBy = session.Name;
                 productCategory.CreateDate = DateTime.Now;
+                
                 db.Categories.Add(productCategory);
                 db.SaveChanges();
-                SetAlert("Thêm danh muc thanh cong", "success");
+                SetAlert("Thêm danh mục thành công", "success");
                 return RedirectToAction("Index", "ProductCategory");
             }
             return View();

@@ -1,10 +1,10 @@
 ﻿@model List<DCCovid.ViewModel.Cart>
 @{
     ViewBag.Title = "Payment";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Post.cshtml";
 }
 <div class="account-in">
-    <div class="container">
+    <div class="container" style="background-color:white; padding-top: 30px">
         <div class="check_box">
             @if (Model.Count > 0)
             {
@@ -22,7 +22,7 @@
                         <tr style="text-align:center;font-weight:bold">
                             <td>@item.ID</td>
                             <td>@item.Name</td>
-                            <td><img src="/Assets/Thumbnail/@item.Image.Split(',')[0]" style="width:100px" /></td>
+                            <td><img src="/Assets/Thumbnails/@item.Image" style="width:100px" /></td>
                             @using (Html.BeginForm("CapnhatCart", "Cart", new { @ID = item.ID }))
                             {
                                 <td>
@@ -30,7 +30,7 @@
                                 </td>
                                 <td>@String.Format("{0:0,0}", item.Price)</td>
                                 <td>@String.Format("{0:0,0}", item.TotalItem)</td>
-                                @*<td><a href="@Url.Action("Details","Book",new {masach=item.ID})">Chi Tiết</a></td>*@
+                              
                                 <td>@Html.ActionLink("Xóa", "XoaCart", new { @ID = item.ID })</td>
                                 <td><input type="submit" value="Cập Nhật" /></td>
                             }
@@ -79,7 +79,7 @@
                             var sess = (DCCovid.Common.UserLogin)Session["MEMBER"];
                             if (sess != null)
                             {
-                                <button type="submit" class="btn" style="color: white; background-color:blue">Thanh toan</button>
+                                <button type="submit" class="btn" style="color: white; background-color:blue">Đặt hàng</button>
                             }
                             else
                             {

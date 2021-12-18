@@ -64,7 +64,7 @@
 
             <div class="form-group">
                 <label class="control-label col-md-2">Giới tính</label>
-                @Html.DropDownList("SexID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownList("SexID", null,  new { @class = "form-control" ,@style ="width:200px" })
                 @Html.ValidationMessageFor(model => model.SexID, "", new { @class = "text-danger" })
             </div>
 
@@ -87,13 +87,13 @@
             </div>
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-default" />
+                    <input type="submit" value="Save" class="btn btn-default" style="background-color:deepskyblue"/>
                 </div>
             </div>
         </div>
 
     }
-    <div class="col-md-10">
+    <div class="col-md-10" style="padding-bottom:30px">
         <h3>Sở thích</h3>
         @foreach (var item in listcate)
         {
@@ -117,9 +117,6 @@
                         @item.Name  @Html.ActionLink("Chọn", "Like", new { id = item.ID, @strURL = Request.Url.ToString() })
                     </div>
                 }
-
-
-
             }
 
 
