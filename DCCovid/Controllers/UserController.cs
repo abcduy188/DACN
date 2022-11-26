@@ -523,6 +523,12 @@ namespace DCCovid.Controllers
                 if (model.BirthDay != null)
                 {
                     user.BirthDay = model.BirthDay;
+
+                    if (model.BirthDay >= DateTime.Now)
+                    {
+                        SetAlert("Ngày sinh không được lớn hơn ngày hiện tại", "error");
+                        return View();
+                    }
                 }
                 HttpFileCollectionBase files = Request.Files; //lấy file 
                 for (int i = 0; i < files.Count; i++) //đi qua lần lượt các file => lưu file
